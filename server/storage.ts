@@ -106,12 +106,16 @@ export class DatabaseStorage implements IStorage {
       .returning();
 
     // Automatically add creator as first passenger
-    await this.addPassenger({
-      rideId: newRide.id,
-      userId: ride.creatorId,
-      dropoffLocation: ride.dropoffLocations[0].location,
-      passengerCount: ride.dropoffLocations[0].passengerCount,
-    });
+    if (ride.dropoffLocations && ride.dropoffLocations.length > 0) {
+      await this.addPassenger({
+        rideId: newRide.id,
+        userId: ride.creatorId,
+        dropoffLocation: ride.dropoffLocations[0].location,
+        passengerCount: ride.dropoffLocations[0].passengerCount,
+      });
+    } else {
+      throw new Error("At least one dropoff location is required");
+    }
 
     return newRide;
   }
@@ -138,6 +142,11 @@ export class DatabaseStorage implements IStorage {
   async addPassenger(
     passenger: InsertRidePassenger & { userId: number }
   ): Promise<RidePassenger> {
+    // Validate that dropoff location exists
+    if (!passenger.dropoffLocation) {
+      throw new Error("Dropoff location is required");
+    }
+
     const [newPassenger] = await db
       .insert(ridePassengers)
       .values({ ...passenger, dropoffSequence: null })
