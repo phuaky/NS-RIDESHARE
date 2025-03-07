@@ -37,6 +37,32 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // DEBUG: Import storage to check the database
+  const { storage } = await import('./storage');
+  
+  try {
+    const allRides = await storage.getRides();
+    console.log("Available rides in database:", allRides);
+    
+    // If there are no rides, create a sample ride for testing
+    if (allRides.length === 0) {
+      console.log("No rides found in database. Creating a sample ride for testing...");
+      const sampleRide = await storage.createRide({
+        creatorId: 1, // Assuming user ID 1 exists
+        direction: "SG->FC",
+        date: new Date(Date.now() + 86400000), // Tomorrow
+        maxPassengers: 4,
+        pickupLocation: "Jurong East MRT",
+        dropoffLocations: ["Forest City Mall"],
+        cost: 80,
+        additionalStops: 0
+      });
+      console.log("Created sample ride:", sampleRide);
+    }
+  } catch (error) {
+    console.error("Error inspecting database:", error);
+  }
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

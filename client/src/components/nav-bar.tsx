@@ -7,74 +7,176 @@ import {
   NavigationMenuList,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
-import { Car, LogOut, Map, BookOpen } from "lucide-react";
+import { Car, LogOut, LogIn, Map, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function NavBar() {
   const { user, logoutMutation } = useAuth();
+  // For SSR compatibility, default to mobile false, then update after mount
+  const [isMobile, setIsMobile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  
+  // Update mobile status after component mounts
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Set initial value
+    handleResize();
+    
+    // Listen for window resize
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  
+  // Close mobile menu on navigation
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setMenuOpen(false);
+    };
+    
+    // Simple route change detection
+    const observer = new MutationObserver(handleRouteChange);
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <nav className="border-b">
+    <nav className="border-b bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <Link href="/">
-                  <NavigationMenuLink className="flex items-center px-3 py-2 text-sm font-medium">
-                    <Car className="h-4 w-4 mr-2" />
-                    RideShare
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-              {user?.isVendor ? (
-                <NavigationMenuItem>
-                  <Link href="/vendor">
-                    <NavigationMenuLink className="flex items-center px-3 py-2 text-sm font-medium">
-                      Dashboard
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              ) : (
-                <>
-                  <NavigationMenuItem>
-                    <Link href="/rides/create">
-                      <NavigationMenuLink className="flex items-center px-3 py-2 text-sm font-medium">
-                        Create Ride
-                      </NavigationMenuLink>
-                    </Link>
-                  </NavigationMenuItem>
-                  <NavigationMenuItem>
-                    <Link href="/rides/join">
-                      <NavigationMenuLink className="flex items-center px-3 py-2 text-sm font-medium">
-                        Join Ride
-                      </NavigationMenuLink>
-                    </Link>
-                  </NavigationMenuItem>
-                </>
-              )}
-              <NavigationMenuItem>
-                <Link href="/guide">
-                  <NavigationMenuLink className="flex items-center px-3 py-2 text-sm font-medium">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Guide
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+        <div className="flex justify-between h-16 items-center">
+          {/* Logo always visible */}
+          <Link href="/" className="flex items-center text-sm font-medium">
+            <Car className="h-5 w-5 mr-2" />
+            <span className="text-lg font-semibold">RideShare</span>
+          </Link>
 
-          <div className="flex items-center">
+          {/* Mobile menu button */}
+          {isMobile && (
             <Button
               variant="ghost"
-              size="sm"
-              onClick={() => logoutMutation.mutate()}
-              className="ml-3"
+              size="icon"
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="md:hidden"
             >
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
-          </div>
+          )}
+
+          {/* Desktop navigation */}
+          {!isMobile && (
+            <div className="flex">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuLink asChild>
+                      <Link href="/home" className="flex items-center px-3 py-2 text-sm font-medium">
+                        <Map className="h-4 w-4 mr-2" />
+                        Available Rides
+                      </Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                  
+                  {user && (
+                    <>
+                      {user?.isVendor ? (
+                        <NavigationMenuItem>
+                          <NavigationMenuLink asChild>
+                            <Link href="/vendor" className="flex items-center px-3 py-2 text-sm font-medium">
+                              Dashboard
+                            </Link>
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      ) : (
+                        <NavigationMenuItem>
+                          <NavigationMenuLink asChild>
+                            <Link href="/rides/create" className="flex items-center px-3 py-2 text-sm font-medium">
+                              Create Ride
+                            </Link>
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      )}
+                    </>
+                  )}
+                </NavigationMenuList>
+              </NavigationMenu>
+
+              <div className="flex items-center ml-4">
+                {user ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => logoutMutation.mutate()}
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </Button>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                  >
+                    <Link href="/auth">
+                      <LogIn className="h-4 w-4 mr-2" />
+                      Login
+                    </Link>
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
+        
+        {/* Mobile menu */}
+        {isMobile && menuOpen && (
+          <div className="md:hidden border-t pt-2 pb-3 space-y-1">
+            <Link href="/home" className="block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md">
+              Available Rides
+            </Link>
+            
+            {user && (
+              <>
+                {user?.isVendor ? (
+                  <Link href="/vendor" className="block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md">
+                    Dashboard
+                  </Link>
+                ) : (
+                  <Link href="/rides/create" className="block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md">
+                    Create Ride
+                  </Link>
+                )}
+              </>
+            )}
+            
+            {user ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => logoutMutation.mutate()}
+                className="w-full justify-start px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="w-full justify-start px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md"
+              >
+                <Link href="/auth">
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Login
+                </Link>
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );

@@ -14,9 +14,56 @@ import {
 } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Bus, MapPin, AlertTriangle, Phone, ExternalLink } from "lucide-react";
+import { Bus, MapPin, AlertTriangle, Phone, ExternalLink, IdCard, Clock } from "lucide-react";
+import { LocationMap } from "@/components/map/location-map";
 
 export default function GuidePage() {
+  // Pre-defined popular locations
+  const singaporeLocations = [
+    {
+      id: "sg-1",
+      position: [1.3521, 103.8198] as [number, number],
+      name: "Jurong East MRT"
+    },
+    {
+      id: "sg-2",
+      position: [1.3644, 103.7731] as [number, number],
+      name: "Boon Lay MRT"
+    },
+    {
+      id: "sg-3",
+      position: [1.4431, 103.7861] as [number, number],
+      name: "Woodlands Checkpoint"
+    },
+    {
+      id: "sg-4",
+      position: [1.3387, 103.9092] as [number, number],
+      name: "Changi Airport"
+    }
+  ];
+
+  const forestCityLocations = [
+    {
+      id: "fc-1",
+      position: [1.4143, 103.6357] as [number, number],
+      name: "Forest City Mall"
+    },
+    {
+      id: "fc-2",
+      position: [1.4308, 103.6305] as [number, number],
+      name: "Golf Resort"
+    },
+    {
+      id: "fc-3",
+      position: [1.4184, 103.6325] as [number, number],
+      name: "Shattuck St. Mary's School"
+    },
+    {
+      id: "fc-4",
+      position: [1.4255, 103.6240] as [number, number],
+      name: "Malaysian CIQ"
+    }
+  ];
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
@@ -30,14 +77,25 @@ export default function GuidePage() {
 
         <div className="space-y-8">
           {/* Important Reminders */}
-          <Alert>
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Important Reminders</AlertTitle>
-            <AlertDescription>
-              Don't forget your passport and ensure it has at least 6 months
-              validity. Immigration checks are required for both entry and exit.
-            </AlertDescription>
-          </Alert>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Alert className="bg-amber-50 border-amber-200">
+              <IdCard className="h-4 w-4 text-amber-600" />
+              <AlertTitle className="text-amber-800">Passport Required</AlertTitle>
+              <AlertDescription className="text-amber-700">
+                Ensure your passport has at least 6 months validity.
+                Many travelers forget their passports - double-check before leaving!
+              </AlertDescription>
+            </Alert>
+            
+            <Alert className="bg-blue-50 border-blue-200">
+              <Clock className="h-4 w-4 text-blue-600" />
+              <AlertTitle className="text-blue-800">Immigration Timing</AlertTitle>
+              <AlertDescription className="text-blue-700">
+                Allow 45-60 minutes for immigration during peak hours.
+                Weekday mornings (Singapore entry) and evenings (Malaysia entry) are busiest.
+              </AlertDescription>
+            </Alert>
+          </div>
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="singapore" className="space-y-4">
@@ -65,14 +123,6 @@ export default function GuidePage() {
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="space-y-4">
-                        <div>
-                          <h4 className="font-medium">From Woodlands</h4>
-                          <ul className="list-disc list-inside mt-2 space-y-2">
-                            <li>Take SBS 170 from Woodlands Checkpoint</li>
-                            <li>Journey time: ~45 minutes</li>
-                            <li>Fare: ~SGD 2.50</li>
-                          </ul>
-                        </div>
                         <div>
                           <h4 className="font-medium">From Jurong East</h4>
                           <ul className="list-disc list-inside mt-2 space-y-2">
@@ -180,19 +230,152 @@ export default function GuidePage() {
             </TabsContent>
           </Tabs>
 
-          {/* Common Drop-off Points Map */}
+          {/* Payment Information */}
           <Card>
             <CardHeader>
-              <CardTitle>Common Drop-off Points</CardTitle>
+              <CardTitle>Payment Information</CardTitle>
               <CardDescription>
-                Popular destinations in both Singapore and Forest City
+                Understanding costs and payment methods
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="aspect-[16/9] bg-muted rounded-lg flex items-center justify-center">
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="font-medium">Cost Breakdown</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span>Base Cost</span>
+                    <span className="font-medium">$80 SGD</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span>Additional Stop Fee</span>
+                    <span className="font-medium">$5 SGD / stop</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span>Typical Cost Per Person (4 passengers)</span>
+                    <span className="font-medium">$20 SGD</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-2 pt-4 border-t">
+                <h3 className="font-medium">Revolut Payments</h3>
                 <p className="text-sm text-muted-foreground">
-                  Map component will be integrated here
+                  Revolut is the preferred payment method for ride sharing due to its ease of use and lack of transaction fees between users.
                 </p>
+                <ol className="list-decimal list-inside space-y-1 text-sm">
+                  <li>Download the Revolut app</li>
+                  <li>Create an account and verify your identity</li>
+                  <li>Add your username to your RideShare profile</li>
+                  <li>Send payment to the ride organizer via their Revolut username</li>
+                </ol>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mt-6">
+            <CardContent className="pt-6">
+              <h2 className="text-xl font-semibold">Bus Travel: Singapore to Forest City</h2>
+              <p className="text-sm text-muted-foreground mt-2">
+                A comprehensive guide for traveling by public bus from Singapore to Forest City, Malaysia.
+              </p>
+
+              {/* Quick Summary */}
+              <div className="p-4 bg-muted rounded-md mt-4">
+                <h3 className="font-medium mb-2">Quick Guide</h3>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Journey: Jurong Town Hall Bus Interchange → CIQ 2nd Link → Forest City</li>
+                  <li>Buses: Take CW3/CW4/CW4S/CW6/CW7, then FC1 after immigration</li>
+                  <li>Total fare: S$5 (through-ticketing available)</li>
+                  <li>Payment: Cash or ManjaLink card</li>
+                  <li>Travel time: ~1.5-2 hours including immigration</li>
+                </ul>
+              </div>
+
+              <div className="space-y-2 pt-4 border-t">
+                <h3 className="font-medium">Overview</h3>
+                <p className="text-sm text-muted-foreground">
+                  Public bus travel from Singapore to Forest City involves taking a cross-border bus from Jurong Town Hall 
+                  Bus Interchange to CIQ 2nd Link, then transferring to the FC1 bus to Forest City. Through-ticketing is 
+                  available with a fare of S$5.
+                </p>
+              </div>
+
+              <div className="space-y-2 pt-4 border-t">
+                <h3 className="font-medium">Step 1: Getting to Jurong Town Hall Bus Interchange</h3>
+                <p className="text-sm text-muted-foreground">
+                  Start your journey at Jurong Town Hall Bus Interchange, located at Berth B5. You can reach it by:
+                </p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Taking the MRT to Jurong East station and walking about 10 minutes</li>
+                  <li>Taking other bus services that stop at the interchange</li>
+                <li>
+                  <img src="https://www.causewaylink.com.my/wp-content/uploads/2024/01/Relocation-photos-map-01.png" alt="Map of Bus Route" className="w-full h-auto" />
+                </li>
+                </ul>
+              </div>
+
+              <div className="space-y-2 pt-4 border-t">
+                <h3 className="font-medium">Step 2: Taking the Cross-Border Bus</h3>
+                <p className="text-sm text-muted-foreground">
+                  From Jurong Town Hall, take a Causeway Link cross-border bus such as CW3, CW4, CW4S, CW6, or CW7 to 
+                  CIQ 2nd Link (Tuas Second Link checkpoint). Through-ticketing is available for S$5, covering both 
+                  the cross-border bus and the FC1 bus to Forest City.
+                </p>
+              </div>
+
+              <div className="space-y-2 pt-4 border-t">
+                <h3 className="font-medium">Step 3: Immigration at CIQ 2nd Link</h3>
+                <p className="text-sm text-muted-foreground">
+                  At the checkpoint, you'll need to alight, clear Singapore immigration to exit, then clear Malaysia 
+                  immigration to enter. Allow 45-60 minutes during peak hours, especially weekday mornings for entering 
+                  Singapore and evenings for entering Malaysia.
+                </p>
+              </div>
+
+              <div className="space-y-2 pt-4 border-t">
+                <h3 className="font-medium">Step 4: Final Leg to Forest City</h3>
+                <p className="text-sm text-muted-foreground">
+                  After immigration, board the FC1 bus at CIQ 2nd Link to reach Forest City. The journey takes about 20 minutes.
+                </p>
+                <h4 className="font-medium text-sm mt-2">FC1 Bus Departure Times from CIQ 2nd Link:</h4>
+                <div className="grid grid-cols-3 gap-2 text-sm mt-1">
+                  <div>6:00 AM</div>
+                  <div>7:00 AM</div>
+                  <div>8:00 AM</div>
+                  <div>9:00 AM</div>
+                  <div>10:00 AM</div>
+                  <div>11:00 AM</div>
+                  <div>12:00 PM</div>
+                  <div>1:00 PM</div>
+                  <div>2:00 PM</div>
+                  <div>3:00 PM</div>
+                  <div>4:00 PM</div>
+                  <div>5:00 PM</div>
+                  <div>6:00 PM</div>
+                  <div>7:00 PM</div>
+                  <div>8:30 PM (Last bus)</div>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-4 border-t">
+                <h3 className="font-medium">Payment Options</h3>
+                <p className="text-sm text-muted-foreground">
+                  You can pay with cash or use a ManjaLink card, which offers rebates and can be purchased online.
+                </p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Cash payment: Prepare exact fare (S$5 for the entire journey)</li>
+                  <li>ManjaLink card: Available online, supports cashless payments with up to 9TCR monthly rebates</li>
+                </ul>
+              </div>
+
+              <div className="space-y-2 pt-4 border-t">
+                <h3 className="font-medium">Additional Tips</h3>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Download the LUGO App for real-time updates and trip planning</li>
+                  <li>Check the Causeway Link website for the latest schedules</li>
+                  <li>Plan for additional time during peak immigration hours</li>
+                  <li>Arrive early at Jurong Town Hall to catch a bus that aligns with FC1 departure times</li>
+                </ul>
               </div>
             </CardContent>
           </Card>

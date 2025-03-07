@@ -11,6 +11,7 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1",
     "@hookform/resolvers": "^3.9.1",
     "@jridgewell/trace-mapping": "^0.3.25",
     "@neondatabase/serverless": "^0.10.4",
@@ -55,6 +56,7 @@
     "express-session": "^1.18.1",
     "framer-motion": "^11.13.1",
     "input-otp": "^1.2.4",
+    "leaflet": "^1.9.4",
     "lucide-react": "^0.453.0",
     "memorystore": "^1.6.7",
     "passport": "^0.7.0",
@@ -64,6 +66,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.1",
     "react-icons": "^5.4.0",
+    "react-leaflet": "^4.2.1",
     "react-resizable-panels": "^2.1.4",
     "recharts": "^2.13.0",
     "tailwind-merge": "^2.5.4",

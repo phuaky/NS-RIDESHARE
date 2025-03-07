@@ -8,6 +8,7 @@ import AuthPage from "@/pages/auth-page";
 import HomePage from "@/pages/home-page";
 import CreateRide from "@/pages/create-ride";
 import JoinRide from "@/pages/join-ride";
+import RideDetails from "@/pages/ride-details";
 import VendorDashboard from "@/pages/vendor-dashboard";
 import GuidePage from "@/pages/guide-page";
 import { ProtectedRoute } from "./lib/protected-route";
@@ -16,11 +17,12 @@ function Router() {
   return (
     <Switch>
       <Route path="/auth" component={AuthPage} />
-      <ProtectedRoute path="/" component={HomePage} />
+      <Route path="/" component={GuidePage} />
+      <Route path="/home" component={HomePage} />
       <ProtectedRoute path="/rides/create" component={CreateRide} />
-      <ProtectedRoute path="/rides/join" component={JoinRide} />
+      <ProtectedRoute path="/rides/:id/join" component={JoinRide} />
+      <Route path="/rides/:id" component={RideDetails} />
       <ProtectedRoute path="/vendor" component={VendorDashboard} />
-      <ProtectedRoute path="/guide" component={GuidePage} />
       <Route component={NotFound} />
     </Switch>
   );

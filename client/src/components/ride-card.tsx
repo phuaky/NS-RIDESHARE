@@ -2,8 +2,9 @@ import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Ride } from "@shared/schema";
-import { MapPin, Calendar, Users, ArrowRightLeft } from "lucide-react";
+import { MapPin, Calendar, Users, ArrowRightLeft, Info } from "lucide-react";
 import { format } from "date-fns";
+import { Link } from "wouter";
 
 interface RideCardProps {
   ride: Ride;
@@ -56,13 +57,21 @@ export function RideCard({ ride, onJoin, onAssign, showActions = true }: RideCar
         </div>
       </CardContent>
       {showActions && (
-        <CardFooter className="flex justify-end space-x-2">
-          {ride.status === "open" && onJoin && !isFullyBooked && (
-            <Button onClick={onJoin}>Join Ride</Button>
-          )}
-          {ride.status === "open" && onAssign && (
-            <Button onClick={onAssign}>Accept Ride</Button>
-          )}
+        <CardFooter className="flex justify-between space-x-2">
+          <Button variant="outline" asChild>
+            <Link href={`/rides/${ride.id}`}>
+              <Info className="h-4 w-4 mr-2" />
+              Ride Details
+            </Link>
+          </Button>
+          <div className="flex gap-2">
+            {ride.status === "open" && onJoin && !isFullyBooked && (
+              <Button onClick={onJoin}>Join Ride</Button>
+            )}
+            {ride.status === "open" && onAssign && (
+              <Button onClick={onAssign}>Accept Ride</Button>
+            )}
+          </div>
         </CardFooter>
       )}
     </Card>
