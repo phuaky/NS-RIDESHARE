@@ -8,7 +8,7 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   fullName: text("full_name").notNull(),
   discordUsername: text("discord_username").notNull(),
-  whatsappNumber: text("whatsapp_number").notNull(),
+  whatsappNumber: text("whatsapp_number"),
   malaysianNumber: text("malaysian_number"),
   revolutUsername: text("revolut_username"),
   isVendor: boolean("is_vendor").notNull().default(false),
@@ -58,7 +58,7 @@ export const insertUserSchema = createInsertSchema(users)
   })
   .extend({
     password: z.string().min(8),
-    whatsappNumber: z.string().regex(/^\+?[1-9]\d{7,14}$/),
+    whatsappNumber: z.string().regex(/^\+?[1-9]\d{7,14}$/).optional(),
     malaysianNumber: z.string().regex(/^\+?[1-9]\d{7,14}$/).optional(),
   });
 

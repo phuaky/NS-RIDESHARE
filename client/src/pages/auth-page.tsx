@@ -191,7 +191,7 @@ export default function AuthPage() {
                     name="whatsappNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>WhatsApp Number</FormLabel>
+                        <FormLabel>WhatsApp Number (Optional)</FormLabel>
                         <FormControl>
                           <Input {...field} placeholder="+65xxxxxxxx" />
                         </FormControl>
