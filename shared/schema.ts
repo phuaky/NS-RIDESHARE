@@ -19,6 +19,16 @@ export const users = pgTable("users", {
   }>(),
 });
 
+export const driverContacts = pgTable("driver_contacts", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  whatsappNumber: text("whatsapp_number").notNull(),
+  malaysianNumber: text("malaysian_number"),
+  vehicleType: text("vehicle_type").notNull(),
+  notes: text("notes"),
+  isActive: boolean("is_active").notNull().default(true),
+});
+
 export const rides = pgTable("rides", {
   id: serial("id").primaryKey(),
   creatorId: integer("creator_id").notNull(),
@@ -27,9 +37,13 @@ export const rides = pgTable("rides", {
   maxPassengers: integer("max_passengers").notNull(),
   currentPassengers: integer("current_passengers").notNull().default(0),
   pickupLocation: text("pickup_location").notNull(),
-  dropoffLocations: json("dropoff_locations").$type<string[]>().notNull(),
+  dropoffLocations: json("dropoff_locations").$type<{
+    location: string;
+    passengerCount: number;
+  }[]>().notNull(),
   status: text("status").notNull().default("open"), // open, assigned, completed
   vendorId: integer("vendor_id"),
+  driverContactId: integer("driver_contact_id"),
   cost: integer("cost").notNull(),
   additionalStops: integer("additional_stops").notNull().default(0),
 });
@@ -81,15 +95,26 @@ export const insertUserSchema = createInsertSchema(users)
       }),
   });
 
-export const insertRideSchema = createInsertSchema(rides).pick({
-  direction: true,
-  date: true,
-  maxPassengers: true,
-  pickupLocation: true,
-  dropoffLocations: true,
-  cost: true,
-  additionalStops: true,
-});
+export const insertDriverContactSchema = createInsertSchema(driverContacts)
+  .pick({
+    name: true,
+    whatsappNumber: true,
+    malaysianNumber: true,
+    vehicleType: true,
+    notes: true,
+    isActive: true,
+  });
+
+export const insertRideSchema = createInsertSchema(rides)
+  .pick({
+    direction: true,
+    date: true,
+    maxPassengers: true,
+    pickupLocation: true,
+    dropoffLocations: true,
+    driverContactId: true,
+    cost: true,
+  });
 
 export const insertRidePassengerSchema = createInsertSchema(ridePassengers)
   .pick({
@@ -101,8 +126,10 @@ export const insertRidePassengerSchema = createInsertSchema(ridePassengers)
   });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type InsertDriverContact = z.infer<typeof insertDriverContactSchema>;
 export type InsertRide = z.infer<typeof insertRideSchema>;
 export type InsertRidePassenger = z.infer<typeof insertRidePassengerSchema>;
 export type User = typeof users.$inferSelect;
+export type DriverContact = typeof driverContacts.$inferSelect;
 export type Ride = typeof rides.$inferSelect;
 export type RidePassenger = typeof ridePassengers.$inferSelect;

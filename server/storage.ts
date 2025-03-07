@@ -5,9 +5,12 @@ import {
   type InsertRide,
   type RidePassenger,
   type InsertRidePassenger,
+  type DriverContact,
+  type InsertDriverContact,
   users,
   rides,
   ridePassengers,
+  driverContacts,
 } from "@shared/schema";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
@@ -21,6 +24,11 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByDiscordUsername(discordUsername: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+
+  // Driver contact operations
+  createDriverContact(contact: InsertDriverContact): Promise<DriverContact>;
+  getDriverContact(id: number): Promise<DriverContact | undefined>;
+  getActiveDriverContacts(): Promise<DriverContact[]>;
 
   // Ride operations
   createRide(ride: InsertRide & { creatorId: number }): Promise<Ride>;
@@ -65,16 +73,46 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  async createDriverContact(contact: InsertDriverContact): Promise<DriverContact> {
+    const [newContact] = await db.insert(driverContacts).values(contact).returning();
+    return newContact;
+  }
+
+  async getDriverContact(id: number): Promise<DriverContact | undefined> {
+    const [contact] = await db.select().from(driverContacts).where(eq(driverContacts.id, id));
+    return contact;
+  }
+
+  async getActiveDriverContacts(): Promise<DriverContact[]> {
+    return await db
+      .select()
+      .from(driverContacts)
+      .where(eq(driverContacts.isActive, true));
+  }
+
   async createRide(ride: InsertRide & { creatorId: number }): Promise<Ride> {
+    // Calculate additional stops based on dropoff locations
+    const additionalStops = Math.max(0, (ride.dropoffLocations?.length || 0) - 1);
+
     const [newRide] = await db
       .insert(rides)
       .values({
         ...ride,
-        currentPassengers: 0,
+        currentPassengers: 1, // Count creator as first passenger
         status: "open",
         vendorId: null,
-      } as any) 
+        additionalStops,
+      } as any)
       .returning();
+
+    // Automatically add creator as first passenger
+    await this.addPassenger({
+      rideId: newRide.id,
+      userId: ride.creatorId,
+      dropoffLocation: ride.dropoffLocations[0].location,
+      passengerCount: ride.dropoffLocations[0].passengerCount,
+    });
+
     return newRide;
   }
 
@@ -108,7 +146,7 @@ export class DatabaseStorage implements IStorage {
     const ride = await this.getRide(passenger.rideId);
     if (ride) {
       await this.updateRide(ride.id, {
-        currentPassengers: ride.currentPassengers + (passenger.passengerCount || 1),
+        currentPassengers: ride.currentPassengers + passenger.passengerCount,
       });
     }
 

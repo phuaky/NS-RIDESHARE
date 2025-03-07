@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { Ride } from "@shared/schema";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-// Define interfaces for our data types
+// Update the interfaces to match the new schema
 interface LocationPoint {
   id: string;
   position: [number, number];
@@ -37,21 +37,20 @@ interface RidePassenger {
   passengerCount: number;
   user?: {
     id: number;
-    username: string;
-    fullName: string;
-    discordUsername: string | null;
+    discordUsername: string;
+    name: string | null;
     whatsappNumber: string | null;
     malaysianNumber: string | null;
     revolutUsername: string | null;
   };
 }
 
-// Add creator type to Ride interface since it's not in the schema
+// Update creator type to match the new schema
 interface RideWithCreator extends Ride {
   creator?: {
     id: number;
-    discordUsername: string;
     name: string | null;
+    discordUsername: string;
     whatsappNumber: string | null;
     malaysianNumber: string | null;
     revolutUsername: string | null;
