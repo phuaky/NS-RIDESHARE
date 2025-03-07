@@ -91,31 +91,36 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createRide(ride: InsertRide & { creatorId: number }): Promise<Ride> {
+    // Validate dropoff locations
+    if (!ride.dropoffLocations || ride.dropoffLocations.length === 0) {
+      throw new Error("At least one dropoff location is required");
+    }
+
     // Calculate additional stops based on dropoff locations
-    const additionalStops = Math.max(0, (ride.dropoffLocations?.length || 0) - 1);
+    const additionalStops = Math.max(0, ride.dropoffLocations.length - 1);
+
+    // Set default cost
+    const cost = 80;
 
     const [newRide] = await db
       .insert(rides)
       .values({
         ...ride,
-        currentPassengers: 1, // Count creator as first passenger
+        currentPassengers: ride.dropoffLocations[0].passengerCount, // Set initial passengers from first location
         status: "open",
         vendorId: null,
         additionalStops,
+        cost,
       } as any)
       .returning();
 
-    // Automatically add creator as first passenger
-    if (ride.dropoffLocations && ride.dropoffLocations.length > 0) {
-      await this.addPassenger({
-        rideId: newRide.id,
-        userId: ride.creatorId,
-        dropoffLocation: ride.dropoffLocations[0].location,
-        passengerCount: ride.dropoffLocations[0].passengerCount,
-      });
-    } else {
-      throw new Error("At least one dropoff location is required");
-    }
+    // Add creator as first passenger
+    await this.addPassenger({
+      rideId: newRide.id,
+      userId: ride.creatorId,
+      dropoffLocation: ride.dropoffLocations[0].location,
+      passengerCount: ride.dropoffLocations[0].passengerCount,
+    });
 
     return newRide;
   }

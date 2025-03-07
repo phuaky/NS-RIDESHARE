@@ -44,7 +44,7 @@ export const rides = pgTable("rides", {
   status: text("status").notNull().default("open"), // open, assigned, completed
   vendorId: integer("vendor_id"),
   driverContactId: integer("driver_contact_id"),
-  cost: integer("cost").notNull(),
+  cost: integer("cost").notNull().default(80),
   additionalStops: integer("additional_stops").notNull().default(0),
 });
 
@@ -113,7 +113,15 @@ export const insertRideSchema = createInsertSchema(rides)
     pickupLocation: true,
     dropoffLocations: true,
     driverContactId: true,
-    cost: true,
+  })
+  .extend({
+    dropoffLocations: z.array(
+      z.object({
+        location: z.string(),
+        passengerCount: z.number().min(1).max(4)
+      })
+    ),
+    driverContactId: z.number().optional(),
   });
 
 export const insertRidePassengerSchema = createInsertSchema(ridePassengers)

@@ -31,7 +31,7 @@ export default function CreateRide() {
   const rideId = params?.id;
   const { toast } = useToast();
   const [showPassportReminder, setShowPassportReminder] = useState(true);
-  
+
   // Fetch ride data if editing
   const { data: rideToEdit, isLoading } = useQuery({
     queryKey: [`/api/rides/${rideId}`],
@@ -47,17 +47,15 @@ export default function CreateRide() {
       maxPassengers: 4,
       pickupLocation: "",
       dropoffLocations: [],
-      cost: 80,
-      additionalStops: 0,
     },
   });
-  
+
   // Load ride data into form when editing
   useEffect(() => {
     if (isEditing && rideToEdit && !isLoading) {
       // Convert ISO string date to Date object
       const date = new Date(rideToEdit.date);
-      
+
       // Reset the form with the ride data
       form.reset({
         ...rideToEdit,
@@ -65,31 +63,41 @@ export default function CreateRide() {
       });
     }
   }, [rideToEdit, isEditing, isLoading, form]);
-  
-  // Calculate total cost
-  const baseCost = form.watch('cost') || 0;
-  const additionalStops = form.watch('additionalStops') || 0;
-  const totalCost = baseCost + (additionalStops * 5); // $5 per additional stop
 
   // Mutation for creating or updating a ride
   const rideMutation = useMutation({
     mutationFn: async (data: any) => {
       // Create a deep copy of the data to avoid modifying form state
       const submissionData = { ...data };
-      
+
       // Ensure we're passing a proper Date object to the API
       if (typeof submissionData.date === 'string') {
         submissionData.date = new Date(submissionData.date);
       }
-      
+
       // Validate the date before submission
       if (!(submissionData.date instanceof Date) || isNaN(submissionData.date.getTime())) {
         throw new Error("Invalid date provided");
       }
-      
+
       // Convert date to ISO string for proper serialization
       submissionData.date = submissionData.date.toISOString();
-      
+
+      // Format dropoff locations
+      if (currentDirection === "FC->SG") {
+        submissionData.dropoffLocations = submissionData.dropoffLocations.map((location: string) => ({
+          location,
+          passengerCount: 1
+        }));
+      } else {
+        // For SG->FC, we use pickupLocation with organizer's passenger count
+        const passengerCount = submissionData.organizerPassengerCount || 1;
+        submissionData.dropoffLocations = [{
+          location: submissionData.pickupLocation,
+          passengerCount
+        }];
+      }
+
       if (isEditing && rideId) {
         // Update existing ride
         const res = await apiRequest("PATCH", `/api/rides/${rideId}`, submissionData);
@@ -103,13 +111,13 @@ export default function CreateRide() {
     onSuccess: (ride) => {
       queryClient.invalidateQueries({ queryKey: ["/api/rides"] });
       queryClient.invalidateQueries({ queryKey: [`/api/rides/${rideId}`] });
-      
+
       toast({
         title: "Success",
         description: isEditing ? "Ride updated successfully" : "Ride created successfully",
         variant: "success",
       });
-      
+
       // Redirect to ride details page
       setLocation(`/rides/${ride.id}`);
     },
@@ -124,7 +132,7 @@ export default function CreateRide() {
 
   // Get current direction value from form
   const currentDirection = form.watch('direction');
-  
+
   return (
     <div className="min-h-screen pt-16"> {/* Add padding-top to account for fixed navbar */}
       <NavBar />
@@ -183,10 +191,8 @@ export default function CreateRide() {
                     // Format the date value for the datetime-local input
                     const dateValue = value instanceof Date 
                       ? value.toISOString().slice(0, 16) 
-                      : typeof value === 'string' && value
-                        ? value.slice(0, 16) 
-                        : '';
-                        
+                      : '';
+
                     return (
                       <FormItem>
                         <FormLabel>Date and Time</FormLabel>
@@ -237,9 +243,9 @@ export default function CreateRide() {
                 {/* Map and Location Selection */}
                 <div className="space-y-4 pt-2">
                   <h3 className="font-medium">Locations</h3>
-                  
+
                   {showPassportReminder && (
-                    <Alert variant="warning" className="bg-amber-50 border-amber-200">
+                    <Alert className="bg-amber-50 border-amber-200">
                       <AlertCircle className="h-4 w-4 text-amber-600" />
                       <AlertDescription className="text-amber-800">
                         Don't forget to bring your passport! Many travelers have forgotten them in the past.
@@ -252,10 +258,10 @@ export default function CreateRide() {
                       </AlertDescription>
                     </Alert>
                   )}
-                  
+
                   {/* Only show pickup location for SG->FC */}
                   {currentDirection === "SG->FC" ? (
-                    <div>
+                    <div className="space-y-4">
                       <FormField
                         control={form.control}
                         name="pickupLocation"
@@ -272,6 +278,28 @@ export default function CreateRide() {
                             <p className="text-xs text-muted-foreground mt-1">
                               You can enter multiple lines of text for detailed location instructions.
                             </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="organizerPassengerCount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Number of Passengers at Your Location</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="1"
+                                max="4"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value))
+                                }
+                              />
+                            </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -307,73 +335,6 @@ export default function CreateRide() {
                       />
                     </div>
                   )}
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="cost"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Base Cost (SGD)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseInt(e.target.value))
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="additionalStops"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Additional Stops</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseInt(e.target.value))
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Cost Summary */}
-                <div className="border rounded-md p-4 mt-6 bg-gray-50">
-                  <h3 className="font-medium mb-2">Cost Summary</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Base Cost:</span>
-                      <span>${baseCost} SGD</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Additional Stops ({additionalStops}):</span>
-                      <span>${additionalStops * 5} SGD</span>
-                    </div>
-                    <div className="flex justify-between font-medium pt-2 border-t">
-                      <span>Total Cost:</span>
-                      <span>${totalCost} SGD</span>
-                    </div>
-                    {form.watch('maxPassengers') > 0 && (
-                      <div className="flex justify-between text-green-600 pt-2">
-                        <span>Cost per person (if full):</span>
-                        <span>${(totalCost / form.watch('maxPassengers')).toFixed(2)} SGD</span>
-                      </div>
-                    )}
-                  </div>
                 </div>
 
                 <Button
