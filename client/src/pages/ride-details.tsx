@@ -46,6 +46,18 @@ interface RidePassenger {
   };
 }
 
+// Add creator type to Ride interface since it's not in the schema
+interface RideWithCreator extends Ride {
+  creator?: {
+    id: number;
+    discordUsername: string;
+    name: string | null;
+    whatsappNumber: string | null;
+    malaysianNumber: string | null;
+    revolutUsername: string | null;
+  };
+}
+
 // Form schema for joining a ride
 const joinRideSchema = z.object({
   passengerCount: z.number()
@@ -85,8 +97,8 @@ export default function RideDetails() {
   const [activeTab, setActiveTab] = useState("details");
   const [dropoffLocations, setDropoffLocations] = useState<LocationPoint[]>([]);
 
-  // Ride data fetch
-  const { data: ride, isLoading: isRideLoading } = useQuery<Ride>({
+  // Update the type of ride to include creator
+  const { data: ride, isLoading: isRideLoading } = useQuery<RideWithCreator>({
     queryKey: [`/api/rides/${rideId}`],
     enabled: !!rideId,
   });
@@ -187,7 +199,7 @@ export default function RideDetails() {
   const isUserPassenger = passengers?.some(p => p.userId === user?.id);
 
   // Check if the user is the ride creator
-  const isCreator = user && ride && user.id === ride.creatorId;
+  const isCreator = user && ride && user.id === ride.creator?.id;
   const creator = ride?.creator;
 
 
@@ -524,7 +536,7 @@ export default function RideDetails() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium">{creator?.fullName}</p>
+                          <p className="font-medium">{creator?.name}</p>
                           <p className="text-sm text-muted-foreground">Organizer</p>
                         </div>
                         <div className="flex space-x-1">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,16 +12,15 @@ import { InsertUser } from "@shared/schema";
 export default function AuthPage() {
   const [tab, setTab] = useState("login");
   // Login form state
-  const [username, setUsername] = useState("");
+  const [discordUsername, setDiscordUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  
+
   // Registration form state
   const [registerData, setRegisterData] = useState<Partial<InsertUser>>({
-    username: "",
-    password: "",
-    fullName: "",
     discordUsername: "",
+    password: "",
+    name: "",
     whatsappNumber: "",
     malaysianNumber: "",
     revolutUsername: "",
@@ -33,7 +32,7 @@ export default function AuthPage() {
       carNumber: ""
     }
   });
-  
+
   const { loginMutation, registerMutation, user } = useAuth();
   const [, setLocation] = useLocation();
 
@@ -48,84 +47,83 @@ export default function AuthPage() {
     e.preventDefault();
     setError("");
     try {
-      loginMutation.mutate({ username, password });
+      loginMutation.mutate({ discordUsername, password });
     } catch (error) {
-      setError("Invalid username or password");
+      setError("Invalid Discord username or password");
     }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    
+
     // Detailed validation with specific error messages
-    if (!registerData.username) {
-      setError("Username is required");
-      return;
-    }
-    
-    if (!registerData.password) {
-      setError("Password is required");
-      return;
-    }
-    
-    if (registerData.password.length < 8) {
-      setError("Password must be at least 8 characters long");
-      return;
-    }
-    
-    if (!registerData.fullName) {
-      setError("Full name is required");
-      return;
-    }
-    
     if (!registerData.discordUsername) {
       setError("Discord username is required");
       return;
     }
-    
+
+    if (!registerData.password) {
+      setError("Password is required");
+      return;
+    }
+
+    if (registerData.password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
+
     // Validate vendor specific fields if user is registering as vendor
     if (registerData.isVendor) {
       if (!registerData.companyName) {
         setError("Company name is required for vendors");
         return;
       }
-      
+
       if (!registerData.driverDetails?.name) {
         setError("Driver name is required for vendors");
         return;
       }
-      
+
       if (!registerData.driverDetails?.contact) {
         setError("Driver contact is required for vendors");
         return;
       }
-      
+
       if (!registerData.driverDetails?.carNumber) {
         setError("Car number is required for vendors");
         return;
       }
     }
-    
+
     try {
       registerMutation.mutate(registerData as InsertUser);
     } catch (error) {
-      setError("Registration failed. Username may already exist.");
+      setError("Registration failed. Discord username may already exist.");
     }
   };
-  
+
   const handleInputChange = (field: string, value: string | boolean) => {
     setRegisterData(prev => ({ ...prev, [field]: value }));
   };
-  
+
   const handleDriverDetailsChange = (field: string, value: string) => {
-    setRegisterData(prev => ({
-      ...prev,
-      driverDetails: {
+    setRegisterData(prev => {
+      const newDriverDetails = {
         ...prev.driverDetails,
         [field]: value
-      }
-    }));
+      };
+
+      // Ensure all required fields are present
+      if (!newDriverDetails.name) newDriverDetails.name = "";
+      if (!newDriverDetails.contact) newDriverDetails.contact = "";
+      if (!newDriverDetails.carNumber) newDriverDetails.carNumber = "";
+
+      return {
+        ...prev,
+        driverDetails: newDriverDetails
+      };
+    });
   };
 
   return (
@@ -151,12 +149,12 @@ export default function AuthPage() {
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4 mt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="username-login">Username</Label>
+                  <Label htmlFor="discord-username-login">Discord Username</Label>
                   <Input
-                    id="username-login"
+                    id="discord-username-login"
                     type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={discordUsername}
+                    onChange={(e) => setDiscordUsername(e.target.value)}
                     required
                   />
                 </div>
@@ -178,17 +176,24 @@ export default function AuthPage() {
             <TabsContent value="register">
               <form onSubmit={handleRegister} className="space-y-4 mt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="username-register">Username</Label>
+                  <Label htmlFor="discord-username-register" className="after:content-['*'] after:ml-0.5 after:text-red-500">
+                    Discord Username
+                  </Label>
                   <Input
-                    id="username-register"
+                    id="discord-username-register"
                     type="text"
-                    value={registerData.username}
-                    onChange={(e) => handleInputChange("username", e.target.value)}
+                    value={registerData.discordUsername}
+                    onChange={(e) => handleInputChange("discordUsername", e.target.value)}
                     required
                   />
+                  <p className="text-xs text-muted-foreground">
+                    This will be your login identifier
+                  </p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password-register">Password</Label>
+                  <Label htmlFor="password-register" className="after:content-['*'] after:ml-0.5 after:text-red-500">
+                    Password
+                  </Label>
                   <Input
                     id="password-register"
                     type="password"
@@ -197,26 +202,19 @@ export default function AuthPage() {
                     required
                     minLength={8}
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Minimum 8 characters
+                  </p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="name">Name</Label>
                   <Input
-                    id="fullName"
+                    id="name"
                     type="text"
-                    value={registerData.fullName}
-                    onChange={(e) => handleInputChange("fullName", e.target.value)}
-                    required
+                    value={registerData.name}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="discordUsername">Discord Username</Label>
-                  <Input
-                    id="discordUsername"
-                    type="text"
-                    value={registerData.discordUsername}
-                    onChange={(e) => handleInputChange("discordUsername", e.target.value)}
-                    required
-                  />
+                  <p className="text-xs text-muted-foreground">Optional</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
@@ -227,7 +225,7 @@ export default function AuthPage() {
                     value={registerData.whatsappNumber || ""}
                     onChange={(e) => handleInputChange("whatsappNumber", e.target.value)}
                   />
-                  <p className="text-xs text-gray-500">Optional, but recommended for ride coordination</p>
+                  <p className="text-xs text-muted-foreground">Optional, but recommended for ride coordination</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="malaysianNumber">Malaysian Phone Number</Label>
@@ -238,7 +236,7 @@ export default function AuthPage() {
                     value={registerData.malaysianNumber || ""}
                     onChange={(e) => handleInputChange("malaysianNumber", e.target.value)}
                   />
-                  <p className="text-xs text-gray-500">Optional</p>
+                  <p className="text-xs text-muted-foreground">Optional</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="revolutUsername">Revolut Username</Label>
@@ -248,9 +246,9 @@ export default function AuthPage() {
                     value={registerData.revolutUsername || ""}
                     onChange={(e) => handleInputChange("revolutUsername", e.target.value)}
                   />
-                  <p className="text-xs text-gray-500">For payment coordination</p>
+                  <p className="text-xs text-muted-foreground">Optional, for payment coordination</p>
                 </div>
-                
+
                 <div className="flex items-center space-x-2 pt-4">
                   <Checkbox 
                     id="isVendor" 
@@ -259,12 +257,14 @@ export default function AuthPage() {
                   />
                   <Label htmlFor="isVendor">Register as a vendor/driver</Label>
                 </div>
-                
+
                 {registerData.isVendor && (
                   <div className="space-y-4 border-t pt-4 mt-4">
                     <h3 className="font-medium">Vendor Information</h3>
                     <div className="space-y-2">
-                      <Label htmlFor="companyName">Company Name</Label>
+                      <Label htmlFor="companyName" className="after:content-['*'] after:ml-0.5 after:text-red-500">
+                        Company Name
+                      </Label>
                       <Input
                         id="companyName"
                         type="text"
@@ -274,7 +274,9 @@ export default function AuthPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="driverName">Driver Name</Label>
+                      <Label htmlFor="driverName" className="after:content-['*'] after:ml-0.5 after:text-red-500">
+                        Driver Name
+                      </Label>
                       <Input
                         id="driverName"
                         type="text"
@@ -284,7 +286,9 @@ export default function AuthPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="driverContact">Driver Contact</Label>
+                      <Label htmlFor="driverContact" className="after:content-['*'] after:ml-0.5 after:text-red-500">
+                        Driver Contact
+                      </Label>
                       <Input
                         id="driverContact"
                         type="tel"
@@ -294,7 +298,9 @@ export default function AuthPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="carNumber">Car Number</Label>
+                      <Label htmlFor="carNumber" className="after:content-['*'] after:ml-0.5 after:text-red-500">
+                        Car Number
+                      </Label>
                       <Input
                         id="carNumber"
                         type="text"
@@ -302,11 +308,11 @@ export default function AuthPage() {
                         onChange={(e) => handleDriverDetailsChange("carNumber", e.target.value)}
                         required={registerData.isVendor}
                       />
-                      <p className="text-xs text-gray-500">Required for MDAC/SGAC compliance</p>
+                      <p className="text-xs text-muted-foreground">Required for MDAC/SGAC compliance</p>
                     </div>
                   </div>
                 )}
-                
+
                 <Button 
                   type="submit" 
                   className="w-full mt-6"

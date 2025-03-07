@@ -42,17 +42,23 @@ export function setupAuth(app: Express) {
   app.use(passport.session());
 
   passport.use(
-    new LocalStrategy(async (username, password, done) => {
-      try {
-        const user = await storage.getUserByUsername(username);
-        if (!user || !(await comparePasswords(password, user.password))) {
-          return done(null, false);
+    new LocalStrategy(
+      {
+        usernameField: 'discordUsername',
+        passwordField: 'password'
+      },
+      async (discordUsername, password, done) => {
+        try {
+          const user = await storage.getUserByDiscordUsername(discordUsername);
+          if (!user || !(await comparePasswords(password, user.password))) {
+            return done(null, false);
+          }
+          return done(null, user);
+        } catch (error) {
+          return done(error);
         }
-        return done(null, user);
-      } catch (error) {
-        return done(error);
       }
-    }),
+    ),
   );
 
   passport.serializeUser((user, done) => done(null, user.id));
@@ -68,9 +74,9 @@ export function setupAuth(app: Express) {
   app.post("/api/register", async (req, res, next) => {
     try {
       const userData = insertUserSchema.parse(req.body);
-      const existingUser = await storage.getUserByUsername(userData.username);
+      const existingUser = await storage.getUserByDiscordUsername(userData.discordUsername);
       if (existingUser) {
-        return res.status(400).json({ error: "Username already exists" });
+        return res.status(400).json({ error: "Discord username already exists" });
       }
 
       const user = await storage.createUser({
