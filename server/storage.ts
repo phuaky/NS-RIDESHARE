@@ -5,11 +5,16 @@ import {
   type InsertRide,
   type RidePassenger,
   type InsertRidePassenger,
+  users,
+  rides,
+  ridePassengers,
 } from "@shared/schema";
 import session from "express-session";
-import createMemoryStore from "memorystore";
+import connectPg from "connect-pg-simple";
+import { eq } from "drizzle-orm";
+import { db, pool } from "./db";
 
-const MemoryStore = createMemoryStore(session);
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
   // User operations
@@ -35,88 +40,70 @@ export interface IStorage {
   sessionStore: session.SessionStore;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private rides: Map<number, Ride>;
-  private ridePassengers: Map<number, RidePassenger>;
-  private currentUserId: number;
-  private currentRideId: number;
-  private currentPassengerId: number;
+export class DatabaseStorage implements IStorage {
   sessionStore: session.SessionStore;
 
   constructor() {
-    this.users = new Map();
-    this.rides = new Map();
-    this.ridePassengers = new Map();
-    this.currentUserId = 1;
-    this.currentRideId = 1;
-    this.currentPassengerId = 1;
-    this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000, // 24h
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true,
     });
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = {
-      id,
-      ...insertUser,
-      whatsappNumber: insertUser.whatsappNumber ?? null,
-      malaysianNumber: insertUser.malaysianNumber ?? null,
-      revolutUsername: insertUser.revolutUsername ?? null,
-      companyName: insertUser.companyName ?? null,
-      driverDetails: insertUser.driverDetails ?? null,
-    };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
   async createRide(ride: InsertRide & { creatorId: number }): Promise<Ride> {
-    const id = this.currentRideId++;
-    const newRide: Ride = {
-      ...ride,
-      id,
-      currentPassengers: 0,
-      status: "open",
-      vendorId: null,
-    };
-    this.rides.set(id, newRide);
+    const [newRide] = await db
+      .insert(rides)
+      .values({
+        ...ride,
+        currentPassengers: 0,
+        status: "open",
+        vendorId: null,
+      })
+      .returning();
     return newRide;
   }
 
   async getRide(id: number): Promise<Ride | undefined> {
-    return this.rides.get(id);
+    const [ride] = await db.select().from(rides).where(eq(rides.id, id));
+    return ride;
   }
 
   async getRides(): Promise<Ride[]> {
-    return Array.from(this.rides.values());
+    return await db.select().from(rides);
   }
 
   async updateRide(id: number, ride: Partial<Ride>): Promise<Ride> {
-    const existingRide = await this.getRide(id);
-    if (!existingRide) throw new Error("Ride not found");
-
-    const updatedRide = { ...existingRide, ...ride };
-    this.rides.set(id, updatedRide);
+    const [updatedRide] = await db
+      .update(rides)
+      .set(ride)
+      .where(eq(rides.id, id))
+      .returning();
+    if (!updatedRide) throw new Error("Ride not found");
     return updatedRide;
   }
 
   async addPassenger(
-    passenger: InsertRidePassenger & { userId: number },
+    passenger: InsertRidePassenger & { userId: number }
   ): Promise<RidePassenger> {
-    const id = this.currentPassengerId++;
-    const newPassenger: RidePassenger = { ...passenger, id, dropoffSequence: null };
-    this.ridePassengers.set(id, newPassenger);
+    const [newPassenger] = await db
+      .insert(ridePassengers)
+      .values({ ...passenger, dropoffSequence: null })
+      .returning();
 
     const ride = await this.getRide(passenger.rideId);
     if (ride) {
@@ -129,41 +116,38 @@ export class MemStorage implements IStorage {
   }
 
   async getPassengers(rideId: number): Promise<RidePassenger[]> {
-    return Array.from(this.ridePassengers.values()).filter(
-      (p) => p.rideId === rideId,
-    );
+    return await db
+      .select()
+      .from(ridePassengers)
+      .where(eq(ridePassengers.rideId, rideId));
   }
 
   async updatePassengerSequence(
     id: number,
-    sequence: number,
+    sequence: number
   ): Promise<RidePassenger> {
-    const passenger = this.ridePassengers.get(id);
+    const [passenger] = await db
+      .update(ridePassengers)
+      .set({ dropoffSequence: sequence })
+      .where(eq(ridePassengers.id, id))
+      .returning();
     if (!passenger) throw new Error("Passenger not found");
-
-    const updatedPassenger = { ...passenger, dropoffSequence: sequence };
-    this.ridePassengers.set(id, updatedPassenger);
-    return updatedPassenger;
+    return passenger;
   }
 
   async getVendorRides(vendorId: number): Promise<Ride[]> {
-    return Array.from(this.rides.values()).filter(
-      (ride) => ride.vendorId === vendorId,
-    );
+    return await db.select().from(rides).where(eq(rides.vendorId, vendorId));
   }
 
   async assignVendor(rideId: number, vendorId: number): Promise<Ride> {
-    const ride = await this.getRide(rideId);
+    const [ride] = await db
+      .update(rides)
+      .set({ vendorId, status: "assigned" })
+      .where(eq(rides.id, rideId))
+      .returning();
     if (!ride) throw new Error("Ride not found");
-
-    const updatedRide = {
-      ...ride,
-      vendorId,
-      status: "assigned" as const,
-    };
-    this.rides.set(rideId, updatedRide);
-    return updatedRide;
+    return ride;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
