@@ -37,30 +37,39 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // DEBUG: Import storage to check the database
+  // Import storage to check the database
   const { storage } = await import('./storage');
   
   try {
-    const allRides = await storage.getRides();
-    console.log("Available rides in database:", allRides);
-    
-    // If there are no rides, create a sample ride for testing
-    if (allRides.length === 0) {
-      console.log("No rides found in database. Creating a sample ride for testing...");
-      const sampleRide = await storage.createRide({
-        creatorId: 1, // Assuming user ID 1 exists
-        direction: "SG->FC",
-        date: new Date(Date.now() + 86400000), // Tomorrow
-        maxPassengers: 4,
-        pickupLocation: "Jurong East MRT",
-        dropoffLocations: ["Forest City Mall"],
-        cost: 80,
-        additionalStops: 0
-      });
-      console.log("Created sample ride:", sampleRide);
+    // Only perform database checks in development environment
+    if (process.env.NODE_ENV !== 'production') {
+      const allRides = await storage.getRides();
+      console.log("Available rides in database:", JSON.stringify(allRides, null, 2));
+      
+      // If there are no rides, create a sample ride for testing
+      if (allRides.length === 0) {
+        console.log("No rides found in database. Creating a sample ride for testing...");
+        const sampleRide = await storage.createRide({
+          creatorId: 1, // Assuming user ID 1 exists
+          direction: "SG->FC",
+          date: new Date(Date.now() + 86400000), // Tomorrow
+          maxPassengers: 4,
+          pickupLocation: "Jurong East MRT",
+          dropoffLocations: ["Forest City Mall"],
+          cost: 80,
+          additionalStops: 0
+        });
+        console.log("Created sample ride:", JSON.stringify(sampleRide, null, 2));
+      }
+    } else {
+      log("Starting server in production mode");
     }
   } catch (error) {
-    console.error("Error inspecting database:", error);
+    console.error("Error initializing application:", error instanceof Error ? error.message : String(error));
+    // In production, continue despite database check errors
+    if (process.env.NODE_ENV !== 'production') {
+      throw error;
+    }
   }
   
   const server = await registerRoutes(app);
@@ -68,9 +77,17 @@ app.use((req, res, next) => {
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-
+    
+    // Log the error in a structured way
+    console.error(`Error [${status}]: ${message}`, err.stack || '');
+    
+    // Send response to client
     res.status(status).json({ message });
-    throw err;
+    
+    // Don't throw the error in production as it can crash the server
+    if (process.env.NODE_ENV !== 'production') {
+      throw err;
+    }
   });
 
   // importantly only setup vite in development and after
