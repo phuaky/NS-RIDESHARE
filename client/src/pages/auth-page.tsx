@@ -1,275 +1,124 @@
-import { useAuth } from "@/hooks/use-auth";
-import { useLocation } from "wouter";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { insertUserSchema } from "@shared/schema";
+import React, { useState, useEffect } from "react";
+import { useLocation, useRoute, useRouter } from "wouter";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Car } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function AuthPage() {
-  const { user, loginMutation, registerMutation } = useAuth();
-  const [, setLocation] = useLocation();
+  const [tab, setTab] = useState("login");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  if (user) {
-    setLocation("/");
-    return null;
-  }
+  const { login, register, isAuthenticated } = useAuth();
+  const [, setLocation] = useRouter();
 
-  const loginForm = useForm({
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
+  // Handle authentication state changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      setLocation("/");
+    }
+  }, [isAuthenticated, setLocation]);
 
-  const registerForm = useForm({
-    resolver: zodResolver(insertUserSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-      fullName: "",
-      discordUsername: "",
-      whatsappNumber: "",
-      malaysianNumber: "",
-      revolutUsername: "",
-      isVendor: false,
-      companyName: "",
-      driverDetails: undefined,
-    },
-  });
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    try {
+      await login(username, password);
+    } catch (error) {
+      setError("Invalid username or password");
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    try {
+      await register(username, password);
+    } catch (error) {
+      setError("Registration failed. Username may already exist.");
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
-      <Card className="w-full max-w-4xl grid md:grid-cols-2 gap-6 p-6">
-        <div className="flex flex-col justify-center space-y-6">
-          <div className="flex items-center space-x-2">
-            <Car className="h-6 w-6" />
-            <h1 className="text-2xl font-bold">RideShare</h1>
-          </div>
-          <div>
-            <h2 className="text-2xl font-semibold tracking-tight">
-              Welcome to RideShare
-            </h2>
-            <p className="text-muted-foreground">
-              Your trusted platform for Singapore-Forest City travel
-            </p>
-          </div>
-        </div>
-
-        <div>
-          <Tabs defaultValue="login">
+    <div className="container flex items-center justify-center min-h-screen py-8">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Welcome to RideShare</CardTitle>
+          <CardDescription>
+            Login or register to continue
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue={tab} onValueChange={setTab}>
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="login">Login</TabsTrigger>
               <TabsTrigger value="register">Register</TabsTrigger>
             </TabsList>
-
+            {error && (
+              <div className="bg-red-100 text-red-600 p-2 rounded mt-4 text-sm">
+                {error}
+              </div>
+            )}
             <TabsContent value="login">
-              <Form {...loginForm}>
-                <form
-                  onSubmit={loginForm.handleSubmit((data) =>
-                    loginMutation.mutate(data)
-                  )}
-                  className="space-y-4"
-                >
-                  <FormField
-                    control={loginForm.control}
-                    name="username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Username</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+              <form onSubmit={handleLogin} className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="username-login">Username</Label>
+                  <Input
+                    id="username-login"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
                   />
-                  <FormField
-                    control={loginForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input type="password" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password-login">Password</Label>
+                  <Input
+                    id="password-login"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={loginMutation.isPending}
-                  >
-                    Login
-                  </Button>
-                </form>
-              </Form>
+                </div>
+                <Button type="submit" className="w-full">
+                  Login
+                </Button>
+              </form>
             </TabsContent>
-
             <TabsContent value="register">
-              <Form {...registerForm}>
-                <form
-                  onSubmit={registerForm.handleSubmit((data) =>
-                    registerMutation.mutate(data)
-                  )}
-                  className="space-y-4"
-                >
-                  <FormField
-                    control={registerForm.control}
-                    name="username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Username</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+              <form onSubmit={handleRegister} className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="username-register">Username</Label>
+                  <Input
+                    id="username-register"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
                   />
-                  <FormField
-                    control={registerForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input type="password" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password-register">Password</Label>
+                  <Input
+                    id="password-register"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
-                  <FormField
-                    control={registerForm.control}
-                    name="fullName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="discordUsername"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Discord Username</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="whatsappNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>WhatsApp Number (Optional)</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="+65xxxxxxxx" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="malaysianNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Malaysian Number (Optional)</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="+60xxxxxxxx" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="revolutUsername"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Revolut Username (Optional)</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="isVendor"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center space-x-2">
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormLabel>Register as a Vendor</FormLabel>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  {registerForm.watch("isVendor") && (
-                    <>
-                      <FormField
-                        control={registerForm.control}
-                        name="companyName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Company Name</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </>
-                  )}
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={registerMutation.isPending}
-                  >
-                    Register
-                  </Button>
-                </form>
-              </Form>
+                </div>
+                <Button type="submit" className="w-full">
+                  Register
+                </Button>
+              </form>
             </TabsContent>
           </Tabs>
-        </div>
+        </CardContent>
       </Card>
     </div>
   );
