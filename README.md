@@ -130,11 +130,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## 👥 Credits
-
-Developed with ❤️ by [Your Team Name]
-
-## 📞 Contact
-
-For any questions or suggestions, please reach out to us at [your-email@example.com]
