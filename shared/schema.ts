@@ -58,8 +58,17 @@ export const insertUserSchema = createInsertSchema(users)
   .extend({
     password: z.string().min(8),
     name: z.string().optional(),
-    whatsappNumber: z.string().regex(/^\+?[1-9]\d{7,14}$/).optional(),
-    malaysianNumber: z.string().regex(/^\+?[1-9]\d{7,14}$/).optional(),
+    whatsappNumber: z.string()
+      .regex(/^(\+|)[0-9]{8,15}$/)
+      .optional()
+      .nullable()
+      .transform(val => val || null),
+    malaysianNumber: z.string()
+      .regex(/^(\+|)[0-9]{8,15}$/)
+      .optional()
+      .nullable()
+      .transform(val => val || null),
+    revolutUsername: z.string().optional().nullable(),
   });
 
 export const insertRideSchema = createInsertSchema(rides).pick({
