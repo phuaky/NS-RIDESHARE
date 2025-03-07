@@ -1,0 +1,234 @@
+Below is a detailed **Product Requirement Document (PRD)** for the RideShare mobile web application, incorporating the new features you’ve requested—vendor accounts, passport reminders, payment via Revolut, additional registration fields, a map for drop-off points, and guide pages. The app will be open-sourced on Replit, designed with a mobile-first approach, and utilize databases for data management. This PRD provides a comprehensive guide for development, ensuring all requirements are clearly defined.
+
+---
+
+# Product Requirement Document (PRD): RideShare for Singapore-Forest City Travel
+
+**Document Version**: 1.0  
+**Date**: October 2023  
+**Author**: [Your Name]  
+**Team**: RideShare Development Team
+
+---
+
+## 1. Introduction
+
+### 1.1 Purpose
+This PRD outlines the functional and non-functional requirements for **RideShare**, a mobile web application designed to facilitate ride-sharing between Singapore (SG) and Forest City (FC), Malaysia, for a school community. The app aims to reduce travel costs, improve coordination, and enhance user experience by offering features such as ride pooling, vendor integration, cost splitting, passport reminders, and informational guides.
+
+### 1.2 Scope
+RideShare will be an open-source project hosted on Replit, built with a mobile-first design. It will support user and vendor accounts, ride creation and management, payment facilitation via Revolut, direct communication channels, a map for drop-off points, and guide pages. The backend will leverage databases to store user profiles, trip details, and vendor information.
+
+### 1.3 Audience
+- **Users**: School community members traveling between SG and FC.
+- **Vendors**: Shuttle service agents offering transportation services.
+- **Developers**: Open-source contributors on Replit.
+
+---
+
+## 2. Key Features and Functional Requirements
+
+### 2.1 User Accounts and Authentication
+- **User Registration**:
+  - Required fields:
+    - Full name
+    - Email address
+    - Password
+    - Discord username (for easy contact)
+    - WhatsApp phone number (for coordination)
+    - Malaysian phone number (optional, for additional contact)
+  - Users select account type: regular user or vendor.
+- **Vendor Registration**:
+  - Additional required fields:
+    - Company name
+    - Contact information
+    - Driver details (name, contact number, car number—for MDAC/SGAC compliance)
+- **Authentication**:
+  - Secure login via email and password.
+  - Session management to keep users logged in across sessions.
+
+### 2.2 Ride Management
+- **Ride Creation**:
+  - Users specify:
+    - Direction (SG → FC or FC → SG)
+    - Date and time
+    - Maximum passengers
+    - Pick-up or drop-off location
+  - Rides are visible to vendors for acceptance.
+- **Ride Acceptance by Vendors**:
+  - Vendors accept rides and provide:
+    - Driver name
+    - Driver contact number
+    - Car number (required for MDAC/SGAC compliance)
+- **Ride Joining**:
+  - Users browse available rides and request to join, providing their location.
+  - Organizers approve join requests.
+- **Ride Sequence Management**:
+  - For FC → SG trips, organizers can set and lock the drop-off sequence.
+- **Reminders**:
+  - Automated notifications reminding users to bring passports (addressing past forgetfulness).
+  - Notifications for ride confirmations, updates, and cancellations.
+
+### 2.3 Payment Facilitation
+- **Cost Calculation**:
+  - Base cost: $80 SGD.
+  - Additional $5 SGD per extra stop.
+  - Automatically calculate and display per-person cost split.
+- **Payment Method**:
+  - Users add their Revolut username for easy payment transfers.
+  - Payments are settled offline, with the app providing cost details and usernames.
+
+### 2.4 Communication and Coordination
+- **Trip Summary Sharing**:
+  - Organizers generate a summary (date, direction, locations, cost) shareable via WhatsApp or other platforms.
+- **Vendor Communication**:
+  - Direct messaging or notification system for users to coordinate with vendors.
+
+### 2.5 Informational Guides
+- **Guide Pages**:
+  - **Guide to Singapore**: Instructions for using public buses and other transport options.
+  - **Guide from Singapore**: List of contacts for arranging rides.
+- **Map Integration**:
+  - Display a map showing approximate drop-off points for multiple locations.
+
+### 2.6 Database Requirements
+- **User Data**:
+  - Store profiles (name, email, Discord username, WhatsApp/Malaysian numbers, Revolut username).
+- **Trip Data**:
+  - Store ride details, passenger lists, and drop-off sequences.
+- **Vendor Data**:
+  - Store vendor profiles, driver details, and accepted rides.
+
+---
+
+## 3. Non-Functional Requirements
+
+### 3.1 Performance
+- Page load time: ≤ 3 seconds on standard mobile connections.
+- Optimized database queries for fast data retrieval.
+
+### 3.2 Security
+- Encrypt user and vendor data.
+- Use secure authentication protocols (e.g., HTTPS).
+- Restrict vendor access to their own data and accepted rides.
+
+### 3.3 Usability
+- Mobile-first, responsive design for various screen sizes.
+- Intuitive UI with clear navigation and minimal steps for key actions.
+
+### 3.4 Scalability
+- Support up to 1,000 concurrent users.
+- Scalable database to handle growing data.
+
+### 3.5 Reliability
+- 99.9% uptime.
+- Daily automated database backups.
+
+---
+
+## 4. Technical Stack
+
+### 4.1 Frontend
+- **Framework**: React with TypeScript
+- **UI Library**: Radix UI with Tailwind CSS
+- **State Management**: React Query
+- **Routing**: Wouter
+
+### 4.2 Backend
+- **Framework**: Express.js with TypeScript
+- **Database**: PostgreSQL with Drizzle ORM
+- **Authentication**: Passport.js (local strategy)
+
+### 4.3 Hosting
+- **Platform**: Replit (Node.js 20, PostgreSQL 16)
+- **Deployment**: Configured via `.replit`
+
+### 4.4 Additional Tools
+- **Map Integration**: Google Maps API or OpenStreetMap
+- **Notifications**: Firebase Cloud Messaging for reminders
+
+---
+
+## 5. User Flow
+
+### 5.1 User Registration
+- Select "Register" → Choose account type (User/Vendor) → Fill in fields → Submit.
+
+### 5.2 Ride Creation
+- Navigate to "Create Ride" → Input direction, date, time, location → Submit.
+
+### 5.3 Vendor Ride Acceptance
+- View available rides → Select ride → Enter driver details → Confirm.
+
+### 5.4 Joining a Ride
+- Browse rides → Select ride → Request to join with location → Await approval.
+
+### 5.5 Payment and Coordination
+- View cost split → Add Revolut username → Organizer shares trip summary.
+
+### 5.6 Guides and Maps
+- Access guide pages → View transport options or contacts → Check map for drop-off points.
+
+---
+
+## 6. Testing and Quality Assurance
+
+### 6.1 Unit Testing
+- Test components and functions individually.
+
+### 6.2 Integration Testing
+- Verify seamless frontend-backend interaction.
+
+### 6.3 User Acceptance Testing (UAT)
+- Test with users and vendors to ensure functionality and usability.
+
+### 6.4 Security Testing
+- Conduct penetration testing to address vulnerabilities.
+
+---
+
+## 7. Deployment and Maintenance
+
+### 7.1 Deployment
+- Deploy on Replit with continuous integration.
+
+### 7.2 Maintenance
+- Update dependencies, fix bugs, and monitor performance.
+
+### 7.3 Open-Source Contribution
+- Encourage contributions via Replit with developer documentation.
+
+---
+
+## 8. Timeline and Milestones
+
+- **Phase 1: Planning and Design** (2 weeks): PRD, wireframes, schema.
+- **Phase 2: Development** (8 weeks): Core app functionality.
+- **Phase 3: Testing** (2 weeks): Bug fixes, UAT.
+- **Phase 4: Deployment** (1 week): Live app on Replit.
+- **Phase 5: Maintenance** (Ongoing): Updates and enhancements.
+
+---
+
+## 9. Risks and Mitigation
+
+### 9.1 Technical Risks
+- **Database Scalability**: Optimize queries, consider sharding.
+- **Security Breaches**: Use encryption and secure protocols.
+
+### 9.2 Operational Risks
+- **Vendor Reliability**: Set clear vendor terms.
+- **User Adoption**: Promote with outreach and incentives.
+
+### 9.3 Legal and Compliance Risks
+- **Data Privacy**: Comply with GDPR and local laws.
+- **Transport Regulations**: Ensure ride-sharing legality.
+
+---
+
+## 10. Conclusion
+RideShare will transform travel between Singapore and Forest City by offering a cost-effective, coordinated, and user-friendly solution. With vendor integration, Revolut payments, passport reminders, maps, and guides, it meets the school community’s needs while its open-source nature on Replit ensures continuous improvement. This PRD aligns the development team and contributors toward a shared goal.
+
+--- 
+
+This PRD incorporates all requested features and provides a detailed roadmap for building the RideShare app. Let me know if you’d like to refine or expand any section!
