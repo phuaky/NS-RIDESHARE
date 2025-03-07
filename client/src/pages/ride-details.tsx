@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2, Share2, Edit, MapPin, Users, MessageCircle, Calendar, DollarSign, Clock, CheckCircle, ChevronRight, AlertTriangle } from "lucide-react";
+import { Loader2, Share2, Edit, MapPin, Users, MessageCircle, Calendar, DollarSign, Clock, CheckCircle, ChevronRight, AlertTriangle, Phone, Mail, User } from "lucide-react";
 import { LocationMap } from "@/components/map/location-map";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Ride } from "@shared/schema";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Define interfaces for our data types
 interface LocationPoint {
@@ -38,7 +39,7 @@ interface RidePassenger {
     id: number;
     username: string;
     fullName: string;
-    discordUsername: string;
+    discordUsername: string | null;
     whatsappNumber: string | null;
     malaysianNumber: string | null;
     revolutUsername: string | null;
@@ -54,6 +55,26 @@ const joinRideSchema = z.object({
 });
 
 type JoinRideFormData = z.infer<typeof joinRideSchema>;
+
+// Add this component for contact display
+function ContactInfo({ label, value, icon: Icon }: { label: string; value: string | null; icon: any }) {
+  if (!value) return null;
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="ghost" size="sm" className="h-8 px-2">
+            <Icon className="h-4 w-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{label}: {value}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
 
 export default function RideDetails() {
   const [, params] = useRoute("/rides/:id");
@@ -71,10 +92,10 @@ export default function RideDetails() {
   });
 
   // Passengers data fetch - only if user is authenticated
-  const { 
-    data: passengers, 
+  const {
+    data: passengers,
     isLoading: isPassengersLoading,
-    refetch: refetchPassengers 
+    refetch: refetchPassengers
   } = useQuery<RidePassenger[]>({
     queryKey: [`/api/rides/${rideId}/passengers`],
     enabled: !!rideId && !!user,
@@ -98,7 +119,7 @@ export default function RideDetails() {
       const res = await apiRequest(
         "POST",
         `/api/rides/${rideId}/join`,
-        { 
+        {
           ...data,
           rideId: parseInt(rideId || "0")
         }
@@ -167,6 +188,8 @@ export default function RideDetails() {
 
   // Check if the user is the ride creator
   const isCreator = user && ride && user.id === ride.creatorId;
+  const creator = ride?.creator;
+
 
   // Calculate remaining spots
   const totalPassengersCount = passengers?.reduce((sum, p) => sum + (p.passengerCount || 1), 0) || 0;
@@ -179,7 +202,7 @@ export default function RideDetails() {
     return new Intl.DateTimeFormat('en-SG', {
       weekday: 'short',
       day: 'numeric',
-      month: 'short', 
+      month: 'short',
       year: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
@@ -452,7 +475,7 @@ export default function RideDetails() {
                             {ride.direction === "SG->FC" ? "Pickup Location" : "Dropoff Locations"}
                           </h4>
                           <p className="text-sm text-muted-foreground">
-                            {ride.direction === "SG->FC" 
+                            {ride.direction === "SG->FC"
                               ? ride.pickupLocation
                               : ride.dropoffLocations.join(", ")}
                           </p>
@@ -491,6 +514,41 @@ export default function RideDetails() {
                   </div>
                 </CardContent>
               </Card>
+
+              {!isCreator && user && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Ride Organizer</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">{creator?.fullName}</p>
+                          <p className="text-sm text-muted-foreground">Organizer</p>
+                        </div>
+                        <div className="flex space-x-1">
+                          <ContactInfo
+                            label="WhatsApp"
+                            value={creator?.whatsappNumber}
+                            icon={Phone}
+                          />
+                          <ContactInfo
+                            label="Malaysian Number"
+                            value={creator?.malaysianNumber}
+                            icon={Phone}
+                          />
+                          <ContactInfo
+                            label="Discord"
+                            value={creator?.discordUsername}
+                            icon={Mail}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Join Ride Section */}
               {user && !isCreator && !isUserPassenger && !isFull && (
@@ -541,7 +599,7 @@ export default function RideDetails() {
                           )}
                         />
 
-                        <Button 
+                        <Button
                           type="submit"
                           className="w-full"
                           disabled={joinRideMutation.isPending}
@@ -574,8 +632,8 @@ export default function RideDetails() {
                     <p className="text-sm text-blue-700 mb-4">
                       You're all set for this trip! The ride organizer will confirm details closer to the departure date.
                     </p>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="w-full border-blue-300 hover:border-blue-400 hover:bg-blue-100 text-blue-800"
                       onClick={() => navigate(`/home`)}
                     >
@@ -598,26 +656,12 @@ export default function RideDetails() {
                     <p className="text-sm text-amber-700 mb-4">
                       You need to login to join this ride or view passenger information.
                     </p>
-                    <Button 
+                    <Button
                       className="w-full bg-amber-600 hover:bg-amber-700"
                       onClick={() => navigate(`/auth`)}
                     >
                       Login or Register
                     </Button>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Creator Info for Non-Creators */}
-              {user && !isCreator && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Ride Organizer</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">
-                      To contact the ride organizer, please use the messaging options below.
-                    </p>
                   </CardContent>
                 </Card>
               )}
@@ -634,7 +678,7 @@ export default function RideDetails() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button 
+                    <Button
                       onClick={() => navigate("/auth")}
                       className="w-full"
                     >
@@ -673,9 +717,35 @@ export default function RideDetails() {
                                   Passengers: {passenger.passengerCount || 1}
                                 </p>
                               </div>
-                              {isCreator && (
-                                <Badge>Passenger {index + 1}</Badge>
-                              )}
+                              <div className="flex items-center space-x-1">
+                                {passenger.user && (
+                                  <>
+                                    <ContactInfo
+                                      label="WhatsApp"
+                                      value={passenger.user.whatsappNumber}
+                                      icon={Phone}
+                                    />
+                                    <ContactInfo
+                                      label="Malaysian Number"
+                                      value={passenger.user.malaysianNumber}
+                                      icon={Phone}
+                                    />
+                                    <ContactInfo
+                                      label="Discord"
+                                      value={passenger.user.discordUsername}
+                                      icon={Mail}
+                                    />
+                                    <ContactInfo
+                                      label="Revolut"
+                                      value={passenger.user.revolutUsername}
+                                      icon={User}
+                                    />
+                                  </>
+                                )}
+                                {isCreator && (
+                                  <Badge>Passenger {index + 1}</Badge>
+                                )}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -690,16 +760,16 @@ export default function RideDetails() {
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           className="w-full"
                           onClick={createWhatsAppGroup}
                         >
                           <MessageCircle className="h-4 w-4 mr-2" />
                           WhatsApp Group
                         </Button>
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           className="w-full"
                           onClick={createDiscordGroup}
                         >
@@ -736,8 +806,8 @@ export default function RideDetails() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <LocationMap 
-                    selectedLocations={dropoffLocations} 
+                  <LocationMap
+                    selectedLocations={dropoffLocations}
                     height="400px"
                   />
                   <div className="mt-4">
