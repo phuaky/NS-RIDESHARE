@@ -59,16 +59,26 @@ export const insertUserSchema = createInsertSchema(users)
     password: z.string().min(8),
     name: z.string().optional(),
     whatsappNumber: z.string()
-      .regex(/^(\+|)[0-9]{8,15}$/)
-      .optional()
       .nullable()
-      .transform(val => val || null),
+      .optional()
+      .transform(val => {
+        if (!val || val === "") return null;
+        return val;
+      }),
     malaysianNumber: z.string()
-      .regex(/^(\+|)[0-9]{8,15}$/)
-      .optional()
       .nullable()
-      .transform(val => val || null),
-    revolutUsername: z.string().optional().nullable(),
+      .optional()
+      .transform(val => {
+        if (!val || val === "") return null;
+        return val;
+      }),
+    revolutUsername: z.string()
+      .nullable()
+      .optional()
+      .transform(val => {
+        if (!val || val === "") return null;
+        return val;
+      }),
   });
 
 export const insertRideSchema = createInsertSchema(rides).pick({

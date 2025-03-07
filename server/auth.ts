@@ -73,7 +73,21 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res, next) => {
     try {
-      const userData = insertUserSchema.parse(req.body);
+      console.log("Registration request body:", req.body);
+
+      // Remove empty strings for optional fields
+      const sanitizedData = {
+        ...req.body,
+        whatsappNumber: req.body.whatsappNumber || null,
+        malaysianNumber: req.body.malaysianNumber || null,
+        revolutUsername: req.body.revolutUsername || null,
+      };
+
+      console.log("Sanitized data:", sanitizedData);
+
+      const userData = insertUserSchema.parse(sanitizedData);
+      console.log("Parsed user data:", userData);
+
       const existingUser = await storage.getUserByDiscordUsername(userData.discordUsername);
       if (existingUser) {
         return res.status(400).json({ error: "Discord username already exists" });
@@ -89,7 +103,8 @@ export function setupAuth(app: Express) {
         res.status(201).json(user);
       });
     } catch (error) {
-      res.status(400).json({ error: (error as Error).message });
+      console.error("Registration validation error:", error);
+      res.status(400).json({ error: error.message || "Registration failed" });
     }
   });
 
