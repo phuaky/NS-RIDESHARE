@@ -22,7 +22,7 @@ export interface IStorage {
   getRide(id: number): Promise<Ride | undefined>;
   getRides(): Promise<Ride[]>;
   updateRide(id: number, ride: Partial<Ride>): Promise<Ride>;
-  
+
   // Ride passenger operations
   addPassenger(passenger: InsertRidePassenger & { userId: number }): Promise<RidePassenger>;
   getPassengers(rideId: number): Promise<RidePassenger[]>;
@@ -68,7 +68,15 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
+    const user: User = {
+      id,
+      ...insertUser,
+      whatsappNumber: insertUser.whatsappNumber ?? null,
+      malaysianNumber: insertUser.malaysianNumber ?? null,
+      revolutUsername: insertUser.revolutUsername ?? null,
+      companyName: insertUser.companyName ?? null,
+      driverDetails: insertUser.driverDetails ?? null,
+    };
     this.users.set(id, user);
     return user;
   }
@@ -97,7 +105,7 @@ export class MemStorage implements IStorage {
   async updateRide(id: number, ride: Partial<Ride>): Promise<Ride> {
     const existingRide = await this.getRide(id);
     if (!existingRide) throw new Error("Ride not found");
-    
+
     const updatedRide = { ...existingRide, ...ride };
     this.rides.set(id, updatedRide);
     return updatedRide;
@@ -109,14 +117,14 @@ export class MemStorage implements IStorage {
     const id = this.currentPassengerId++;
     const newPassenger: RidePassenger = { ...passenger, id, dropoffSequence: null };
     this.ridePassengers.set(id, newPassenger);
-    
+
     const ride = await this.getRide(passenger.rideId);
     if (ride) {
       await this.updateRide(ride.id, {
         currentPassengers: ride.currentPassengers + 1,
       });
     }
-    
+
     return newPassenger;
   }
 
@@ -132,7 +140,7 @@ export class MemStorage implements IStorage {
   ): Promise<RidePassenger> {
     const passenger = this.ridePassengers.get(id);
     if (!passenger) throw new Error("Passenger not found");
-    
+
     const updatedPassenger = { ...passenger, dropoffSequence: sequence };
     this.ridePassengers.set(id, updatedPassenger);
     return updatedPassenger;
@@ -147,7 +155,7 @@ export class MemStorage implements IStorage {
   async assignVendor(rideId: number, vendorId: number): Promise<Ride> {
     const ride = await this.getRide(rideId);
     if (!ride) throw new Error("Ride not found");
-    
+
     const updatedRide = {
       ...ride,
       vendorId,
