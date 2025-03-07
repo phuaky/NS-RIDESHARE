@@ -37,11 +37,11 @@ export interface IStorage {
   getVendorRides(vendorId: number): Promise<Ride[]>;
   assignVendor(rideId: number, vendorId: number): Promise<Ride>;
 
-  sessionStore: session.SessionStore;
+  sessionStore: session.Store;
 }
 
 export class DatabaseStorage implements IStorage {
-  sessionStore: session.SessionStore;
+  sessionStore: session.Store;
 
   constructor() {
     this.sessionStore = new PostgresSessionStore({
@@ -73,7 +73,7 @@ export class DatabaseStorage implements IStorage {
         currentPassengers: 0,
         status: "open",
         vendorId: null,
-      })
+      } as any) 
       .returning();
     return newRide;
   }
@@ -108,7 +108,7 @@ export class DatabaseStorage implements IStorage {
     const ride = await this.getRide(passenger.rideId);
     if (ride) {
       await this.updateRide(ride.id, {
-        currentPassengers: ride.currentPassengers + 1,
+        currentPassengers: ride.currentPassengers + (passenger.passengerCount || 1),
       });
     }
 

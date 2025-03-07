@@ -7,12 +7,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Lock, Unlock, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import type { RidePassenger } from "@shared/schema";
 
-interface PassengerWithSequence {
-  id: number;
-  userId: number;
-  dropoffLocation: string;
-  dropoffSequence: number | null;
+interface PassengerWithSequence extends RidePassenger {
   user?: {
     fullName: string;
   };
@@ -28,7 +25,7 @@ export function SequenceManager({ rideId }: SequenceManagerProps) {
   const { toast } = useToast();
 
   // Fetch passengers
-  const { data: passengersData, isLoading } = useQuery({
+  const { data: passengersData, isLoading } = useQuery<PassengerWithSequence[]>({
     queryKey: [`/api/rides/${rideId}/passengers`],
     enabled: !!rideId,
   });
@@ -47,9 +44,9 @@ export function SequenceManager({ rideId }: SequenceManagerProps) {
         // If neither has sequence, keep original order
         return 0;
       });
-      
+
       setPassengers(sortedPassengers);
-      
+
       // Check if sequence is locked (all passengers have sequence numbers)
       const isLocked = sortedPassengers.length > 0 && 
         sortedPassengers.every(p => p.dropoffSequence !== null);

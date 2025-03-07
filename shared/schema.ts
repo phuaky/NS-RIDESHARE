@@ -41,6 +41,7 @@ export const ridePassengers = pgTable("ride_passengers", {
   userId: integer("user_id").notNull(),
   dropoffLocation: text("dropoff_location").notNull(),
   dropoffSequence: integer("dropoff_sequence"),
+  passengerCount: integer("passenger_count").notNull().default(1),
 });
 
 export const insertUserSchema = createInsertSchema(users)
@@ -72,10 +73,14 @@ export const insertRideSchema = createInsertSchema(rides).pick({
   additionalStops: true,
 });
 
-export const insertRidePassengerSchema = createInsertSchema(ridePassengers).pick({
-  rideId: true,
-  dropoffLocation: true,
-});
+export const insertRidePassengerSchema = createInsertSchema(ridePassengers)
+  .pick({
+    rideId: true,
+    dropoffLocation: true,
+  })
+  .extend({
+    passengerCount: z.number().min(1).max(4),
+  });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertRide = z.infer<typeof insertRideSchema>;

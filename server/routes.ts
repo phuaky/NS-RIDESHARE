@@ -127,7 +127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (!req.isAuthenticated()) return res.sendStatus(401);
 
     const rideId = parseInt(req.params.id);
-    
+
     // Check if rideId is NaN
     if (isNaN(rideId)) {
       console.log(`Invalid ride ID for join request: ${req.params.id}`);
@@ -139,11 +139,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body,
         rideId: rideId,
       });
-      
+
       const ride = await storage.getRide(passengerData.rideId);
       if (!ride) return res.status(404).json({ error: "Ride not found" });
-      if (ride.currentPassengers >= ride.maxPassengers) {
-        return res.status(400).json({ error: "Ride is full" });
+
+      // Get current total passenger count
+      const passengers = await storage.getPassengers(rideId);
+      const currentTotalPassengers = passengers.reduce((sum, p) => sum + (p.passengerCount || 1), 0);
+
+      // Check if adding new passengers would exceed the limit
+      if (currentTotalPassengers + (passengerData.passengerCount || 1) > ride.maxPassengers) {
+        return res.status(400).json({ error: "Not enough spots available" });
       }
 
       const passenger = await storage.addPassenger({
@@ -266,13 +272,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(400).json({ error: (error as Error).message });
     }
   });
-
+  
   // Vendor routes
   app.post("/api/rides/:id/assign", async (req, res) => {
     if (!req.isAuthenticated() || !req.user.isVendor) {
       return res.sendStatus(401);
     }
-
+    
     try {
       const rideId = parseInt(req.params.id);
       const ride = await storage.assignVendor(rideId, req.user.id);
@@ -281,16 +287,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(400).json({ error: (error as Error).message });
     }
   });
-
+  
   app.get("/api/vendor/rides", async (req, res) => {
     if (!req.isAuthenticated() || !req.user.isVendor) {
       return res.sendStatus(401);
     }
-
+    
     const rides = await storage.getVendorRides(req.user.id);
     res.json(rides);
   });
-
+  
   const httpServer = createServer(app);
   return httpServer;
 }

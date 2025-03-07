@@ -3,16 +3,22 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
 import { NavBar } from "@/components/nav-bar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2, Share2, Edit, MapPin, Users, MessageCircle, Calendar, DollarSign, Clock, CheckCircle, ChevronRight, AlertTriangle } from "lucide-react";
 import { LocationMap } from "@/components/map/location-map";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { RideCard } from "@/components/ride-card";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { Ride } from "@shared/schema";
 
 // Define interfaces for our data types
 interface LocationPoint {
@@ -27,6 +33,7 @@ interface RidePassenger {
   userId: number;
   dropoffLocation: string;
   dropoffSequence: number | null;
+  passengerCount: number;
   user?: {
     id: number;
     username: string;
@@ -38,6 +45,16 @@ interface RidePassenger {
   };
 }
 
+// Form schema for joining a ride
+const joinRideSchema = z.object({
+  passengerCount: z.number()
+    .min(1, "Must have at least 1 passenger")
+    .max(4, "Cannot exceed 4 passengers"),
+  dropoffLocation: z.string().min(1, "Drop-off location is required"),
+});
+
+type JoinRideFormData = z.infer<typeof joinRideSchema>;
+
 export default function RideDetails() {
   const [, params] = useRoute("/rides/:id");
   const rideId = params?.id;
@@ -46,9 +63,9 @@ export default function RideDetails() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("details");
   const [dropoffLocations, setDropoffLocations] = useState<LocationPoint[]>([]);
-  
+
   // Ride data fetch
-  const { data: ride, isLoading: isRideLoading, error: rideError } = useQuery({
+  const { data: ride, isLoading: isRideLoading } = useQuery<Ride>({
     queryKey: [`/api/rides/${rideId}`],
     enabled: !!rideId,
   });
@@ -58,30 +75,33 @@ export default function RideDetails() {
     data: passengers, 
     isLoading: isPassengersLoading,
     refetch: refetchPassengers 
-  } = useQuery({
+  } = useQuery<RidePassenger[]>({
     queryKey: [`/api/rides/${rideId}/passengers`],
     enabled: !!rideId && !!user,
-    onError: (error) => {
-      console.error("Failed to fetch passengers:", error);
-    }
+  });
+
+  // Form for joining ride
+  const form = useForm<JoinRideFormData>({
+    resolver: zodResolver(joinRideSchema),
+    defaultValues: {
+      passengerCount: 1,
+      dropoffLocation: "",
+    },
   });
 
   // Join ride mutation
   const joinRideMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (data: JoinRideFormData) => {
       if (!user) throw new Error("You must be logged in to join a ride");
       if (!ride) throw new Error("Ride not found");
-      
-      // For simplicity, when joining from details page, we use the first dropoff location
-      // Normally you would show a form to select or input location
-      const dropoffLocation = ride.direction === "SG->FC" 
-        ? ride.dropoffLocations[0] 
-        : ride.pickupLocation;
-        
+
       const res = await apiRequest(
         "POST",
         `/api/rides/${rideId}/join`,
-        { dropoffLocation, rideId: parseInt(rideId || "0") }
+        { 
+          ...data,
+          rideId: parseInt(rideId || "0")
+        }
       );
       return res.json();
     },
@@ -92,7 +112,6 @@ export default function RideDetails() {
       toast({
         title: "Success",
         description: "You have joined the ride",
-        variant: "success",
       });
     },
     onError: (error: Error) => {
@@ -106,40 +125,56 @@ export default function RideDetails() {
 
   // Process drop-off locations once ride data is loaded
   useEffect(() => {
-    if (ride) {
-      // Convert ride drop-off locations to map format
-      const locations = ride.dropoffLocations.map((loc, index) => ({
+    if (!ride) return;
+
+    // Convert ride drop-off locations to map format
+    const locations: LocationPoint[] = [];
+
+    // Add pickup location
+    if (ride.pickupLocation) {
+      locations.push({
+        id: 'pickup',
+        position: [1.3421, 103.7998], // This should be replaced with actual coordinates
+        name: ride.pickupLocation
+      });
+    }
+
+    // Add dropoff locations from ride
+    ride.dropoffLocations.forEach((loc, index) => {
+      locations.push({
         id: `dropoff-${index}`,
-        // This is a placeholder since we don't have real coordinates - in real app get from API
-        position: [1.3521 + (index * 0.01), 103.8198 + (index * 0.01)] as [number, number], 
+        position: [1.3521 + (index * 0.01), 103.8198 + (index * 0.01)], // This should be replaced with actual coordinates
         name: loc
-      }));
-      
-      // Add pickup location if available
-      if (ride.pickupLocation) {
+      });
+    });
+
+    // Add passenger dropoff locations
+    passengers?.forEach((passenger, index) => {
+      if (!locations.some(loc => loc.name === passenger.dropoffLocation)) {
         locations.push({
-          id: 'pickup',
-          // This is a placeholder
-          position: [1.3421, 103.7998] as [number, number],
-          name: ride.pickupLocation
+          id: `passenger-${index}`,
+          position: [1.3621 + (index * 0.01), 103.8298 + (index * 0.01)], // This should be replaced with actual coordinates
+          name: passenger.dropoffLocation
         });
       }
-      
-      setDropoffLocations(locations);
-    }
-  }, [ride]);
+    });
+
+    setDropoffLocations(locations);
+  }, [ride, passengers]);
 
   // Check if the current user is already a passenger
   const isUserPassenger = passengers?.some(p => p.userId === user?.id);
-  
+
   // Check if the user is the ride creator
   const isCreator = user && ride && user.id === ride.creatorId;
-  
-  // Check if the ride is full
-  const isFull = ride && ride.currentPassengers >= ride.maxPassengers;
+
+  // Calculate remaining spots
+  const totalPassengersCount = passengers?.reduce((sum, p) => sum + (p.passengerCount || 1), 0) || 0;
+  const remainingSpots = ride ? ride.maxPassengers - totalPassengersCount : 0;
+  const isFull = remainingSpots <= 0;
 
   // Format date for display
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | Date) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-SG', {
       weekday: 'short',
@@ -155,6 +190,19 @@ export default function RideDetails() {
   // Format direction for display
   const formatDirection = (direction: string) => {
     return direction === "SG->FC" ? "Singapore to Forest City" : "Forest City to Singapore";
+  };
+
+  // Handle form submission
+  const onSubmit = (data: JoinRideFormData) => {
+    if (remainingSpots < data.passengerCount) {
+      toast({
+        title: "Error",
+        description: `Only ${remainingSpots} spots remaining`,
+        variant: "destructive",
+      });
+      return;
+    }
+    joinRideMutation.mutate(data);
   };
 
   // Generate a WhatsApp group link with all passengers
@@ -173,7 +221,7 @@ export default function RideDetails() {
       .filter(p => p.user?.whatsappNumber)
       .map(p => p.user?.whatsappNumber)
       .join(',');
-    
+
     if (!phoneNumbers) {
       toast({
         title: "No WhatsApp Numbers",
@@ -184,8 +232,8 @@ export default function RideDetails() {
     }
 
     // Create group name based on ride details
-    const groupName = `RideShare: ${formatDirection(ride.direction)} ${new Date(ride.date).toLocaleDateString()}`;
-    
+    const groupName = `RideShare: ${formatDirection(ride?.direction || "")} ${formatDate(ride?.date || new Date())}`;
+
     // WhatsApp doesn't have a direct group creation URL, so we'll copy text to clipboard instead
     const messageText = `Create a WhatsApp group called "${groupName}" with these contacts:\n\n${
       passengers
@@ -193,9 +241,9 @@ export default function RideDetails() {
         .map(p => `${p.user?.fullName}: ${p.user?.whatsappNumber}`)
         .join('\n')
     }`;
-    
+
     navigator.clipboard.writeText(messageText);
-    
+
     toast({
       title: "Copied to Clipboard",
       description: "Passenger information copied. Open WhatsApp and create a new group with these contacts.",
@@ -218,7 +266,7 @@ export default function RideDetails() {
       .filter(p => p.user?.discordUsername)
       .map(p => p.user?.discordUsername)
       .join(', ');
-    
+
     if (!discordUsers) {
       toast({
         title: "No Discord Usernames",
@@ -229,8 +277,8 @@ export default function RideDetails() {
     }
 
     // Create group name based on ride details
-    const groupName = `RideShare: ${formatDirection(ride.direction)} ${new Date(ride.date).toLocaleDateString()}`;
-    
+    const groupName = `RideShare: ${formatDirection(ride?.direction || "")} ${formatDate(ride?.date || new Date())}`;
+
     // Copy Discord usernames to clipboard
     const messageText = `Create a Discord group called "${groupName}" with these users:\n\n${
       passengers
@@ -238,9 +286,9 @@ export default function RideDetails() {
         .map(p => `${p.user?.fullName}: ${p.user?.discordUsername}`)
         .join('\n')
     }`;
-    
+
     navigator.clipboard.writeText(messageText);
-    
+
     toast({
       title: "Copied to Clipboard",
       description: "Discord usernames copied. Open Discord and create a new group with these users.",
@@ -250,21 +298,21 @@ export default function RideDetails() {
   // Generate shareable trip summary
   const generateTripSummary = () => {
     if (!ride) return;
-    
+
     const directionText = formatDirection(ride.direction);
     const dateText = formatDate(ride.date);
     const totalCost = ride.cost + (ride.additionalStops * 5);
     const perPersonCost = (totalCost / (ride.maxPassengers || 1)).toFixed(2);
-    
+
     const summary = `🚗 RideShare Trip Summary 🚗\n\n` +
       `Direction: ${directionText}\n` +
       `Date & Time: ${dateText}\n` +
       `Pickup: ${ride.pickupLocation}\n` +
-      `Passengers: ${ride.currentPassengers}/${ride.maxPassengers}\n` +
+      `Passengers: ${totalPassengersCount}/${ride.maxPassengers}\n` +
       `Total Cost: $${totalCost} SGD\n` +
       `Cost per person: $${perPersonCost} SGD\n\n` +
       `📱 Join through the RideShare app: https://rideshare.app/rides/${ride.id}`;
-      
+
     try {
       navigator.clipboard.writeText(summary);
       toast({
@@ -291,7 +339,7 @@ export default function RideDetails() {
     );
   }
 
-  if (!ride || rideError) {
+  if (!ride) {
     return (
       <div className="min-h-screen">
         <NavBar />
@@ -356,12 +404,12 @@ export default function RideDetails() {
             <Badge variant="outline" className="px-3 py-1 text-sm bg-green-50 border-green-200 text-green-700">
               {ride.status === "open" ? "Open" : ride.status === "assigned" ? "Driver Assigned" : "Completed"}
             </Badge>
-            
+
             <div className="text-sm text-muted-foreground">
               <Users className="inline-block h-4 w-4 mr-1" />
-              {ride.currentPassengers}/{ride.maxPassengers} passengers
+              {totalPassengersCount}/{ride.maxPassengers} passengers
             </div>
-            
+
             {isFull && (
               <Badge variant="outline" className="bg-amber-50 border-amber-200 text-amber-700">
                 Full
@@ -396,7 +444,7 @@ export default function RideDetails() {
                           <p className="text-sm text-muted-foreground">{formatDate(ride.date)}</p>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-start">
                         <MapPin className="h-5 w-5 mr-2 text-muted-foreground shrink-0 mt-0.5" />
                         <div>
@@ -411,7 +459,7 @@ export default function RideDetails() {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="flex items-start">
                         <DollarSign className="h-5 w-5 mr-2 text-muted-foreground shrink-0 mt-0.5" />
@@ -450,17 +498,65 @@ export default function RideDetails() {
                   <CardHeader>
                     <CardTitle className="text-lg">Join This Ride</CardTitle>
                     <CardDescription>
-                      There are {ride.maxPassengers - ride.currentPassengers} spots left on this ride
+                      There are {remainingSpots} spots left on this ride
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button 
-                      className="w-full" 
-                      onClick={() => navigate(`/rides/${ride.id}/join`)}
-                    >
-                      Select Drop-off Location to Join
-                      <ChevronRight className="h-4 w-4 ml-2" />
-                    </Button>
+                    <Form {...form}>
+                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        <FormField
+                          control={form.control}
+                          name="passengerCount"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Number of Passengers</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  min={1}
+                                  max={Math.min(4, remainingSpots)}
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                />
+                              </FormControl>
+                              <FormDescription>
+                                Maximum {Math.min(4, remainingSpots)} passengers allowed
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="dropoffLocation"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Drop-off Location</FormLabel>
+                              <FormControl>
+                                <Input {...field} placeholder="Enter your drop-off location" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <Button 
+                          type="submit"
+                          className="w-full"
+                          disabled={joinRideMutation.isPending}
+                        >
+                          {joinRideMutation.isPending ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Joining...
+                            </>
+                          ) : (
+                            "Join Ride"
+                          )}
+                        </Button>
+                      </form>
+                    </Form>
                   </CardContent>
                 </Card>
               )}
@@ -511,7 +607,7 @@ export default function RideDetails() {
                   </CardContent>
                 </Card>
               )}
-              
+
               {/* Creator Info for Non-Creators */}
               {user && !isCreator && (
                 <Card>
@@ -554,7 +650,9 @@ export default function RideDetails() {
                 <div className="space-y-6">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-lg">Passengers ({passengers.length}/{ride.maxPassengers})</CardTitle>
+                      <CardTitle className="text-lg">
+                        Passengers ({totalPassengersCount}/{ride.maxPassengers})
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
@@ -571,6 +669,9 @@ export default function RideDetails() {
                                     </Badge>
                                   )}
                                 </p>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                  Passengers: {passenger.passengerCount || 1}
+                                </p>
                               </div>
                               {isCreator && (
                                 <Badge>Passenger {index + 1}</Badge>
@@ -581,7 +682,7 @@ export default function RideDetails() {
                       </div>
                     </CardContent>
                   </Card>
-                  
+
                   {/* Communication Options (for both creators and passengers) */}
                   <Card>
                     <CardHeader>
@@ -648,11 +749,25 @@ export default function RideDetails() {
                           <p className="mt-1">{ride.pickupLocation}</p>
                         </div>
                       )}
-                      
+
                       {ride.dropoffLocations.map((location, index) => (
                         <div key={index} className="p-2 border rounded-md">
                           <Badge variant="outline">Dropoff {index + 1}</Badge>
                           <p className="mt-1">{location}</p>
+                        </div>
+                      ))}
+
+                      {passengers?.map((passenger, index) => (
+                        <div key={`passenger-${passenger.id}`} className="p-2 border rounded-md">
+                          <Badge variant="outline" className="bg-green-50">
+                            Passenger Dropoff
+                          </Badge>
+                          <p className="mt-1">
+                            {passenger.dropoffLocation}
+                            <span className="text-sm text-muted-foreground ml-2">
+                              ({passenger.user?.fullName || "Unknown"})
+                            </span>
+                          </p>
                         </div>
                       ))}
                     </div>
