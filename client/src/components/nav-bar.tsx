@@ -1,51 +1,41 @@
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuLink,
-} from "@/components/ui/navigation-menu";
 import { Car, LogOut, LogIn, Map, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export function NavBar() {
   const { user, logoutMutation } = useAuth();
-  // For SSR compatibility, default to mobile false, then update after mount
-  const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   
-  // Update mobile status after component mounts
+  // Use a simpler approach for detecting mobile view
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Set up mobile detection on mount and window resize
   useEffect(() => {
-    const handleResize = () => {
+    // Function to check if the screen is mobile-sized
+    const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
     
-    // Set initial value
-    handleResize();
+    // Run on initial mount
+    checkMobile();
     
-    // Listen for window resize
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    // Set up event listener for window resize
+    window.addEventListener('resize', checkMobile);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
   
-  // Close mobile menu on navigation
-  useEffect(() => {
-    const handleRouteChange = () => {
-      setMenuOpen(false);
-    };
-    
-    // Simple route change detection
-    const observer = new MutationObserver(handleRouteChange);
-    observer.observe(document.body, { childList: true, subtree: true });
-    
-    return () => observer.disconnect();
-  }, []);
+  // Function to toggle menu open/closed
+  const toggleMenu = () => {
+    console.log("Menu button clicked, current state:", menuOpen);
+    setMenuOpen(prevState => !prevState);
+  };
 
   return (
-    <nav className="border-b bg-white">
+    <nav className="border-b bg-white fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo always visible */}
@@ -57,52 +47,49 @@ export function NavBar() {
           {/* Mobile menu button */}
           {isMobile && (
             <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden"
+              variant="default"
+              size="sm"
+              onClick={toggleMenu}
+              className="relative z-20"
+              type="button"
             >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {menuOpen ? (
+                <>
+                  <X className="h-4 w-4 mr-2" />
+                  Close
+                </>
+              ) : (
+                <>
+                  <Menu className="h-4 w-4 mr-2" />
+                  Menu
+                </>
+              )}
             </Button>
           )}
 
           {/* Desktop navigation */}
           {!isMobile && (
             <div className="flex">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <NavigationMenuLink asChild>
-                      <Link href="/home" className="flex items-center px-3 py-2 text-sm font-medium">
-                        <Map className="h-4 w-4 mr-2" />
-                        Available Rides
+              <div className="flex items-center space-x-4">
+                <Link href="/home" className="flex items-center px-3 py-2 text-sm font-medium">
+                  <Map className="h-4 w-4 mr-2" />
+                  Available Rides
+                </Link>
+                
+                {user && (
+                  <>
+                    {user?.isVendor ? (
+                      <Link href="/vendor" className="flex items-center px-3 py-2 text-sm font-medium">
+                        Dashboard
                       </Link>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                  
-                  {user && (
-                    <>
-                      {user?.isVendor ? (
-                        <NavigationMenuItem>
-                          <NavigationMenuLink asChild>
-                            <Link href="/vendor" className="flex items-center px-3 py-2 text-sm font-medium">
-                              Dashboard
-                            </Link>
-                          </NavigationMenuLink>
-                        </NavigationMenuItem>
-                      ) : (
-                        <NavigationMenuItem>
-                          <NavigationMenuLink asChild>
-                            <Link href="/rides/create" className="flex items-center px-3 py-2 text-sm font-medium">
-                              Create Ride
-                            </Link>
-                          </NavigationMenuLink>
-                        </NavigationMenuItem>
-                      )}
-                    </>
-                  )}
-                </NavigationMenuList>
-              </NavigationMenu>
+                    ) : (
+                      <Link href="/rides/create" className="flex items-center px-3 py-2 text-sm font-medium">
+                        Create Ride
+                      </Link>
+                    )}
+                  </>
+                )}
+              </div>
 
               <div className="flex items-center ml-4">
                 {user ? (
@@ -131,21 +118,34 @@ export function NavBar() {
           )}
         </div>
         
-        {/* Mobile menu */}
+        {/* Mobile menu - simplified for clarity */}
         {isMobile && menuOpen && (
-          <div className="md:hidden border-t pt-2 pb-3 space-y-1">
-            <Link href="/home" className="block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md">
+          <div className="absolute top-16 left-0 right-0 bg-white border-b shadow-lg z-50 px-4 py-4 space-y-3">
+            <Link 
+              href="/home" 
+              className="block px-3 py-3 text-base font-medium hover:bg-gray-50 rounded-md"
+              onClick={() => setMenuOpen(false)}
+            >
+              <Map className="h-4 w-4 mr-2 inline-block" />
               Available Rides
             </Link>
             
             {user && (
               <>
                 {user?.isVendor ? (
-                  <Link href="/vendor" className="block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md">
+                  <Link 
+                    href="/vendor" 
+                    className="block px-3 py-3 text-base font-medium hover:bg-gray-50 rounded-md"
+                    onClick={() => setMenuOpen(false)}
+                  >
                     Dashboard
                   </Link>
                 ) : (
-                  <Link href="/rides/create" className="block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md">
+                  <Link 
+                    href="/rides/create" 
+                    className="block px-3 py-3 text-base font-medium hover:bg-gray-50 rounded-md"
+                    onClick={() => setMenuOpen(false)}
+                  >
                     Create Ride
                   </Link>
                 )}
@@ -153,27 +153,25 @@ export function NavBar() {
             )}
             
             {user ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => logoutMutation.mutate()}
-                className="w-full justify-start px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md"
+              <div 
+                className="block px-3 py-3 text-base font-medium hover:bg-gray-50 rounded-md cursor-pointer"
+                onClick={() => {
+                  logoutMutation.mutate();
+                  setMenuOpen(false);
+                }}
               >
-                <LogOut className="h-4 w-4 mr-2" />
+                <LogOut className="h-4 w-4 mr-2 inline-block" />
                 Logout
-              </Button>
+              </div>
             ) : (
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className="w-full justify-start px-3 py-2 text-base font-medium hover:bg-gray-50 rounded-md"
+              <Link 
+                href="/auth" 
+                className="block px-3 py-3 text-base font-medium hover:bg-gray-50 rounded-md"
+                onClick={() => setMenuOpen(false)}
               >
-                <Link href="/auth">
-                  <LogIn className="h-4 w-4 mr-2" />
-                  Login
-                </Link>
-              </Button>
+                <LogIn className="h-4 w-4 mr-2 inline-block" />
+                Login
+              </Link>
             )}
           </div>
         )}

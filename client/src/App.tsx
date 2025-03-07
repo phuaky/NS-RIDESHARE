@@ -11,6 +11,7 @@ import JoinRide from "@/pages/join-ride";
 import RideDetails from "@/pages/ride-details";
 import VendorDashboard from "@/pages/vendor-dashboard";
 import GuidePage from "@/pages/guide-page";
+import BusGuidePage from "@/pages/bus-guide-page";
 import { ProtectedRoute } from "./lib/protected-route";
 
 function Router() {
@@ -19,7 +20,9 @@ function Router() {
       <Route path="/auth" component={AuthPage} />
       <Route path="/" component={GuidePage} />
       <Route path="/home" component={HomePage} />
+      <Route path="/bus-guide" component={BusGuidePage} />
       <ProtectedRoute path="/rides/create" component={CreateRide} />
+      <ProtectedRoute path="/rides/edit/:id" component={CreateRide} />
       <ProtectedRoute path="/rides/:id/join" component={JoinRide} />
       <Route path="/rides/:id" component={RideDetails} />
       <ProtectedRoute path="/vendor" component={VendorDashboard} />

@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Accordion,
   AccordionContent,
@@ -67,10 +68,10 @@ export default function GuidePage() {
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Travel Guide</h1>
-          <p className="text-muted-foreground">
+      <main className="container mx-auto py-6 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold mb-2">Singapore-Forest City Travel Guide</h1>
+          <p className="text-muted-foreground mb-6">
             Essential information for traveling between Singapore and Forest City
           </p>
         </div>
@@ -98,133 +99,154 @@ export default function GuidePage() {
           </div>
 
           {/* Main Content Tabs */}
-          <Tabs defaultValue="singapore" className="space-y-4">
+          <Tabs defaultValue="chartered-car" className="space-y-4">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="singapore">From Singapore</TabsTrigger>
-              <TabsTrigger value="forest-city">From Forest City</TabsTrigger>
+              <TabsTrigger value="chartered-car">Chartered Car</TabsTrigger>
+              <TabsTrigger value="public-bus">Public Bus Options</TabsTrigger>
             </TabsList>
 
-            {/* Singapore Guide */}
-            <TabsContent value="singapore">
+            {/* Public Bus Options */}
+            <TabsContent value="public-bus">
               <Card>
                 <CardHeader>
-                  <CardTitle>Traveling from Singapore</CardTitle>
+                  <CardTitle>Public Bus Options</CardTitle>
                   <CardDescription>
-                    Public transport options and recommended routes
+                    Bus routes and schedules between Singapore and Forest City
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="bus">
-                      <AccordionTrigger>
-                        <div className="flex items-center gap-2">
-                          <Bus className="h-4 w-4" />
-                          Public Bus Options
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="space-y-4">
-                        <div>
-                          <h4 className="font-medium">From Jurong East</h4>
-                          <ul className="list-disc list-inside mt-2 space-y-2">
-                            <li>Take SBS 160 from Jurong East Bus Interchange</li>
-                            <li>Journey time: ~1 hour</li>
-                            <li>Fare: ~SGD 3.00</li>
-                          </ul>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem value="contacts">
-                      <AccordionTrigger>
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-4 w-4" />
-                          Trusted Driver Contacts
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <div className="space-y-4">
-                          <p className="text-sm text-muted-foreground">
-                            These drivers are frequently used by our community:
-                          </p>
-                          <ul className="space-y-2">
-                            <li className="flex items-center justify-between p-2 border rounded-md">
-                              <span>Mr. Tan (SG-FC)</span>
-                              <span className="text-muted-foreground">+65 9123 4567</span>
-                            </li>
-                            <li className="flex items-center justify-between p-2 border rounded-md">
-                              <span>Mr. Lee (FC-SG)</span>
-                              <span className="text-muted-foreground">+60 12-345 6789</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                  <div>
+                    <h4 className="font-medium">Quick Guide to Bus Travel</h4>
+                    <ul className="list-disc list-inside mt-2 space-y-2">
+                      <li><strong>Journey:</strong> Jurong Town Hall Bus Interchange → CIQ 2nd Link → Forest City</li>
+                      <li><strong>Buses:</strong> Take CW3/CW4/CW4S/CW6/CW7, then FC1 after immigration</li>
+                      <li><strong>Total fare:</strong> S$5 (through-ticketing available)</li>
+                      <li><strong>Payment:</strong> Cash or ManjaLink card</li>
+                      <li><strong>Travel time:</strong> ~1.5-2 hours including immigration</li>
+                    </ul>
+                  </div>
+                  
+                  <Alert className="bg-amber-50 border-amber-200 mt-4">
+                    <Clock className="h-4 w-4 text-amber-600" />
+                    <AlertTitle className="text-amber-800">Important Notice</AlertTitle>
+                    <AlertDescription className="text-amber-700">
+                      Buses from CIQ 2nd Link depart <strong>only once per hour</strong>. Missing your bus could mean a long wait!
+                    </AlertDescription>
+                  </Alert>
+                    
+                  <div className="mt-4 space-y-2">
+                    <a 
+                      href="https://www.causewaylink.com.my/important-announcement-for-cw3-cw4-passengers-relocating-to-jurong-town-hall-bus-interchange/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center text-blue-600 hover:underline text-sm"
+                    >
+                      <ExternalLink className="h-3 w-3 mr-1" />
+                      Official CW3/CW4 Information
+                    </a>
+                    <a 
+                      href="https://www.causewaylink.com.my/forest-city-fc1/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center text-blue-600 hover:underline text-sm"
+                    >
+                      <ExternalLink className="h-3 w-3 mr-1" />
+                      FC1 Schedule Information
+                    </a>
+                  </div>
+                  
+                  <div className="mt-4">
+                    <Button asChild className="w-full">
+                      <a href="/bus-guide">View Full Bus Guide</a>
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            {/* Forest City Guide */}
-            <TabsContent value="forest-city">
+            {/* Chartered Car Tab */}
+            <TabsContent value="chartered-car">
               <Card>
                 <CardHeader>
-                  <CardTitle>Traveling from Forest City</CardTitle>
+                  <CardTitle>Chartered Car Services</CardTitle>
                   <CardDescription>
-                    Common pick-up points and transportation options
+                    Trusted driver contacts for direct transportation
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="pickup">
-                      <AccordionTrigger>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4" />
-                          Common Pick-up Points
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2">
-                          <li className="flex items-center justify-between p-2 border rounded-md">
-                            <span>Forest City Mall</span>
-                            <span className="text-muted-foreground">Main Entrance</span>
-                          </li>
-                          <li className="flex items-center justify-between p-2 border rounded-md">
-                            <span>Shattuck St. Mary's School</span>
-                            <span className="text-muted-foreground">Gate 1</span>
-                          </li>
-                          <li className="flex items-center justify-between p-2 border rounded-md">
-                            <span>Forest City Golf Resort</span>
-                            <span className="text-muted-foreground">Lobby</span>
-                          </li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
+                  <p className="text-sm text-muted-foreground">
+                    These trusted drivers are frequently used by our community for transportation between Singapore and Forest City:
+                  </p>
 
-                    <AccordionItem value="immigration">
-                      <AccordionTrigger>
-                        <div className="flex items-center gap-2">
-                          <ExternalLink className="h-4 w-4" />
-                          Immigration Process
+                  <div className="space-y-4 mt-4">
+                    <h3 className="font-medium">Singapore to Forest City</h3>
+                    <ul className="space-y-3">
+                      <li className="flex items-center justify-between p-3 border rounded-md">
+                        <div className="flex flex-col">
+                          <span className="font-medium">Carol</span>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            <p>Trip: SGD 75 • Additional stop: SGD 5</p>
+                          </div>
+                          <div className="flex gap-2 mt-2">
+                            <a 
+                              href="https://sgmytaxi288service.com" 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-xs text-blue-500 hover:underline flex items-center"
+                            >
+                              <ExternalLink className="h-3 w-3 mr-1" />
+                              Website
+                            </a>
+                            <a 
+                              href="https://wa.me/60192551688" 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-xs text-green-500 hover:underline flex items-center"
+                            >
+                              <Phone className="h-3 w-3 mr-1" />
+                              WhatsApp
+                            </a>
+                          </div>
                         </div>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <div className="space-y-4">
-                          <p>Sequential process through checkpoints:</p>
-                          <ol className="list-decimal list-inside space-y-2">
-                            <li>Exit Malaysian Immigration (CIQ)</li>
-                            <li>Cross Second Link Bridge</li>
-                            <li>Enter Singapore Immigration (Tuas)</li>
-                          </ol>
-                          <Alert className="mt-4">
-                            <AlertTriangle className="h-4 w-4" />
-                            <AlertDescription>
-                              Plan for 45-60 minutes during peak hours
-                            </AlertDescription>
-                          </Alert>
+                        <span className="text-muted-foreground">+60 19-255 1688</span>
+                      </li>
+                      <li className="flex items-center justify-between p-3 border rounded-md">
+                        <div className="flex flex-col">
+                          <span className="font-medium">Ah Liang</span>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            <p>Trip: SGD 80 • Additional stop: SGD 10</p>
+                          </div>
+                          <div className="flex gap-2 mt-2">
+                            <a 
+                              href="https://wa.me/60167244913" 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-xs text-green-500 hover:underline flex items-center"
+                            >
+                              <Phone className="h-3 w-3 mr-1" />
+                              WhatsApp
+                            </a>
+                          </div>
                         </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                        <span className="text-muted-foreground">+60 16-724 4913</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <Alert className="mt-4">
+                    <AlertDescription>
+                      Have a trusted driver contact to share?{" "}
+                      <a 
+                        href="https://discordapp.com/users/474860619217108992"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        Message me
+                      </a>{" "}
+                      to add them to this list.
+                    </AlertDescription>
+                  </Alert>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -234,148 +256,39 @@ export default function GuidePage() {
           <Card>
             <CardHeader>
               <CardTitle>Payment Information</CardTitle>
-              <CardDescription>
-                Understanding costs and payment methods
-              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4">              
               <div className="space-y-2">
-                <h3 className="font-medium">Cost Breakdown</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between p-2 bg-gray-50 rounded">
-                    <span>Base Cost</span>
-                    <span className="font-medium">$80 SGD</span>
-                  </div>
-                  <div className="flex justify-between p-2 bg-gray-50 rounded">
-                    <span>Additional Stop Fee</span>
-                    <span className="font-medium">$5 SGD / stop</span>
-                  </div>
-                  <div className="flex justify-between p-2 bg-gray-50 rounded">
-                    <span>Typical Cost Per Person (4 passengers)</span>
-                    <span className="font-medium">$20 SGD</span>
-                  </div>
+                <h3 className="font-medium">Ride Sharing Payments</h3>
+                <div className="bg-slate-50 p-3 rounded-md">
+                  <h4 className="font-medium text-sm mb-2">Payment Options</h4>
+                  <ul className="space-y-2 text-sm">
+                    <li><strong>BNPL:</strong> Awaiting Shawn's implementation.</li>
+                    <li><strong>Revolut:</strong> Preferred method - fee-free transfers between users</li>
+                    <li><strong>Cryptocurrency:</strong> USDC on BASE or SOL, for peer-to-peer payments</li>
+                    <li><strong>Cash:</strong> Pay in SGD or RM depending on driver preference</li>
+                  </ul>
                 </div>
-              </div>
-              
-              <div className="space-y-2 pt-4 border-t">
-                <h3 className="font-medium">Revolut Payments</h3>
-                <p className="text-sm text-muted-foreground">
-                  Revolut is the preferred payment method for ride sharing due to its ease of use and lack of transaction fees between users.
-                </p>
-                <ol className="list-decimal list-inside space-y-1 text-sm">
-                  <li>Download the Revolut app</li>
-                  <li>Create an account and verify your identity</li>
-                  <li>Add your username to your RideShare profile</li>
-                  <li>Send payment to the ride organizer via their Revolut username</li>
-                </ol>
-              </div>
-            </CardContent>
-          </Card>
 
-          <Card className="mt-6">
-            <CardContent className="pt-6">
-              <h2 className="text-xl font-semibold">Bus Travel: Singapore to Forest City</h2>
-              <p className="text-sm text-muted-foreground mt-2">
-                A comprehensive guide for traveling by public bus from Singapore to Forest City, Malaysia.
-              </p>
-
-              {/* Quick Summary */}
-              <div className="p-4 bg-muted rounded-md mt-4">
-                <h3 className="font-medium mb-2">Quick Guide</h3>
-                <ul className="list-disc list-inside space-y-1 text-sm">
-                  <li>Journey: Jurong Town Hall Bus Interchange → CIQ 2nd Link → Forest City</li>
-                  <li>Buses: Take CW3/CW4/CW4S/CW6/CW7, then FC1 after immigration</li>
-                  <li>Total fare: S$5 (through-ticketing available)</li>
-                  <li>Payment: Cash or ManjaLink card</li>
-                  <li>Travel time: ~1.5-2 hours including immigration</li>
-                </ul>
-              </div>
-
-              <div className="space-y-2 pt-4 border-t">
-                <h3 className="font-medium">Overview</h3>
-                <p className="text-sm text-muted-foreground">
-                  Public bus travel from Singapore to Forest City involves taking a cross-border bus from Jurong Town Hall 
-                  Bus Interchange to CIQ 2nd Link, then transferring to the FC1 bus to Forest City. Through-ticketing is 
-                  available with a fare of S$5.
-                </p>
-              </div>
-
-              <div className="space-y-2 pt-4 border-t">
-                <h3 className="font-medium">Step 1: Getting to Jurong Town Hall Bus Interchange</h3>
-                <p className="text-sm text-muted-foreground">
-                  Start your journey at Jurong Town Hall Bus Interchange, located at Berth B5. You can reach it by:
-                </p>
-                <ul className="list-disc list-inside space-y-1 text-sm">
-                  <li>Taking the MRT to Jurong East station and walking about 10 minutes</li>
-                  <li>Taking other bus services that stop at the interchange</li>
-                <li>
-                  <img src="https://www.causewaylink.com.my/wp-content/uploads/2024/01/Relocation-photos-map-01.png" alt="Map of Bus Route" className="w-full h-auto" />
-                </li>
-                </ul>
-              </div>
-
-              <div className="space-y-2 pt-4 border-t">
-                <h3 className="font-medium">Step 2: Taking the Cross-Border Bus</h3>
-                <p className="text-sm text-muted-foreground">
-                  From Jurong Town Hall, take a Causeway Link cross-border bus such as CW3, CW4, CW4S, CW6, or CW7 to 
-                  CIQ 2nd Link (Tuas Second Link checkpoint). Through-ticketing is available for S$5, covering both 
-                  the cross-border bus and the FC1 bus to Forest City.
-                </p>
-              </div>
-
-              <div className="space-y-2 pt-4 border-t">
-                <h3 className="font-medium">Step 3: Immigration at CIQ 2nd Link</h3>
-                <p className="text-sm text-muted-foreground">
-                  At the checkpoint, you'll need to alight, clear Singapore immigration to exit, then clear Malaysia 
-                  immigration to enter. Allow 45-60 minutes during peak hours, especially weekday mornings for entering 
-                  Singapore and evenings for entering Malaysia.
-                </p>
-              </div>
-
-              <div className="space-y-2 pt-4 border-t">
-                <h3 className="font-medium">Step 4: Final Leg to Forest City</h3>
-                <p className="text-sm text-muted-foreground">
-                  After immigration, board the FC1 bus at CIQ 2nd Link to reach Forest City. The journey takes about 20 minutes.
-                </p>
-                <h4 className="font-medium text-sm mt-2">FC1 Bus Departure Times from CIQ 2nd Link:</h4>
-                <div className="grid grid-cols-3 gap-2 text-sm mt-1">
-                  <div>6:00 AM</div>
-                  <div>7:00 AM</div>
-                  <div>8:00 AM</div>
-                  <div>9:00 AM</div>
-                  <div>10:00 AM</div>
-                  <div>11:00 AM</div>
-                  <div>12:00 PM</div>
-                  <div>1:00 PM</div>
-                  <div>2:00 PM</div>
-                  <div>3:00 PM</div>
-                  <div>4:00 PM</div>
-                  <div>5:00 PM</div>
-                  <div>6:00 PM</div>
-                  <div>7:00 PM</div>
-                  <div>8:30 PM (Last bus)</div>
+                <h3 className="font-medium mt-6">Bus Payments</h3>
+                <div className="bg-slate-50 p-3 rounded-md">
+                  <ul className="space-y-2 text-sm">
+                    <li><strong>ManjaLink Card:</strong> Cashless payment option for regular commuters</li>
+                    <li><strong>Cash: </strong>Not tested.</li>
+                  </ul>
                 </div>
-              </div>
 
-              <div className="space-y-2 pt-4 border-t">
-                <h3 className="font-medium">Payment Options</h3>
-                <p className="text-sm text-muted-foreground">
-                  You can pay with cash or use a ManjaLink card, which offers rebates and can be purchased online.
-                </p>
-                <ul className="list-disc list-inside space-y-1 text-sm">
-                  <li>Cash payment: Prepare exact fare (S$5 for the entire journey)</li>
-                  <li>ManjaLink card: Available online, supports cashless payments with up to 9TCR monthly rebates</li>
-                </ul>
-              </div>
-
-              <div className="space-y-2 pt-4 border-t">
-                <h3 className="font-medium">Additional Tips</h3>
-                <ul className="list-disc list-inside space-y-1 text-sm">
-                  <li>Download the LUGO App for real-time updates and trip planning</li>
-                  <li>Check the Causeway Link website for the latest schedules</li>
-                  <li>Plan for additional time during peak immigration hours</li>
-                  <li>Arrive early at Jurong Town Hall to catch a bus that aligns with FC1 departure times</li>
-                </ul>
+                <div className="mt-4">
+                  <a 
+                    href="https://www.causewaylink.com.my/cashless-travel/?utm_source=cwl_homepage_shortcut&utm_medium=cwl_homepage_shortcut&utm_campaign=cwl_homepage_shortcut" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center text-blue-600 hover:underline text-sm"
+                  >
+                    <ExternalLink className="h-3 w-3 mr-1" />
+                    Learn About Bus Cashless Payment Options
+                  </a>
+                </div>
               </div>
             </CardContent>
           </Card>

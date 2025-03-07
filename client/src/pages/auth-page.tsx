@@ -132,7 +132,7 @@ export default function AuthPage() {
     <div className="container flex items-center justify-center min-h-screen py-8">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Welcome to RideShare</CardTitle>
+          <CardTitle>Welcome to NS RideShare</CardTitle>
           <CardDescription>
             Login or register to continue
           </CardDescription>

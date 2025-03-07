@@ -17,27 +17,28 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { useLocation } from "wouter";
+import { useLocation, useRoute } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { LocationMap } from "@/components/map/location-map";
 import { useState, useEffect } from "react";
-
-interface LocationPoint {
-  id: string;
-  position: [number, number];
-  name: string;
-}
+import { Textarea } from "@/components/ui/textarea";
 
 export default function CreateRide() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+  const [, params] = useRoute("/rides/edit/:id");
+  const isEditing = !!params?.id;
+  const rideId = params?.id;
   const { toast } = useToast();
-  const [selectedPickupLocation, setSelectedPickupLocation] = useState<LocationPoint | null>(null);
-  const [dropoffLocations, setDropoffLocations] = useState<LocationPoint[]>([]);
-  const [locationTab, setLocationTab] = useState("pickup");
   const [showPassportReminder, setShowPassportReminder] = useState(true);
+  
+  // Fetch ride data if editing
+  const { data: rideToEdit, isLoading } = useQuery({
+    queryKey: [`/api/rides/${rideId}`],
+    enabled: isEditing,
+  });
 
+  // Set up form with default values or edited ride data
   const form = useForm({
     resolver: zodResolver(insertRideSchema),
     defaultValues: {
@@ -51,40 +52,27 @@ export default function CreateRide() {
     },
   });
   
-  // Update form values when locations change
+  // Load ride data into form when editing
   useEffect(() => {
-    if (selectedPickupLocation) {
-      form.setValue('pickupLocation', selectedPickupLocation.name);
+    if (isEditing && rideToEdit && !isLoading) {
+      // Convert ISO string date to Date object
+      const date = new Date(rideToEdit.date);
+      
+      // Reset the form with the ride data
+      form.reset({
+        ...rideToEdit,
+        date: date
+      });
     }
-    
-    if (dropoffLocations.length > 0) {
-      form.setValue('dropoffLocations', dropoffLocations.map(loc => loc.name));
-      // Update additional stops based on number of dropoff locations
-      form.setValue('additionalStops', Math.max(0, dropoffLocations.length - 1));
-    }
-  }, [selectedPickupLocation, dropoffLocations, form]);
+  }, [rideToEdit, isEditing, isLoading, form]);
   
   // Calculate total cost
   const baseCost = form.watch('cost') || 0;
   const additionalStops = form.watch('additionalStops') || 0;
   const totalCost = baseCost + (additionalStops * 5); // $5 per additional stop
-  
-  // Handle pickup location selection
-  const handlePickupSelect = (location: LocationPoint) => {
-    setSelectedPickupLocation(location);
-  };
-  
-  // Handle dropoff location selection
-  const handleDropoffSelect = (location: LocationPoint) => {
-    setDropoffLocations([...dropoffLocations, location]);
-  };
-  
-  // Handle dropoff location removal
-  const handleDropoffRemove = (locationId: string) => {
-    setDropoffLocations(dropoffLocations.filter(loc => loc.id !== locationId));
-  };
 
-  const createRideMutation = useMutation({
+  // Mutation for creating or updating a ride
+  const rideMutation = useMutation({
     mutationFn: async (data: any) => {
       // Create a deep copy of the data to avoid modifying form state
       const submissionData = { ...data };
@@ -102,18 +90,28 @@ export default function CreateRide() {
       // Convert date to ISO string for proper serialization
       submissionData.date = submissionData.date.toISOString();
       
-      const res = await apiRequest("POST", "/api/rides", submissionData);
-      return res.json();
+      if (isEditing && rideId) {
+        // Update existing ride
+        const res = await apiRequest("PATCH", `/api/rides/${rideId}`, submissionData);
+        return res.json();
+      } else {
+        // Create new ride
+        const res = await apiRequest("POST", "/api/rides", submissionData);
+        return res.json();
+      }
     },
-    onSuccess: (newRide) => {
+    onSuccess: (ride) => {
       queryClient.invalidateQueries({ queryKey: ["/api/rides"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/rides/${rideId}`] });
+      
       toast({
         title: "Success",
-        description: "Ride created successfully",
+        description: isEditing ? "Ride updated successfully" : "Ride created successfully",
         variant: "success",
       });
+      
       // Redirect to ride details page
-      setLocation(`/rides/${newRide.id}`);
+      setLocation(`/rides/${ride.id}`);
     },
     onError: (error: Error) => {
       toast({
@@ -128,18 +126,18 @@ export default function CreateRide() {
   const currentDirection = form.watch('direction');
   
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-16"> {/* Add padding-top to account for fixed navbar */}
       <NavBar />
       <main className="max-w-3xl mx-auto px-4 py-8">
         <Card>
           <CardHeader>
-            <CardTitle>Create a New Ride</CardTitle>
+            <CardTitle>{isEditing ? "Edit Ride" : "Create a New Ride"}</CardTitle>
           </CardHeader>
           <CardContent>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit((data) =>
-                  createRideMutation.mutate(data)
+                  rideMutation.mutate(data)
                 )}
                 className="space-y-6"
               >
@@ -157,7 +155,6 @@ export default function CreateRide() {
                             className="flex-1 justify-center py-6 text-base"
                             onClick={() => {
                               field.onChange("SG->FC");
-                              setLocationTab("pickup");
                             }}
                           >
                             Singapore to Forest City
@@ -168,7 +165,6 @@ export default function CreateRide() {
                             className="flex-1 justify-center py-6 text-base"
                             onClick={() => {
                               field.onChange("FC->SG");
-                              setLocationTab("dropoff");
                             }}
                           >
                             Forest City to Singapore
@@ -267,54 +263,48 @@ export default function CreateRide() {
                           <FormItem>
                             <FormLabel>Pickup Location</FormLabel>
                             <FormControl>
-                              <Input 
+                              <Textarea 
                                 {...field} 
-                                placeholder="Select a location on the map or enter here"
+                                placeholder="Enter pickup location details here"
+                                className="min-h-[100px]"
                               />
                             </FormControl>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              You can enter multiple lines of text for detailed location instructions.
+                            </p>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      
-                      <div className="mt-4">
-                        <LocationMap 
-                          selectedLocations={selectedPickupLocation ? [selectedPickupLocation] : []} 
-                          onLocationSelect={handlePickupSelect}
-                          editable
-                        />
-                      </div>
                     </div>
                   ) : (
                     /* Only show dropoff locations for FC->SG */
                     <div>
-                      <CardContent className="p-0 pt-4">
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {dropoffLocations.map((location) => (
-                            <Badge key={location.id} variant="secondary" className="py-2">
-                              {location.name}
-                              <button 
-                                className="ml-2 text-gray-500 hover:text-gray-700"
-                                onClick={() => handleDropoffRemove(location.id)}
-                              >
-                                ×
-                              </button>
-                            </Badge>
-                          ))}
-                          {dropoffLocations.length === 0 && (
-                            <p className="text-sm text-gray-500">No dropoff locations added yet. Select points on the map below.</p>
-                          )}
-                        </div>
-                        
-                        <div className="mt-4">
-                          <LocationMap 
-                            selectedLocations={dropoffLocations} 
-                            onLocationSelect={handleDropoffSelect}
-                            onLocationRemove={handleDropoffRemove}
-                            editable
-                          />
-                        </div>
-                      </CardContent>
+                      <FormField
+                        control={form.control}
+                        name="dropoffLocations"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Dropoff Locations</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                className="min-h-[100px]"
+                                placeholder="Enter dropoff location details here"
+                                value={Array.isArray(field.value) ? field.value.join('\n') : ''}
+                                onChange={(e) => {
+                                  // Split by newline to create an array of locations
+                                  const locations = e.target.value.split('\n').filter(loc => loc.trim() !== '');
+                                  field.onChange(locations);
+                                }}
+                              />
+                            </FormControl>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Enter one location per line. You can enter multiple locations.
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   )}
                 </div>
@@ -389,9 +379,12 @@ export default function CreateRide() {
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={createRideMutation.isPending}
+                  disabled={rideMutation.isPending}
                 >
-                  {createRideMutation.isPending ? "Creating..." : "Create Ride"}
+                  {rideMutation.isPending 
+                    ? isEditing ? "Updating..." : "Creating..." 
+                    : isEditing ? "Update Ride" : "Create Ride"
+                  }
                 </Button>
               </form>
             </Form>
