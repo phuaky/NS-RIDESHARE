@@ -21,6 +21,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useLocation, useRoute } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -30,7 +31,9 @@ export default function CreateRide() {
   const isEditing = !!params?.id;
   const rideId = params?.id;
   const { toast } = useToast();
+  const { user } = useAuth();
   const [showPassportReminder, setShowPassportReminder] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Fetch ride data if editing
   const { data: rideToEdit, isLoading } = useQuery({
@@ -53,6 +56,18 @@ export default function CreateRide() {
   // Load ride data into form when editing
   useEffect(() => {
     if (isEditing && rideToEdit && !isLoading) {
+      // Check if user is the creator of the ride
+      if (user?.id !== rideToEdit.creatorId) {
+        toast({
+          title: "Error",
+          description: "You are not authorized to edit this ride",
+          variant: "destructive",
+        });
+        // Redirect to home page
+        setLocation("/home");
+        return;
+      }
+
       // Convert ISO string date to Date object
       const date = new Date(rideToEdit.date);
 
@@ -62,7 +77,7 @@ export default function CreateRide() {
         date: date
       });
     }
-  }, [rideToEdit, isEditing, isLoading, form]);
+  }, [rideToEdit, isEditing, isLoading, form, toast, setLocation]);
 
   // Mutation for creating or updating a ride
   const rideMutation = useMutation({
@@ -130,11 +145,58 @@ export default function CreateRide() {
     },
   });
 
+  // Delete mutation for ride deletion
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      if (!rideId) throw new Error("No ride ID provided");
+      const res = await apiRequest("DELETE", `/api/rides/${rideId}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/rides"] });
+      
+      toast({
+        title: "Success",
+        description: "Ride deleted successfully",
+        variant: "success",
+      });
+      
+      // Redirect to home page
+      setLocation("/home");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  // Function to handle ride deletion with confirmation
+  const handleDeleteRide = () => {
+    if (showDeleteConfirm) {
+      deleteMutation.mutate();
+    } else {
+      setShowDeleteConfirm(true);
+      toast({
+        title: "Confirm Deletion",
+        description: "Click Delete again to confirm. This action cannot be undone.",
+        variant: "destructive",
+      });
+      
+      // Reset confirmation after 5 seconds
+      setTimeout(() => {
+        setShowDeleteConfirm(false);
+      }, 5000);
+    }
+  };
+
   // Get current direction value from form
   const currentDirection = form.watch('direction');
 
   return (
-    <div className="min-h-screen pt-16"> {/* Add padding-top to account for fixed navbar */}
+    <div className="min-h-screen pt-20"> {/* Add padding-top to account for fixed navbar */}
       <NavBar />
       <main className="max-w-3xl mx-auto px-4 py-8">
         <Card>
@@ -144,9 +206,10 @@ export default function CreateRide() {
           <CardContent>
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit((data) =>
-                  rideMutation.mutate(data)
-                )}
+                onSubmit={form.handleSubmit((data) => {
+                  console.log("Form submitted with data:", data);
+                  rideMutation.mutate(data);
+                })}
                 className="space-y-6"
               >
                 <FormField
@@ -337,16 +400,30 @@ export default function CreateRide() {
                   )}
                 </div>
 
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={rideMutation.isPending}
-                >
-                  {rideMutation.isPending 
-                    ? isEditing ? "Updating..." : "Creating..." 
-                    : isEditing ? "Update Ride" : "Create Ride"
-                  }
-                </Button>
+                <div className="space-y-4">
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={rideMutation.isPending}
+                  >
+                    {rideMutation.isPending 
+                      ? isEditing ? "Updating..." : "Creating..." 
+                      : isEditing ? "Update Ride" : "Create Ride"
+                    }
+                  </Button>
+                  
+                  {isEditing && (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      className="w-full"
+                      onClick={() => handleDeleteRide()}
+                      disabled={deleteMutation.isPending}
+                    >
+                      {deleteMutation.isPending ? "Deleting..." : "Delete Ride"}
+                    </Button>
+                  )}
+                </div>
               </form>
             </Form>
           </CardContent>

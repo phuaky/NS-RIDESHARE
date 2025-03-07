@@ -35,6 +35,8 @@ export interface IStorage {
   getRide(id: number): Promise<Ride | undefined>;
   getRides(): Promise<Ride[]>;
   updateRide(id: number, ride: Partial<Ride>): Promise<Ride>;
+  deleteRide(id: number): Promise<void>;
+  getUserJoinedRides(userId: number): Promise<Ride[]>;
 
   // Ride passenger operations
   addPassenger(passenger: InsertRidePassenger & { userId: number }): Promise<RidePassenger>;
@@ -127,11 +129,32 @@ export class DatabaseStorage implements IStorage {
 
   async getRide(id: number): Promise<Ride | undefined> {
     const [ride] = await db.select().from(rides).where(eq(rides.id, id));
-    return ride;
+    
+    if (!ride) return undefined;
+    
+    // Get creator details
+    const creator = await this.getUser(ride.creatorId);
+    return {
+      ...ride,
+      creatorName: creator ? creator.name || creator.discordUsername : "Unknown"
+    };
   }
 
   async getRides(): Promise<Ride[]> {
-    return await db.select().from(rides);
+    const allRides = await db.select().from(rides);
+    
+    // Fetch creator details for each ride
+    const ridesWithCreatorInfo = await Promise.all(
+      allRides.map(async (ride) => {
+        const creator = await this.getUser(ride.creatorId);
+        return {
+          ...ride,
+          creatorName: creator ? creator.name || creator.discordUsername : "Unknown",
+        };
+      })
+    );
+    
+    return ridesWithCreatorInfo;
   }
 
   async updateRide(id: number, ride: Partial<Ride>): Promise<Ride> {
@@ -142,6 +165,21 @@ export class DatabaseStorage implements IStorage {
       .returning();
     if (!updatedRide) throw new Error("Ride not found");
     return updatedRide;
+  }
+  
+  async deleteRide(id: number): Promise<void> {
+    // First delete passengers
+    await db
+      .delete(ridePassengers)
+      .where(eq(ridePassengers.rideId, id));
+    
+    // Then delete the ride
+    const result = await db
+      .delete(rides)
+      .where(eq(rides.id, id))
+      .returning();
+    
+    if (result.length === 0) throw new Error("Ride not found");
   }
 
   async addPassenger(
@@ -188,7 +226,63 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getVendorRides(vendorId: number): Promise<Ride[]> {
-    return await db.select().from(rides).where(eq(rides.vendorId, vendorId));
+    const vendorRides = await db.select().from(rides).where(eq(rides.vendorId, vendorId));
+    
+    // Fetch creator details for each ride
+    const ridesWithCreatorInfo = await Promise.all(
+      vendorRides.map(async (ride) => {
+        const creator = await this.getUser(ride.creatorId);
+        return {
+          ...ride,
+          creatorName: creator ? creator.name || creator.discordUsername : "Unknown",
+        };
+      })
+    );
+    
+    return ridesWithCreatorInfo;
+  }
+
+  async getUserJoinedRides(userId: number): Promise<Ride[]> {
+    // Get all rides where the user is a passenger (but not the creator)
+    const passengers = await db
+      .select()
+      .from(ridePassengers)
+      .where(eq(ridePassengers.userId, userId));
+    
+    // Extract ride IDs from passenger records
+    const rideIds = passengers.map(p => p.rideId);
+    
+    if (rideIds.length === 0) {
+      return [];
+    }
+    
+    // Get all rides with those IDs
+    const joinedRides = await db
+      .select()
+      .from(rides)
+      .where(
+        // Using a more complex filter since we don't have a direct "in" operator
+        rideIds.map(id => eq(rides.id, id)).reduce((acc, condition) => {
+          if (!acc) return condition;
+          return { type: 'or', left: acc, right: condition } as any;
+        }, null as any)
+      );
+    
+    // Filter out rides created by the user and add creator info
+    const filteredRides = joinedRides.filter(ride => ride.creatorId !== userId);
+    
+    // Fetch creator details for each ride
+    const ridesWithCreatorInfo = await Promise.all(
+      filteredRides.map(async (ride) => {
+        const creator = await this.getUser(ride.creatorId);
+        return {
+          ...ride,
+          creatorName: creator ? creator.name || creator.discordUsername : "Unknown",
+        };
+      })
+    );
+    
+    return ridesWithCreatorInfo;
   }
 
   async assignVendor(rideId: number, vendorId: number): Promise<Ride> {

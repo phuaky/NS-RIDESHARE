@@ -68,7 +68,7 @@ export default function GuidePage() {
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
-      <main className="container mx-auto py-6 px-4">
+      <main className="container mx-auto py-6 px-4 pt-20">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-2">Singapore-Forest City Travel Guide</h1>
           <p className="text-muted-foreground mb-6">

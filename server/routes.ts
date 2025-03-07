@@ -70,6 +70,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const rides = await storage.getRides();
     res.json(rides);
   });
+  
+  app.get("/api/rides/user/joined", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    try {
+      const joinedRides = await storage.getUserJoinedRides(req.user.id);
+      res.json(joinedRides);
+    } catch (error) {
+      console.error("Error fetching user joined rides:", error);
+      res.status(500).json({ error: "Server error fetching joined rides" });
+    }
+  });
 
   app.get("/api/rides/:id", async (req, res) => {
     const rideId = parseInt(req.params.id);
@@ -87,8 +99,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Ride not found" });
       }
 
-      console.log(`Successfully retrieved ride with ID ${rideId}:`, ride);
-      res.json(ride);
+      // Get detailed creator information
+      const creator = await storage.getUser(ride.creatorId);
+      
+      // Add creator details to the ride object
+      const rideWithCreator = {
+        ...ride,
+        creator: creator ? {
+          id: creator.id,
+          name: creator.name,
+          discordUsername: creator.discordUsername,
+          whatsappNumber: creator.whatsappNumber,
+          malaysianNumber: creator.malaysianNumber,
+          revolutUsername: creator.revolutUsername
+        } : undefined
+      };
+
+      console.log(`Successfully retrieved ride with ID ${rideId}`);
+      res.json(rideWithCreator);
     } catch (error) {
       console.error(`Error fetching ride with ID ${rideId}:`, error);
       res.status(500).json({ error: "Server error fetching ride" });
@@ -146,6 +174,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(updatedRide);
     } catch (error) {
       console.error("Ride update error:", error);
+      res.status(400).json({ error: (error as Error).message });
+    }
+  });
+  
+  app.delete("/api/rides/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+
+    try {
+      const rideId = parseInt(req.params.id);
+      const ride = await storage.getRide(rideId);
+
+      if (!ride) {
+        return res.status(404).json({ error: "Ride not found" });
+      }
+
+      // Check if user is the creator
+      if (req.user.id !== ride.creatorId) {
+        return res.status(403).json({ error: "Not authorized to delete this ride" });
+      }
+      
+      // Get the passengers for this ride
+      const passengers = await storage.getPassengers(rideId);
+      
+      // Check if anyone besides the creator has joined
+      const nonCreatorPassengers = passengers.filter(p => p.userId !== req.user.id);
+      if (nonCreatorPassengers.length > 0) {
+        return res.status(400).json({ 
+          error: "Cannot delete ride with other passengers. Ask them to leave first." 
+        });
+      }
+
+      // Delete the ride
+      await storage.deleteRide(rideId);
+      res.json({ success: true, message: "Ride deleted successfully" });
+    } catch (error) {
+      console.error("Ride deletion error:", error);
       res.status(400).json({ error: (error as Error).message });
     }
   });

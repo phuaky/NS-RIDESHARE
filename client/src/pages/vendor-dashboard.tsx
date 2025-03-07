@@ -46,7 +46,7 @@ export default function VendorDashboard() {
     return (
       <div className="min-h-screen">
         <NavBar />
-        <div className="flex items-center justify-center min-h-[80vh]">
+        <div className="flex items-center justify-center min-h-[80vh] pt-20">
           <Loader2 className="h-8 w-8 animate-spin text-border" />
         </div>
       </div>
@@ -56,7 +56,7 @@ export default function VendorDashboard() {
   return (
     <div className="min-h-screen">
       <NavBar />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20">
         <Tabs defaultValue="assigned">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
             <TabsTrigger value="assigned">My Rides</TabsTrigger>

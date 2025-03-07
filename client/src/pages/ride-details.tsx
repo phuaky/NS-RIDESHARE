@@ -173,10 +173,11 @@ export default function RideDetails() {
 
     // Add dropoff locations from ride
     ride.dropoffLocations.forEach((loc, index) => {
+      const locationName = typeof loc === 'string' ? loc : (loc.location || 'Unknown location');
       locations.push({
         id: `dropoff-${index}`,
         position: [1.3521 + (index * 0.01), 103.8198 + (index * 0.01)], // This should be replaced with actual coordinates
-        name: loc
+        name: locationName
       });
     });
 
@@ -535,23 +536,23 @@ export default function RideDetails() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium">{creator?.name}</p>
+                          <p className="font-medium">{ride.creator?.name || ride.creator?.discordUsername || "Unknown"}</p>
                           <p className="text-sm text-muted-foreground">Organizer</p>
                         </div>
                         <div className="flex space-x-1">
                           <ContactInfo
                             label="WhatsApp"
-                            value={creator?.whatsappNumber}
+                            value={ride.creator?.whatsappNumber}
                             icon={Phone}
                           />
                           <ContactInfo
                             label="Malaysian Number"
-                            value={creator?.malaysianNumber}
+                            value={ride.creator?.malaysianNumber}
                             icon={Phone}
                           />
                           <ContactInfo
                             label="Discord"
-                            value={creator?.discordUsername}
+                            value={ride.creator?.discordUsername}
                             icon={Mail}
                           />
                         </div>
@@ -715,7 +716,7 @@ export default function RideDetails() {
                           <div key={passenger.id} className="border rounded-md p-3">
                             <div className="flex justify-between items-start">
                               <div>
-                                <h4 className="font-medium">{passenger.user?.fullName || "Unknown User"}</h4>
+                                <h4 className="font-medium">{passenger.user?.name || passenger.user?.discordUsername || "Unknown User"}</h4>
                                 <p className="text-sm text-muted-foreground">
                                   {passenger.dropoffLocation}
                                   {passenger.dropoffSequence && (
@@ -770,6 +771,10 @@ export default function RideDetails() {
                       <CardTitle className="text-lg">Communication</CardTitle>
                     </CardHeader>
                     <CardContent>
+                      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-md flex items-center text-amber-800">
+                        <AlertTriangle className="h-5 w-5 mr-2 flex-shrink-0" />
+                        <p>Group communication setup is not working yet. Coming soon!</p>
+                      </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Button
                           variant="outline"
@@ -817,6 +822,10 @@ export default function RideDetails() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-md flex items-center text-amber-800">
+                    <AlertTriangle className="h-5 w-5 mr-2 flex-shrink-0" />
+                    <p>Maps functionality is not working yet. Coming soon!</p>
+                  </div>
                   <LocationMap
                     selectedLocations={dropoffLocations}
                     height="400px"
@@ -834,7 +843,16 @@ export default function RideDetails() {
                       {ride.dropoffLocations.map((location, index) => (
                         <div key={index} className="p-2 border rounded-md">
                           <Badge variant="outline">Dropoff {index + 1}</Badge>
-                          <p className="mt-1">{location}</p>
+                          <p className="mt-1">
+                            {typeof location === 'string' 
+                              ? location 
+                              : (location.location || 'Unknown location')}
+                          </p>
+                          {typeof location !== 'string' && location.passengerCount > 0 && (
+                            <p className="text-xs text-muted-foreground">
+                              Passengers: {location.passengerCount}
+                            </p>
+                          )}
                         </div>
                       ))}
 

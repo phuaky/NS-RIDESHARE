@@ -3,7 +3,7 @@ import { NavBar } from "@/components/nav-bar";
 import { RideCard } from "@/components/ride-card";
 import { useAuth } from "@/hooks/use-auth";
 import { Ride } from "@shared/schema";
-import { Loader2, Map, Share2, Info } from "lucide-react";
+import { Loader2, Map, Share2, Info, Edit } from "lucide-react";
 import { useLocation } from "wouter";
 import { SequenceManager } from "@/components/sequence-manager";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -17,8 +17,15 @@ export default function HomePage() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<string>("all");
   
-  const { data: rides, isLoading } = useQuery<Ride[]>({
+  // Fetch all rides
+  const { data: rides, isLoading: isLoadingRides } = useQuery<Ride[]>({
     queryKey: ["/api/rides"],
+  });
+  
+  // Fetch rides that the user has joined (but not created)
+  const { data: joinedRides, isLoading: isLoadingJoined } = useQuery<Ride[]>({
+    queryKey: ["/api/rides/user/joined"],
+    enabled: !!user && activeTab === 'my-rides', // Only fetch when user is logged in and on My Rides tab
   });
   
   // Generate shareable trip summary
@@ -52,6 +59,8 @@ export default function HomePage() {
     }
   };
 
+  const isLoading = isLoadingRides || (activeTab === 'my-rides' && isLoadingJoined);
+
   if (isLoading) {
     return (
       <div className="min-h-screen">
@@ -63,23 +72,31 @@ export default function HomePage() {
     );
   }
 
+  // Get rides created by the user
+  const userCreatedRides = rides?.filter(ride => 
+    user && ride.creatorId === user.id
+  ) || [];
+  
+  // Combine created and joined rides for My Rides tab
+  const myRides = [
+    ...(userCreatedRides || []),
+    ...(joinedRides || [])
+  ];
+  
   // Filter rides based on active tab
-  const filteredRides = rides?.filter(ride => {
-    if (activeTab === 'all') return true;
-    if (activeTab === 'my-rides' && user) return ride.creatorId === user.id;
-    if (activeTab === 'joined') return false; // We'll need to fetch joined rides separately
-    return true;
-  });
+  const filteredRides = activeTab === 'all' 
+    ? rides 
+    : (activeTab === 'my-rides' ? myRides : []);
   
   // Get rides created by the user that are in the FC->SG direction
-  const userFCtoSGRides = rides?.filter(ride => 
-    user && ride.creatorId === user.id && ride.direction === "FC->SG"
+  const userFCtoSGRides = userCreatedRides.filter(ride => 
+    ride.direction === "FC->SG"
   ) || [];
 
   return (
     <div className="min-h-screen">
       <NavBar />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20">{/* Added pt-20 for navbar spacing */}
         <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl font-bold">Rides</h1>
@@ -142,40 +159,84 @@ export default function HomePage() {
               </div>
             )}
             
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredRides?.map((ride) => (
-                <div key={ride.id} className="relative">
-                  <RideCard
-                    ride={ride}
-                    showActions={false}
-                  />
-                  <div className="mt-2 flex justify-end gap-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => generateTripSummary(ride)}
-                      className="flex items-center"
-                    >
-                      <Share2 className="h-4 w-4 mr-1" />
-                      Share
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      onClick={() => setLocation(`/rides/${ride.id}`)}
-                      className="flex items-center"
-                    >
-                      <Info className="h-4 w-4 mr-1" />
-                      View Details
-                    </Button>
-                  </div>
+            {/* Display rides organized by the user */}
+            {userCreatedRides.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold mb-4">Rides You Organized</h2>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {userCreatedRides.map((ride) => (
+                    <div key={ride.id} className="relative">
+                      <RideCard
+                        ride={ride}
+                        showActions={false}
+                      />
+                      <div className="mt-2 flex justify-end gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => generateTripSummary(ride)}
+                          className="flex items-center"
+                        >
+                          <Share2 className="h-4 w-4 mr-1" />
+                          Share
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          onClick={() => setLocation(`/rides/edit/${ride.id}`)}
+                          className="flex items-center"
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-              {filteredRides?.length === 0 && (
-                <p className="text-muted-foreground col-span-full text-center py-8">
-                  You haven't created any rides yet.
-                </p>
-              )}
-            </div>
+              </div>
+            )}
+            
+            {/* Display rides joined by the user */}
+            {joinedRides && joinedRides.length > 0 && (
+              <div>
+                <h2 className="text-lg font-semibold mb-4">Rides You Joined</h2>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {joinedRides.map((ride) => (
+                    <div key={ride.id} className="relative">
+                      <RideCard
+                        ride={ride}
+                        showActions={false}
+                      />
+                      <div className="mt-2 flex justify-end gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => generateTripSummary(ride)}
+                          className="flex items-center"
+                        >
+                          <Share2 className="h-4 w-4 mr-1" />
+                          Share
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          onClick={() => setLocation(`/rides/${ride.id}`)}
+                          className="flex items-center"
+                        >
+                          <Info className="h-4 w-4 mr-1" />
+                          View Details
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Show message if no rides */}
+            {myRides.length === 0 && (
+              <p className="text-muted-foreground col-span-full text-center py-8">
+                You haven't created or joined any rides yet.
+              </p>
+            )}
           </TabsContent>
         </Tabs>
       </main>

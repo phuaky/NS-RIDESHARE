@@ -103,7 +103,7 @@ export default function JoinRide() {
     return (
       <div className="min-h-screen">
         <NavBar />
-        <div className="max-w-3xl mx-auto px-4 py-8">
+        <div className="max-w-3xl mx-auto px-4 py-8 pt-20">
           <Card className="text-center">
             <CardHeader>
               <CardTitle>Ride Not Found</CardTitle>
@@ -133,7 +133,7 @@ export default function JoinRide() {
   return (
     <div className="min-h-screen">
       <NavBar />
-      <main className="max-w-3xl mx-auto px-4 py-8">
+      <main className="max-w-3xl mx-auto px-4 py-8 pt-20">
         <div className="space-y-8">
           <RideCard ride={ride} showActions={false} />
 

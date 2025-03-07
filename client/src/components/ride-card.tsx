@@ -39,7 +39,7 @@ export function RideCard({ ride, onJoin, onAssign, showActions = true, organizer
             <h3 className="font-semibold">{formatDirection(ride.direction)}</h3>
             <p className="text-sm text-muted-foreground">
               <User className="h-3 w-3 inline-block mr-1" />
-              {organizerName || "Unknown Organizer"}
+              {organizerName || (ride as any).creatorName || "Unknown Organizer"}
             </p>
           </div>
         </div>
