@@ -20,6 +20,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Ride } from "@shared/schema";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { formatDate, isPastDate } from "@/lib/utils";
 
 // Update the interfaces to match the new schema
 interface LocationPoint {
@@ -208,18 +209,16 @@ export default function RideDetails() {
   const remainingSpots = ride ? ride.maxPassengers - totalPassengersCount : 0;
   const isFull = remainingSpots <= 0;
 
-  // Format date for display
-  const formatDate = (dateString: string | Date) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-SG', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true
-    }).format(date);
+  // Format date for display (using our shared utility)
+  const formatDateTime = (dateString: string | Date) => {
+    const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+    return formatDate(date);
+  };
+  
+  // Check if the ride is in the past
+  const isRidePast = (dateString: string | Date) => {
+    const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+    return isPastDate(date);
   };
 
   // Format direction for display
@@ -267,7 +266,7 @@ export default function RideDetails() {
     }
 
     // Create group name based on ride details
-    const groupName = `RideShare: ${formatDirection(ride?.direction || "")} ${formatDate(ride?.date || new Date())}`;
+    const groupName = `RideShare: ${formatDirection(ride?.direction || "")} ${formatDateTime(ride?.date || new Date())}`;
 
     // WhatsApp doesn't have a direct group creation URL, so we'll copy text to clipboard instead
     const messageText = `Create a WhatsApp group called "${groupName}" with these contacts:\n\n${
@@ -312,7 +311,7 @@ export default function RideDetails() {
     }
 
     // Create group name based on ride details
-    const groupName = `RideShare: ${formatDirection(ride?.direction || "")} ${formatDate(ride?.date || new Date())}`;
+    const groupName = `RideShare: ${formatDirection(ride?.direction || "")} ${formatDateTime(ride?.date || new Date())}`;
 
     // Copy Discord usernames to clipboard
     const messageText = `Create a Discord group called "${groupName}" with these users:\n\n${
@@ -335,7 +334,7 @@ export default function RideDetails() {
     if (!ride) return;
 
     const directionText = formatDirection(ride.direction);
-    const dateText = formatDate(ride.date);
+    const dateText = formatDateTime(ride.date);
     const totalCost = ride.cost + (ride.additionalStops * 5);
     const perPersonCost = (totalCost / (ride.maxPassengers || 1)).toFixed(2);
 
@@ -417,7 +416,7 @@ export default function RideDetails() {
                 {formatDirection(ride.direction)}
               </h1>
               <p className="text-muted-foreground">
-                {formatDate(ride.date)}
+                {formatDateTime(ride.date)}
               </p>
             </div>
             <div className="flex gap-2">
@@ -476,7 +475,7 @@ export default function RideDetails() {
                         <Calendar className="h-5 w-5 mr-2 text-muted-foreground shrink-0 mt-0.5" />
                         <div>
                           <h4 className="font-medium">Date & Time</h4>
-                          <p className="text-sm text-muted-foreground">{formatDate(ride.date)}</p>
+                          <p className="text-sm text-muted-foreground">{formatDateTime(ride.date)}</p>
                         </div>
                       </div>
 
@@ -563,7 +562,7 @@ export default function RideDetails() {
               )}
 
               {/* Join Ride Section */}
-              {user && !isCreator && !isUserPassenger && !isFull && (
+              {user && !isCreator && !isUserPassenger && !isFull && !isRidePast(ride.date) && (
                 <Card className="border-green-200 bg-green-50">
                   <CardHeader>
                     <CardTitle className="text-lg">Join This Ride</CardTitle>
@@ -633,16 +632,18 @@ export default function RideDetails() {
 
               {/* Already Joined Section */}
               {user && isUserPassenger && (
-                <Card className="border-blue-200 bg-blue-50">
+                <Card className={`border-blue-200 ${isRidePast(ride.date) ? 'bg-gray-100' : 'bg-blue-50'}`}>
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center">
                       <CheckCircle className="h-5 w-5 mr-2 text-blue-600" />
-                      You've Joined This Ride
+                      {isRidePast(ride.date) ? "This Ride Is Completed" : "You've Joined This Ride"}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-blue-700 mb-4">
-                      You're all set for this trip! The ride organizer will confirm details closer to the departure date.
+                    <p className={`text-sm ${isRidePast(ride.date) ? 'text-gray-600' : 'text-blue-700'} mb-4`}>
+                      {isRidePast(ride.date) 
+                        ? "This ride has already taken place." 
+                        : "You're all set for this trip! The ride organizer will confirm details closer to the departure date."}
                     </p>
                     <Button
                       variant="outline"
@@ -651,6 +652,23 @@ export default function RideDetails() {
                     >
                       View Your Rides
                     </Button>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Past Ride Message */}
+              {isRidePast(ride.date) && !isUserPassenger && (
+                <Card className="border-gray-200 bg-gray-50">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center">
+                      <AlertTriangle className="h-5 w-5 mr-2 text-gray-600" />
+                      This Ride Is In The Past
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600 mb-4">
+                      This ride has already taken place and is no longer available to join.
+                    </p>
                   </CardContent>
                 </Card>
               )}

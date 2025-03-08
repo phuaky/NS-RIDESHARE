@@ -12,6 +12,7 @@ import RideDetails from "@/pages/ride-details";
 import VendorDashboard from "@/pages/vendor-dashboard";
 import GuidePage from "@/pages/guide-page";
 import BusGuidePage from "@/pages/bus-guide-page";
+import ProfilePage from "@/pages/profile";
 import { ProtectedRoute } from "./lib/protected-route";
 
 function Router() {
@@ -29,6 +30,7 @@ function Router() {
       <ProtectedRoute path="/rides/:id/join" component={JoinRide} />
       <Route path="/rides/:id" component={RideDetails} />
       <ProtectedRoute path="/vendor" component={VendorDashboard} />
+      <ProtectedRoute path="/profile" component={ProfilePage} />
       <Route component={NotFound} />
     </Switch>
   );

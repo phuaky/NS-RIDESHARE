@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
-import { insertRideSchema, insertRidePassengerSchema, insertDriverContactSchema } from "@shared/schema";
+import { insertRideSchema, insertRidePassengerSchema, insertDriverContactSchema, type User } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
@@ -371,6 +371,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     const rides = await storage.getVendorRides(req.user.id);
     res.json(rides);
+  });
+  
+  // User profile update endpoint
+  app.patch("/api/users/:id", async (req, res) => {
+    console.log(`Profile update request for user ID: ${req.params.id}`);
+    
+    if (!req.isAuthenticated()) {
+      console.log("User not authenticated for profile update");
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+    
+    const userId = parseInt(req.params.id);
+    console.log(`Authenticated user ID: ${req.user.id}, requested user ID: ${userId}`);
+    
+    // User can only update their own profile
+    if (req.user.id !== userId) {
+      console.log("User attempted to update someone else's profile");
+      return res.status(403).json({ error: "You can only update your own profile" });
+    }
+    
+    try {
+      console.log("Profile update request body:", req.body);
+      
+      // Fields that are allowed to be updated
+      const allowedFields = ['name', 'whatsappNumber', 'malaysianNumber', 'revolutUsername'];
+      const updates: Partial<User> = {};
+      
+      // Filter the request body to only include allowed fields
+      for (const field of allowedFields) {
+        if (req.body[field] !== undefined) {
+          updates[field as keyof typeof updates] = req.body[field];
+        }
+      }
+      
+      console.log("Filtered updates to apply:", updates);
+      
+      const updatedUser = await storage.updateUser(userId, updates);
+      console.log("User updated successfully:", updatedUser.id);
+      
+      // Return the updated user without sensitive information
+      const safeUser = {
+        id: updatedUser.id,
+        discordUsername: updatedUser.discordUsername,
+        name: updatedUser.name,
+        whatsappNumber: updatedUser.whatsappNumber,
+        malaysianNumber: updatedUser.malaysianNumber,
+        revolutUsername: updatedUser.revolutUsername,
+        isVendor: updatedUser.isVendor,
+      };
+      
+      console.log("Sending updated user data");
+      res.json(safeUser);
+    } catch (error) {
+      console.error(`Error updating user ${userId}:`, error);
+      res.status(400).json({ error: (error as Error).message });
+    }
   });
 
   const httpServer = createServer(app);

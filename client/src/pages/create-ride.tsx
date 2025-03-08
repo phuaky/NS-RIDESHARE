@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertRideSchema } from "@shared/schema";
+import { insertRideSchema, type InsertRide } from "@shared/schema";
 import { z } from "zod";
 import { NavBar } from "@/components/nav-bar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -23,6 +23,7 @@ import { useLocation, useRoute } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useState, useEffect } from "react";
+import { formatForDateTimeInput } from "@/lib/utils";
 
 // Define types for the form data
 interface DropoffLocation {
@@ -157,10 +158,12 @@ export default function CreateRide() {
     mutationFn: async (data: any) => {
       const submissionData = { ...data };
 
-      // Ensure date is properly formatted
+      // Ensure date is properly formatted for submission
       if (submissionData.date instanceof Date) {
+        // Convert to ISO string for storage
         submissionData.date = submissionData.date.toISOString();
       } else if (typeof submissionData.date === 'string') {
+        // If date is already a string, parse it first to ensure it's valid
         const date = new Date(submissionData.date);
         if (isNaN(date.getTime())) {
           throw new Error("Invalid date provided");
@@ -356,8 +359,9 @@ export default function CreateRide() {
                   control={form.control}
                   name="date"
                   render={({ field: { value, onChange, ...fieldProps } }) => {
+                    // Format date for datetime-local input
                     const dateValue = value instanceof Date 
-                      ? value.toISOString().slice(0, 16) 
+                      ? formatForDateTimeInput(value)
                       : '';
 
                     return (
@@ -369,9 +373,10 @@ export default function CreateRide() {
                             value={dateValue}
                             onChange={(e) => {
                               if (e.target.value) {
-                                const date = new Date(e.target.value);
-                                if (!isNaN(date.getTime())) {
-                                  onChange(date);
+                                // When user inputs date, store it directly
+                                const inputDate = new Date(e.target.value);
+                                if (!isNaN(inputDate.getTime())) {
+                                  onChange(inputDate);
                                 }
                               }
                             }}

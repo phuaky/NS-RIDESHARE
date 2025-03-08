@@ -3,20 +3,24 @@ import { NavBar } from "@/components/nav-bar";
 import { RideCard } from "@/components/ride-card";
 import { useAuth } from "@/hooks/use-auth";
 import { Ride } from "@shared/schema";
-import { Loader2, Map, Share2, Info, Edit, UserPlus } from "lucide-react";
+import { Loader2, Map, Share2, Info, Edit, UserPlus, ArrowUpDown, Filter, Plus } from "lucide-react";
 import { useLocation } from "wouter";
 import { SequenceManager } from "@/components/sequence-manager";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { isPastDate } from "@/lib/utils";
 
 export default function HomePage() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<string>("all");
+  const [sortOption, setSortOption] = useState<string>("dateAsc");
+  const [directionFilter, setDirectionFilter] = useState<string>("all");
 
   // Fetch all rides
   const { data: rides, isLoading: isLoadingRides } = useQuery<Ride[]>({
@@ -84,10 +88,45 @@ export default function HomePage() {
     ...(joinedRides || [])
   ];
 
-  // Filter rides based on active tab
-  const filteredRides = activeTab === 'all'
+  // Helper to check if a ride is in the past
+  const isRidePast = (ride: Ride) => {
+    return isPastDate(new Date(ride.date));
+  };
+
+  // Filter rides based on active tab and direction
+  let filteredRides = activeTab === 'all'
     ? rides
     : (activeTab === 'my-rides' ? myRides : []);
+
+  // Apply direction filter
+  if (directionFilter !== 'all') {
+    filteredRides = filteredRides?.filter(ride => ride.direction === directionFilter) || [];
+  }
+
+  // Sort rides
+  const sortedRides = [...(filteredRides || [])].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    
+    // Remove past rides (optional, can be handled by filter too)
+    const isPastA = isRidePast(a);
+    const isPastB = isRidePast(b);
+    
+    // If both are past or both are future, sort according to selected option
+    if (isPastA === isPastB) {
+      switch (sortOption) {
+        case 'dateAsc':
+          return dateA.getTime() - dateB.getTime();
+        case 'dateDesc':
+          return dateB.getTime() - dateA.getTime();
+        default:
+          return dateA.getTime() - dateB.getTime();
+      }
+    }
+    
+    // Put future rides before past ones
+    return isPastA ? 1 : -1;
+  });
 
   // Get rides created by the user that are in the FC->SG direction
   const userFCtoSGRides = userCreatedRides.filter(ride =>
@@ -98,6 +137,20 @@ export default function HomePage() {
     <div className="min-h-screen">
       <NavBar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20">{/* Added pt-20 for navbar spacing */}
+        {/* Create Ride Button - only show when logged in */}
+        {user && !user?.isVendor && (
+          <div className="mb-8 flex justify-center">
+            <Button 
+              size="lg" 
+              className="w-full max-w-md py-6 text-lg"
+              onClick={() => setLocation("/rides/create")}
+            >
+              <Plus className="h-5 w-5 mr-2" />
+              Create New Ride
+            </Button>
+          </div>
+        )}
+        
         {/* Login Benefits Banner - Show only when user is not logged in */}
         {!user && (
           <Card className="mb-8 bg-primary/5 border-primary/20">
@@ -148,10 +201,44 @@ export default function HomePage() {
               <TabsTrigger value="my-rides">My Rides</TabsTrigger>
             </TabsList>
           </div>
+          
+          {/* Filtering and Sorting Controls */}
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="flex-1">
+              <Select value={directionFilter} onValueChange={setDirectionFilter}>
+                <SelectTrigger className="w-full">
+                  <div className="flex items-center">
+                    <Filter className="mr-2 h-4 w-4" />
+                    <SelectValue placeholder="Filter by direction" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Directions</SelectItem>
+                  <SelectItem value="SG->FC">Singapore to Forest City</SelectItem>
+                  <SelectItem value="FC->SG">Forest City to Singapore</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="flex-1">
+              <Select value={sortOption} onValueChange={setSortOption}>
+                <SelectTrigger className="w-full">
+                  <div className="flex items-center">
+                    <ArrowUpDown className="mr-2 h-4 w-4" />
+                    <SelectValue placeholder="Sort rides" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="dateAsc">Earliest First</SelectItem>
+                  <SelectItem value="dateDesc">Latest First</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
 
           <TabsContent value="all" className="space-y-8">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredRides?.map((ride) => (
+              {sortedRides.map((ride) => (
                 <RideCard
                   key={ride.id}
                   ride={ride}
@@ -163,7 +250,7 @@ export default function HomePage() {
                   }
                 />
               ))}
-              {filteredRides?.length === 0 && (
+              {sortedRides.length === 0 && (
                 <p className="text-muted-foreground col-span-full text-center py-8">
                   No rides available at the moment.
                 </p>

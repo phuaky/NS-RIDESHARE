@@ -123,4 +123,23 @@ export function setupAuth(app: Express) {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     res.json(req.user);
   });
+  
+  app.get("/api/auth/me", (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    // Return user info without sensitive data
+    const safeUser = {
+      id: req.user.id,
+      discordUsername: req.user.discordUsername,
+      name: req.user.name,
+      whatsappNumber: req.user.whatsappNumber,
+      malaysianNumber: req.user.malaysianNumber,
+      revolutUsername: req.user.revolutUsername,
+      isVendor: req.user.isVendor,
+      companyName: req.user.companyName,
+      driverDetails: req.user.driverDetails,
+    };
+    
+    res.json(safeUser);
+  });
 }

@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Car, LogOut, LogIn, Map, Menu, X, Info } from "lucide-react";
+import { Car, LogOut, LogIn, Menu, X, Info, UserCog, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export function NavBar() {
@@ -57,11 +57,6 @@ export function NavBar() {
           {!isMobile && (
             <div className="flex">
               <div className="flex items-center space-x-4">
-                <Link href="/home" className="flex items-center px-3 py-2 text-sm font-medium">
-                  <Map className="h-4 w-4 mr-2" />
-                  Available Rides
-                </Link>
-
                 <Link href="/guide" className="flex items-center px-3 py-2 text-sm font-medium">
                   <Info className="h-4 w-4 mr-2" />
                   Travel Guide
@@ -75,9 +70,15 @@ export function NavBar() {
                       </Link>
                     ) : (
                       <Link href="/rides/create" className="flex items-center px-3 py-2 text-sm font-medium">
+                        <Plus className="h-4 w-4 mr-2" />
                         Create Ride
                       </Link>
                     )}
+                    
+                    <Link href="/profile" className="flex items-center px-3 py-2 text-sm font-medium">
+                      <UserCog className="h-4 w-4 mr-2" />
+                      Profile
+                    </Link>
                   </>
                 )}
               </div>
@@ -113,15 +114,6 @@ export function NavBar() {
         {isMobile && menuOpen && (
           <div className="absolute top-16 left-0 right-0 bg-white border-b shadow-lg z-50 px-4 py-4 space-y-3">
             <Link 
-              href="/home" 
-              className="block px-3 py-3 text-base font-medium hover:bg-gray-50 rounded-md"
-              onClick={() => setMenuOpen(false)}
-            >
-              <Map className="h-4 w-4 mr-2 inline-block" />
-              Available Rides
-            </Link>
-
-            <Link 
               href="/guide" 
               className="block px-3 py-3 text-base font-medium hover:bg-gray-50 rounded-md"
               onClick={() => setMenuOpen(false)}
@@ -146,9 +138,19 @@ export function NavBar() {
                     className="block px-3 py-3 text-base font-medium hover:bg-gray-50 rounded-md"
                     onClick={() => setMenuOpen(false)}
                   >
+                    <Plus className="h-4 w-4 mr-2 inline-block" />
                     Create Ride
                   </Link>
                 )}
+                
+                <Link 
+                  href="/profile" 
+                  className="block px-3 py-3 text-base font-medium hover:bg-gray-50 rounded-md"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <UserCog className="h-4 w-4 mr-2 inline-block" />
+                  Profile
+                </Link>
               </>
             )}
 

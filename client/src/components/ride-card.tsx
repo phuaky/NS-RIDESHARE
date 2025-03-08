@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Ride } from "@shared/schema";
 import { MapPin, Calendar, Users, ArrowRightLeft, Info, User, ChevronRight } from "lucide-react";
-import { format } from "date-fns";
 import { Link } from "wouter";
+import { formatDate, isPastDate } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
 
 interface RideCardProps {
   ride: Ride;
@@ -25,14 +26,20 @@ export function RideCard({ ride, onJoin, onAssign, showActions = true, organizer
     return direction === "SG->FC" ? "Singapore to Forest City" : "Forest City to Singapore";
   };
 
-  // Format date for display
-  const formatDate = (date: string | Date) => {
-    return format(new Date(date), "EEE, MMM d, h:mm a");
+  // Check if a ride is in the past
+  const isInPast = (date: string | Date) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return isPastDate(dateObj);
   };
+
+  // Check if ride is in the past
+  const ridePast = isInPast(ride.date);
+  const { user } = useAuth();
+  const isUserRide = user && ride.creatorId === user.id;
 
   return (
     <Link href={`/rides/${ride.id}`}>
-      <Card className="w-full transition-all duration-200 hover:shadow-lg hover:border-primary/50 cursor-pointer group">
+      <Card className={`w-full transition-all duration-200 hover:shadow-lg hover:border-primary/50 cursor-pointer group ${ridePast ? 'opacity-60' : ''}`}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div className="flex items-center space-x-2">
             <ArrowRightLeft className="h-4 w-4" />
@@ -45,9 +52,19 @@ export function RideCard({ ride, onJoin, onAssign, showActions = true, organizer
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant={isFullyBooked ? "secondary" : "default"}>
-              {isFullyBooked ? "Full" : ride.status}
-            </Badge>
+            {ridePast ? (
+              <Badge variant="outline">Past</Badge>
+            ) : isFullyBooked ? (
+              <Badge variant="secondary">Full</Badge>
+            ) : isUserRide ? (
+              <Badge variant="outline" className="bg-blue-50 border-blue-200 text-blue-700">
+                Your Ride
+              </Badge>
+            ) : (
+              <Badge variant="default" className="bg-green-600 hover:bg-green-700">
+                Join
+              </Badge>
+            )}
             <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1" />
           </div>
         </CardHeader>
@@ -55,7 +72,7 @@ export function RideCard({ ride, onJoin, onAssign, showActions = true, organizer
           <div className="space-y-2">
             <div className="flex items-center text-sm">
               <Calendar className="h-4 w-4 mr-2" />
-              {formatDate(ride.date)}
+              {formatDate(new Date(ride.date))}
             </div>
             <div className="flex items-center text-sm">
               <MapPin className="h-4 w-4 mr-2" />
