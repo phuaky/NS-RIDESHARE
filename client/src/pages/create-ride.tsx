@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertRideSchema } from "@shared/schema";
+import { z } from "zod";
 import { NavBar } from "@/components/nav-bar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,23 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useState, useEffect } from "react";
 
+// Define types for the form data
+interface DropoffLocation {
+  location: string;
+  passengerCount: number;
+}
+
+interface RideData {
+  id?: string;
+  creatorId?: string;
+  direction: "SG->FC" | "FC->SG";
+  date: Date | string;
+  maxPassengers: number;
+  pickupLocation?: string;
+  dropoffLocations?: DropoffLocation[] | string[];
+  organizerPassengerCount?: number;
+}
+
 export default function CreateRide() {
   const [location, setLocation] = useLocation();
   const [, params] = useRoute("/rides/edit/:id");
@@ -34,17 +52,21 @@ export default function CreateRide() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Fetch ride data if editing
-  const { data: rideToEdit, isLoading } = useQuery({
+  const { data: rideToEdit, isLoading } = useQuery<RideData>({
     queryKey: [`/api/rides/${rideId}`],
     enabled: isEditing,
   });
 
+  // Extended form schema with organizerLocation field
+  const formSchema = insertRideSchema.extend({
+    organizerLocation: z.string().min(1, "Please specify your location"),
+    organizerPassengerCount: insertRideSchema.shape.organizerPassengerCount.default(1),
+    dropoffLocations: insertRideSchema.shape.dropoffLocations.default([])
+  });
+
   // Form setup with validation
   const form = useForm({
-    resolver: zodResolver(insertRideSchema.extend({
-      organizerPassengerCount: insertRideSchema.shape.organizerPassengerCount.default(1),
-      dropoffLocations: insertRideSchema.shape.dropoffLocations.default([])
-    })),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       direction: "SG->FC",
       date: new Date(),
@@ -52,7 +74,9 @@ export default function CreateRide() {
       pickupLocation: "",
       dropoffLocations: [],
       organizerPassengerCount: 1,
+      organizerLocation: "",
     },
+    mode: "onBlur", // Validate fields when they lose focus
   });
 
   // Load ride data into form when editing
@@ -71,17 +95,62 @@ export default function CreateRide() {
       // Convert ISO string date to Date object
       const date = new Date(rideToEdit.date);
 
+      // Ensure we have a valid passengerCount
+      const passengerCount = 
+        Array.isArray(rideToEdit.dropoffLocations) && rideToEdit.dropoffLocations[0] && 
+        typeof rideToEdit.dropoffLocations[0] === 'object' && 'passengerCount' in rideToEdit.dropoffLocations[0]
+          ? rideToEdit.dropoffLocations[0].passengerCount
+          : typeof rideToEdit.organizerPassengerCount === 'number' 
+            ? rideToEdit.organizerPassengerCount 
+            : 1;
+
+      // Extract organizer location based on direction
+      let organizerLocation = "";
+      
+      if (rideToEdit.direction === "SG->FC") {
+        // For SG->FC, the organizer location is the pickup location
+        organizerLocation = rideToEdit.pickupLocation || "";
+      } else {
+        // For FC->SG, the organizer location is the first dropoff location
+        if (Array.isArray(rideToEdit.dropoffLocations) && rideToEdit.dropoffLocations[0]) {
+          if (typeof rideToEdit.dropoffLocations[0] === 'object' && 'location' in rideToEdit.dropoffLocations[0]) {
+            organizerLocation = rideToEdit.dropoffLocations[0].location;
+          } else if (typeof rideToEdit.dropoffLocations[0] === 'string') {
+            organizerLocation = rideToEdit.dropoffLocations[0];
+          }
+        }
+      }
+
       // Reset form with ride data
       form.reset({
-        ...rideToEdit,
+        direction: rideToEdit.direction,
         date,
-        organizerPassengerCount: rideToEdit.dropoffLocations?.[0]?.passengerCount || 1,
-        dropoffLocations: rideToEdit.direction === "FC->SG" 
-          ? rideToEdit.dropoffLocations.map(d => d.location).join('\n')
-          : rideToEdit.dropoffLocations
+        maxPassengers: rideToEdit.maxPassengers,
+        pickupLocation: rideToEdit.pickupLocation || "",
+        dropoffLocations: [],  // We'll manage this separately
+        organizerPassengerCount: passengerCount,
+        organizerLocation: organizerLocation,
       });
     }
   }, [rideToEdit, isEditing, isLoading, form, toast, setLocation, user]);
+
+  // Watch form fields for dynamic updates
+  const currentDirection = form.watch('direction');
+  const organizerLocation = form.watch('organizerLocation');
+  const organizerPassengerCount = form.watch('organizerPassengerCount');
+
+  // Update dropoffLocations whenever organizerLocation or organizerPassengerCount changes
+  useEffect(() => {
+    if (organizerLocation && organizerPassengerCount) {
+      if (currentDirection === "FC->SG") {
+        form.setValue(
+          "dropoffLocations",
+          [{ location: organizerLocation.trim(), passengerCount: organizerPassengerCount }],
+          { shouldValidate: true }
+        );
+      }
+    }
+  }, [organizerLocation, organizerPassengerCount, currentDirection, form]);
 
   // Mutation for creating or updating a ride
   const rideMutation = useMutation({
@@ -101,30 +170,31 @@ export default function CreateRide() {
 
       // Ensure organizerPassengerCount is a number
       submissionData.organizerPassengerCount = Number(submissionData.organizerPassengerCount);
-      if (isNaN(submissionData.organizerPassengerCount)) {
+      if (isNaN(submissionData.organizerPassengerCount) || submissionData.organizerPassengerCount < 1) {
         submissionData.organizerPassengerCount = 1;
+      }
+
+      // Set pickupLocation based on direction
+      if (submissionData.direction === "FC->SG") {
+        submissionData.pickupLocation = "Forest City"; // Fixed pickup point for FC->SG
+      } else {
+        submissionData.pickupLocation = submissionData.organizerLocation.trim(); // Organizer's pickup for SG->FC
       }
 
       // Format dropoff locations based on direction
       if (submissionData.direction === "FC->SG") {
-        // For FC->SG rides
-        const locations = typeof submissionData.dropoffLocations === 'string'
-          ? submissionData.dropoffLocations.split('\n').filter(Boolean).map(loc => loc.trim())
-          : Array.isArray(submissionData.dropoffLocations)
-            ? submissionData.dropoffLocations
-            : [];
-
-        submissionData.dropoffLocations = locations.map(location => ({
-          location: location,
-          passengerCount: submissionData.organizerPassengerCount
-        }));
+        // For FC->SG, use the already formatted dropoffLocations (set by useEffect)
+        // We don't need to do anything as it's already correctly formatted
       } else {
-        // For SG->FC rides
+        // For SG->FC, set dropoffLocations to the organizer's pickup location
         submissionData.dropoffLocations = [{
-          location: submissionData.pickupLocation,
-          passengerCount: submissionData.organizerPassengerCount
+          location: submissionData.organizerLocation.trim(),
+          passengerCount: Number(submissionData.organizerPassengerCount)
         }];
       }
+
+      // Remove temporary field
+      delete submissionData.organizerLocation;
 
       // Send request to API
       if (isEditing && rideId) {
@@ -199,8 +269,13 @@ export default function CreateRide() {
     }
   };
 
-  // Watch form fields for conditional rendering
-  const currentDirection = form.watch('direction');
+  // Ensure organizerPassengerCount has a default value when switching directions
+  useEffect(() => {
+    const currentValue = form.getValues('organizerPassengerCount');
+    if (!currentValue || isNaN(Number(currentValue))) {
+      form.setValue('organizerPassengerCount', 1);
+    }
+  }, [currentDirection, form]);
 
   return (
     <div className="min-h-screen pt-20">
@@ -211,7 +286,7 @@ export default function CreateRide() {
             <CardTitle>{isEditing ? "Edit Ride" : "Create a New Ride"}</CardTitle>
             <CardDescription>
               {currentDirection === "FC->SG" 
-                ? "Enter the drop-off locations in Singapore and the number of passengers in your group"
+                ? "Enter your drop-off location in Singapore and the number of passengers in your group"
                 : "Enter your pickup location in Singapore and the number of passengers"}
             </CardDescription>
           </CardHeader>
@@ -249,27 +324,6 @@ export default function CreateRide() {
                             Forest City to Singapore
                           </Button>
                         </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Passenger Count - Moved outside direction conditional */}
-                <FormField
-                  control={form.control}
-                  name="organizerPassengerCount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Number of Passengers in Your Group</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="1"
-                          max="4"
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
-                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -349,53 +403,61 @@ export default function CreateRide() {
                     </Alert>
                   )}
 
-                  {currentDirection === "SG->FC" ? (
-                    <FormField
-                      control={form.control}
-                      name="pickupLocation"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Pickup Location in Singapore</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              {...field} 
-                              placeholder="Enter your pickup location details"
-                              className="min-h-[100px]"
-                            />
-                          </FormControl>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            You can enter multiple lines of text for detailed location instructions
-                          </p>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  ) : (
-                    <FormField
-                      control={form.control}
-                      name="dropoffLocations"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Drop-off Locations in Singapore</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              className="min-h-[100px]"
-                              placeholder="Enter one location per line"
-                              value={Array.isArray(field.value) ? field.value.join('\n') : field.value || ''}
-                              onChange={(e) => {
-                                const locations = e.target.value.split('\n').filter(loc => loc.trim());
-                                field.onChange(locations);
-                              }}
-                            />
-                          </FormControl>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Enter one location per line. These locations will be visited in sequence.
-                          </p>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
+                  {/* Passenger Count - Same for both directions */}
+                  <FormField
+                    control={form.control}
+                    name="organizerPassengerCount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Number of Passengers at Your Location</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="1"
+                            max="4"
+                            {...field}
+                            value={field.value === undefined || field.value === null ? 1 : field.value}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value);
+                              // Ensure value is valid, defaulting to 1 if parsing fails
+                              field.onChange(isNaN(value) ? 1 : Math.max(1, Math.min(4, value)));
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Organizer Location - dynamic label based on direction */}
+                  <FormField
+                    control={form.control}
+                    name="organizerLocation"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {currentDirection === "SG->FC" 
+                            ? "Your Pickup Location in Singapore" 
+                            : "Your Drop-off Location in Singapore"}
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            {...field} 
+                            placeholder={
+                              currentDirection === "SG->FC" 
+                                ? "e.g., Pasir Ris MRT" 
+                                : "e.g., Tampines Mall"
+                            }
+                            className="min-h-[100px]"
+                          />
+                        </FormControl>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          You can enter multiple lines of text for detailed location instructions
+                        </p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 {/* Submit and Delete Buttons */}
