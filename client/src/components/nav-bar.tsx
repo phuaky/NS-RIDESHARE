@@ -1,36 +1,28 @@
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Car, LogOut, LogIn, Map, Menu, X } from "lucide-react";
+import { Car, LogOut, LogIn, Map, Menu, X, Info } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export function NavBar() {
   const { user, logoutMutation } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-  
+
   // Use a simpler approach for detecting mobile view
   const [isMobile, setIsMobile] = useState(false);
-  
+
   // Set up mobile detection on mount and window resize
   useEffect(() => {
-    // Function to check if the screen is mobile-sized
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
-    // Run on initial mount
+
     checkMobile();
-    
-    // Set up event listener for window resize
     window.addEventListener('resize', checkMobile);
-    
-    // Clean up
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-  
-  // Function to toggle menu open/closed
+
   const toggleMenu = () => {
-    console.log("Menu button clicked, current state:", menuOpen);
     setMenuOpen(prevState => !prevState);
   };
 
@@ -47,22 +39,16 @@ export function NavBar() {
           {/* Mobile menu button */}
           {isMobile && (
             <Button
-              variant="default"
+              variant="ghost"
               size="sm"
               onClick={toggleMenu}
               className="relative z-20"
               type="button"
             >
               {menuOpen ? (
-                <>
-                  <X className="h-4 w-4 mr-2" />
-                  Close
-                </>
+                <X className="h-4 w-4" />
               ) : (
-                <>
-                  <Menu className="h-4 w-4 mr-2" />
-                  Menu
-                </>
+                <Menu className="h-4 w-4" />
               )}
             </Button>
           )}
@@ -75,7 +61,12 @@ export function NavBar() {
                   <Map className="h-4 w-4 mr-2" />
                   Available Rides
                 </Link>
-                
+
+                <Link href="/guide" className="flex items-center px-3 py-2 text-sm font-medium">
+                  <Info className="h-4 w-4 mr-2" />
+                  Travel Guide
+                </Link>
+
                 {user && (
                   <>
                     {user?.isVendor ? (
@@ -117,8 +108,8 @@ export function NavBar() {
             </div>
           )}
         </div>
-        
-        {/* Mobile menu - simplified for clarity */}
+
+        {/* Mobile menu */}
         {isMobile && menuOpen && (
           <div className="absolute top-16 left-0 right-0 bg-white border-b shadow-lg z-50 px-4 py-4 space-y-3">
             <Link 
@@ -129,7 +120,16 @@ export function NavBar() {
               <Map className="h-4 w-4 mr-2 inline-block" />
               Available Rides
             </Link>
-            
+
+            <Link 
+              href="/guide" 
+              className="block px-3 py-3 text-base font-medium hover:bg-gray-50 rounded-md"
+              onClick={() => setMenuOpen(false)}
+            >
+              <Info className="h-4 w-4 mr-2 inline-block" />
+              Travel Guide
+            </Link>
+
             {user && (
               <>
                 {user?.isVendor ? (
@@ -151,7 +151,7 @@ export function NavBar() {
                 )}
               </>
             )}
-            
+
             {user ? (
               <div 
                 className="block px-3 py-3 text-base font-medium hover:bg-gray-50 rounded-md cursor-pointer"
