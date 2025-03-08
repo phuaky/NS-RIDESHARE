@@ -115,6 +115,7 @@ export const insertRideSchema = createInsertSchema(rides)
     driverContactId: true,
   })
   .extend({
+    organizerPassengerCount: z.number().min(1).max(4),
     dropoffLocations: z.array(
       z.object({
         location: z.string(),

@@ -3,11 +3,12 @@ import { NavBar } from "@/components/nav-bar";
 import { RideCard } from "@/components/ride-card";
 import { useAuth } from "@/hooks/use-auth";
 import { Ride } from "@shared/schema";
-import { Loader2, Map, Share2, Info, Edit } from "lucide-react";
+import { Loader2, Map, Share2, Info, Edit, UserPlus } from "lucide-react";
 import { useLocation } from "wouter";
 import { SequenceManager } from "@/components/sequence-manager";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,25 +17,25 @@ export default function HomePage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<string>("all");
-  
+
   // Fetch all rides
   const { data: rides, isLoading: isLoadingRides } = useQuery<Ride[]>({
     queryKey: ["/api/rides"],
   });
-  
+
   // Fetch rides that the user has joined (but not created)
   const { data: joinedRides, isLoading: isLoadingJoined } = useQuery<Ride[]>({
     queryKey: ["/api/rides/user/joined"],
     enabled: !!user && activeTab === 'my-rides', // Only fetch when user is logged in and on My Rides tab
   });
-  
+
   // Generate shareable trip summary
   const generateTripSummary = (ride: Ride) => {
     const directionText = ride.direction === "SG->FC" ? "Singapore to Forest City" : "Forest City to Singapore";
     const dateText = new Date(ride.date).toLocaleString();
     const totalCost = ride.cost + (ride.additionalStops * 5);
     const perPersonCost = (totalCost / (ride.maxPassengers || 1)).toFixed(2);
-    
+
     const summary = `🚗 RideShare Trip Summary 🚗\n\n` +
       `Direction: ${directionText}\n` +
       `Date & Time: ${dateText}\n` +
@@ -43,7 +44,7 @@ export default function HomePage() {
       `Total Cost: $${totalCost} SGD\n` +
       `Cost per person: $${perPersonCost} SGD\n\n` +
       `📱 Join through the RideShare app!`;
-      
+
     try {
       navigator.clipboard.writeText(summary);
       toast({
@@ -73,23 +74,23 @@ export default function HomePage() {
   }
 
   // Get rides created by the user
-  const userCreatedRides = rides?.filter(ride => 
+  const userCreatedRides = rides?.filter(ride =>
     user && ride.creatorId === user.id
   ) || [];
-  
+
   // Combine created and joined rides for My Rides tab
   const myRides = [
     ...(userCreatedRides || []),
     ...(joinedRides || [])
   ];
-  
+
   // Filter rides based on active tab
-  const filteredRides = activeTab === 'all' 
-    ? rides 
+  const filteredRides = activeTab === 'all'
+    ? rides
     : (activeTab === 'my-rides' ? myRides : []);
-  
+
   // Get rides created by the user that are in the FC->SG direction
-  const userFCtoSGRides = userCreatedRides.filter(ride => 
+  const userFCtoSGRides = userCreatedRides.filter(ride =>
     ride.direction === "FC->SG"
   ) || [];
 
@@ -97,6 +98,48 @@ export default function HomePage() {
     <div className="min-h-screen">
       <NavBar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20">{/* Added pt-20 for navbar spacing */}
+        {/* Login Benefits Banner - Show only when user is not logged in */}
+        {!user && (
+          <Card className="mb-8 bg-primary/5 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <UserPlus className="h-5 w-5" />
+                Join RideShare Community
+              </CardTitle>
+              <CardDescription>
+                Login to unlock full features and start sharing rides
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="space-y-2">
+                  <h3 className="font-medium">Create Rides</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Organize your own rides and set your preferred schedule
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-medium">Join Existing Rides</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Find and join rides that match your travel plans
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-medium">Manage Your Trips</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Track your rides and communicate with co-passengers
+                  </p>
+                </div>
+              </div>
+              <div className="mt-6 flex justify-center">
+                <Button size="lg" onClick={() => setLocation("/auth")}>
+                  Login or Register Now
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl font-bold">Rides</h1>
@@ -136,7 +179,7 @@ export default function HomePage() {
                 <p className="text-sm text-muted-foreground mb-4">
                   For rides from Forest City to Singapore, you can set the order in which passengers will be dropped off.
                 </p>
-                
+
                 {userFCtoSGRides.map(ride => (
                   <div key={ride.id} className="mb-6">
                     <div className="flex items-center justify-between mb-4">
@@ -158,7 +201,7 @@ export default function HomePage() {
                 ))}
               </div>
             )}
-            
+
             {/* Display rides organized by the user */}
             {userCreatedRides.length > 0 && (
               <div className="mb-8">
@@ -171,8 +214,8 @@ export default function HomePage() {
                         showActions={false}
                       />
                       <div className="mt-2 flex justify-end gap-2">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => generateTripSummary(ride)}
                           className="flex items-center"
@@ -180,8 +223,8 @@ export default function HomePage() {
                           <Share2 className="h-4 w-4 mr-1" />
                           Share
                         </Button>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           onClick={() => setLocation(`/rides/edit/${ride.id}`)}
                           className="flex items-center"
                         >
@@ -194,7 +237,7 @@ export default function HomePage() {
                 </div>
               </div>
             )}
-            
+
             {/* Display rides joined by the user */}
             {joinedRides && joinedRides.length > 0 && (
               <div>
@@ -207,8 +250,8 @@ export default function HomePage() {
                         showActions={false}
                       />
                       <div className="mt-2 flex justify-end gap-2">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => generateTripSummary(ride)}
                           className="flex items-center"
@@ -216,8 +259,8 @@ export default function HomePage() {
                           <Share2 className="h-4 w-4 mr-1" />
                           Share
                         </Button>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           onClick={() => setLocation(`/rides/${ride.id}`)}
                           className="flex items-center"
                         >
@@ -230,7 +273,7 @@ export default function HomePage() {
                 </div>
               </div>
             )}
-            
+
             {/* Show message if no rides */}
             {myRides.length === 0 && (
               <p className="text-muted-foreground col-span-full text-center py-8">

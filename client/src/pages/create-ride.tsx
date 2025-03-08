@@ -5,8 +5,7 @@ import { NavBar } from "@/components/nav-bar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import {
@@ -23,7 +22,6 @@ import { useLocation, useRoute } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useState, useEffect } from "react";
-import { Textarea } from "@/components/ui/textarea";
 
 export default function CreateRide() {
   const [location, setLocation] = useLocation();
@@ -41,29 +39,31 @@ export default function CreateRide() {
     enabled: isEditing,
   });
 
-  // Set up form with default values or edited ride data
+  // Form setup with validation
   const form = useForm({
-    resolver: zodResolver(insertRideSchema),
+    resolver: zodResolver(insertRideSchema.extend({
+      organizerPassengerCount: insertRideSchema.shape.organizerPassengerCount.default(1),
+      dropoffLocations: insertRideSchema.shape.dropoffLocations.default([])
+    })),
     defaultValues: {
       direction: "SG->FC",
       date: new Date(),
       maxPassengers: 4,
       pickupLocation: "",
       dropoffLocations: [],
+      organizerPassengerCount: 1,
     },
   });
 
   // Load ride data into form when editing
   useEffect(() => {
     if (isEditing && rideToEdit && !isLoading) {
-      // Check if user is the creator of the ride
       if (user?.id !== rideToEdit.creatorId) {
         toast({
           title: "Error",
           description: "You are not authorized to edit this ride",
           variant: "destructive",
         });
-        // Redirect to home page
         setLocation("/home");
         return;
       }
@@ -71,54 +71,66 @@ export default function CreateRide() {
       // Convert ISO string date to Date object
       const date = new Date(rideToEdit.date);
 
-      // Reset the form with the ride data
+      // Reset form with ride data
       form.reset({
         ...rideToEdit,
-        date: date
+        date,
+        organizerPassengerCount: rideToEdit.dropoffLocations?.[0]?.passengerCount || 1,
+        dropoffLocations: rideToEdit.direction === "FC->SG" 
+          ? rideToEdit.dropoffLocations.map(d => d.location).join('\n')
+          : rideToEdit.dropoffLocations
       });
     }
-  }, [rideToEdit, isEditing, isLoading, form, toast, setLocation]);
+  }, [rideToEdit, isEditing, isLoading, form, toast, setLocation, user]);
 
   // Mutation for creating or updating a ride
   const rideMutation = useMutation({
     mutationFn: async (data: any) => {
-      // Create a deep copy of the data to avoid modifying form state
       const submissionData = { ...data };
 
-      // Ensure we're passing a proper Date object to the API
-      if (typeof submissionData.date === 'string') {
-        submissionData.date = new Date(submissionData.date);
+      // Ensure date is properly formatted
+      if (submissionData.date instanceof Date) {
+        submissionData.date = submissionData.date.toISOString();
+      } else if (typeof submissionData.date === 'string') {
+        const date = new Date(submissionData.date);
+        if (isNaN(date.getTime())) {
+          throw new Error("Invalid date provided");
+        }
+        submissionData.date = date.toISOString();
       }
 
-      // Validate the date before submission
-      if (!(submissionData.date instanceof Date) || isNaN(submissionData.date.getTime())) {
-        throw new Error("Invalid date provided");
+      // Ensure organizerPassengerCount is a number
+      submissionData.organizerPassengerCount = Number(submissionData.organizerPassengerCount);
+      if (isNaN(submissionData.organizerPassengerCount)) {
+        submissionData.organizerPassengerCount = 1;
       }
 
-      // Convert date to ISO string for proper serialization
-      submissionData.date = submissionData.date.toISOString();
+      // Format dropoff locations based on direction
+      if (submissionData.direction === "FC->SG") {
+        // For FC->SG rides
+        const locations = typeof submissionData.dropoffLocations === 'string'
+          ? submissionData.dropoffLocations.split('\n').filter(Boolean).map(loc => loc.trim())
+          : Array.isArray(submissionData.dropoffLocations)
+            ? submissionData.dropoffLocations
+            : [];
 
-      // Format dropoff locations
-      if (currentDirection === "FC->SG") {
-        submissionData.dropoffLocations = submissionData.dropoffLocations.map((location: string) => ({
-          location,
-          passengerCount: 1
+        submissionData.dropoffLocations = locations.map(location => ({
+          location: location,
+          passengerCount: submissionData.organizerPassengerCount
         }));
       } else {
-        // For SG->FC, we use pickupLocation with organizer's passenger count
-        const passengerCount = submissionData.organizerPassengerCount || 1;
+        // For SG->FC rides
         submissionData.dropoffLocations = [{
           location: submissionData.pickupLocation,
-          passengerCount
+          passengerCount: submissionData.organizerPassengerCount
         }];
       }
 
+      // Send request to API
       if (isEditing && rideId) {
-        // Update existing ride
         const res = await apiRequest("PATCH", `/api/rides/${rideId}`, submissionData);
         return res.json();
       } else {
-        // Create new ride
         const res = await apiRequest("POST", "/api/rides", submissionData);
         return res.json();
       }
@@ -130,10 +142,8 @@ export default function CreateRide() {
       toast({
         title: "Success",
         description: isEditing ? "Ride updated successfully" : "Ride created successfully",
-        variant: "success",
       });
 
-      // Redirect to ride details page
       setLocation(`/rides/${ride.id}`);
     },
     onError: (error: Error) => {
@@ -145,7 +155,7 @@ export default function CreateRide() {
     },
   });
 
-  // Delete mutation for ride deletion
+  // Delete mutation - moved inside component
   const deleteMutation = useMutation({
     mutationFn: async () => {
       if (!rideId) throw new Error("No ride ID provided");
@@ -154,14 +164,12 @@ export default function CreateRide() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/rides"] });
-      
+
       toast({
         title: "Success",
         description: "Ride deleted successfully",
-        variant: "success",
       });
-      
-      // Redirect to home page
+
       setLocation("/home");
     },
     onError: (error: Error) => {
@@ -172,8 +180,8 @@ export default function CreateRide() {
       });
     },
   });
-  
-  // Function to handle ride deletion with confirmation
+
+  // Handle delete function - moved inside component
   const handleDeleteRide = () => {
     if (showDeleteConfirm) {
       deleteMutation.mutate();
@@ -184,34 +192,38 @@ export default function CreateRide() {
         description: "Click Delete again to confirm. This action cannot be undone.",
         variant: "destructive",
       });
-      
-      // Reset confirmation after 5 seconds
+
       setTimeout(() => {
         setShowDeleteConfirm(false);
       }, 5000);
     }
   };
 
-  // Get current direction value from form
+  // Watch form fields for conditional rendering
   const currentDirection = form.watch('direction');
 
   return (
-    <div className="min-h-screen pt-20"> {/* Add padding-top to account for fixed navbar */}
+    <div className="min-h-screen pt-20">
       <NavBar />
       <main className="max-w-3xl mx-auto px-4 py-8">
         <Card>
           <CardHeader>
             <CardTitle>{isEditing ? "Edit Ride" : "Create a New Ride"}</CardTitle>
+            <CardDescription>
+              {currentDirection === "FC->SG" 
+                ? "Enter the drop-off locations in Singapore and the number of passengers in your group"
+                : "Enter your pickup location in Singapore and the number of passengers"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit((data) => {
-                  console.log("Form submitted with data:", data);
                   rideMutation.mutate(data);
                 })}
                 className="space-y-6"
               >
+                {/* Direction Selection */}
                 <FormField
                   control={form.control}
                   name="direction"
@@ -224,9 +236,7 @@ export default function CreateRide() {
                             type="button"
                             variant={field.value === "SG->FC" ? "default" : "outline"}
                             className="flex-1 justify-center py-6 text-base"
-                            onClick={() => {
-                              field.onChange("SG->FC");
-                            }}
+                            onClick={() => field.onChange("SG->FC")}
                           >
                             Singapore to Forest City
                           </Button>
@@ -234,9 +244,7 @@ export default function CreateRide() {
                             type="button"
                             variant={field.value === "FC->SG" ? "default" : "outline"}
                             className="flex-1 justify-center py-6 text-base"
-                            onClick={() => {
-                              field.onChange("FC->SG");
-                            }}
+                            onClick={() => field.onChange("FC->SG")}
                           >
                             Forest City to Singapore
                           </Button>
@@ -247,11 +255,53 @@ export default function CreateRide() {
                   )}
                 />
 
+                {/* Passenger Count */}
+                <FormField
+                  control={form.control}
+                  name="organizerPassengerCount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Passengers in Your Group</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="1"
+                          max="4"
+                          {...field}
+                          onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Max Passengers */}
+                <FormField
+                  control={form.control}
+                  name="maxPassengers"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Maximum Total Passengers</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="1"
+                          max="10"
+                          {...field}
+                          onChange={(e) => field.onChange(parseInt(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Date and Time */}
                 <FormField
                   control={form.control}
                   name="date"
                   render={({ field: { value, onChange, ...fieldProps } }) => {
-                    // Format the date value for the datetime-local input
                     const dateValue = value instanceof Date 
                       ? value.toISOString().slice(0, 16) 
                       : '';
@@ -264,7 +314,6 @@ export default function CreateRide() {
                             type="datetime-local" 
                             value={dateValue}
                             onChange={(e) => {
-                              // Make sure to create a valid Date object from the input
                               if (e.target.value) {
                                 const date = new Date(e.target.value);
                                 if (!isNaN(date.getTime())) {
@@ -281,29 +330,7 @@ export default function CreateRide() {
                   }}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="maxPassengers"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Maximum Passengers</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="1"
-                          max="10"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseInt(e.target.value))
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Map and Location Selection */}
+                {/* Locations Section */}
                 <div className="space-y-4 pt-2">
                   <h3 className="font-medium">Locations</h3>
 
@@ -322,106 +349,56 @@ export default function CreateRide() {
                     </Alert>
                   )}
 
-                  {/* Only show pickup location for SG->FC */}
                   {currentDirection === "SG->FC" ? (
-                    <div className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="pickupLocation"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Pickup Location</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                {...field} 
-                                placeholder="Enter pickup location details here"
-                                className="min-h-[100px]"
-                              />
-                            </FormControl>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              You can enter multiple lines of text for detailed location instructions.
-                            </p>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="organizerPassengerCount"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Number of Passengers at Your Location</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                min="1"
-                                max="4"
-                                {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseInt(e.target.value))
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                    <FormField
+                      control={form.control}
+                      name="pickupLocation"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Pickup Location in Singapore</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              {...field} 
+                              placeholder="Enter your pickup location details"
+                              className="min-h-[100px]"
+                            />
+                          </FormControl>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            You can enter multiple lines of text for detailed location instructions
+                          </p>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   ) : (
-                    /* Only show dropoff locations for FC->SG */
-                    <div>
-                      <FormField
-                        control={form.control}
-                        name="dropoffLocations"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Dropoff Locations</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                className="min-h-[100px]"
-                                placeholder="Enter dropoff location details here"
-                                value={Array.isArray(field.value) ? field.value.join('\n') : ''}
-                                onChange={(e) => {
-                                  // Split by newline to create an array of locations
-                                  const locations = e.target.value.split('\n').filter(loc => loc.trim() !== '');
-                                  field.onChange(locations);
-                                }}
-                              />
-                            </FormControl>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Enter one location per line. You can enter multiple locations.
-                            </p>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="organizerPassengerCount"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Number of Passengers in Your Group</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                min="1"
-                                max="4"
-                                {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseInt(e.target.value))
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                    <FormField
+                      control={form.control}
+                      name="dropoffLocations"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Drop-off Locations in Singapore</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              className="min-h-[100px]"
+                              placeholder="Enter one location per line"
+                              value={Array.isArray(field.value) ? field.value.join('\n') : field.value || ''}
+                              onChange={(e) => {
+                                const locations = e.target.value.split('\n').filter(loc => loc.trim());
+                                field.onChange(locations);
+                              }}
+                            />
+                          </FormControl>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Enter one location per line. These locations will be visited in sequence.
+                          </p>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   )}
                 </div>
 
+                {/* Submit and Delete Buttons */}
                 <div className="space-y-4">
                   <Button
                     type="submit"
@@ -433,13 +410,13 @@ export default function CreateRide() {
                       : isEditing ? "Update Ride" : "Create Ride"
                     }
                   </Button>
-                  
+
                   {isEditing && (
                     <Button
                       type="button"
                       variant="destructive"
                       className="w-full"
-                      onClick={() => handleDeleteRide()}
+                      onClick={handleDeleteRide}
                       disabled={deleteMutation.isPending}
                     >
                       {deleteMutation.isPending ? "Deleting..." : "Delete Ride"}
