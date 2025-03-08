@@ -255,7 +255,7 @@ export default function CreateRide() {
                   )}
                 />
 
-                {/* Passenger Count */}
+                {/* Passenger Count - Moved outside direction conditional */}
                 <FormField
                   control={form.control}
                   name="organizerPassengerCount"
