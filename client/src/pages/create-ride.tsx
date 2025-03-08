@@ -396,6 +396,28 @@ export default function CreateRide() {
                           </FormItem>
                         )}
                       />
+
+                      <FormField
+                        control={form.control}
+                        name="organizerPassengerCount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Number of Passengers in Your Group</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="1"
+                                max="4"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   )}
                 </div>
