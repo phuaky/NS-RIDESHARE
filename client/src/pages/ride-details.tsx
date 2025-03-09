@@ -69,18 +69,41 @@ const joinRideSchema = z.object({
 type JoinRideFormData = z.infer<typeof joinRideSchema>;
 
 // Add this component for contact display
-function ContactInfo({ label, value, icon: Icon }: { label: string; value: string | null; icon: any }) {
+function ContactInfo({ 
+  label, 
+  value, 
+  icon: Icon, 
+  type 
+}: { 
+  label: string; 
+  value: string | null; 
+  icon: any;
+  type?: 'whatsapp' | 'discord';
+}) {
   if (!value) return null;
+
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-8 px-2">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-8 px-2"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (type) {
+                openDirectMessage(type, value);
+              }
+            }}
+          >
             <Icon className="h-4 w-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>
           <p>{label}: {value}</p>
+          {type && <p className="text-xs text-muted-foreground">Click to open chat</p>}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -253,8 +276,12 @@ export default function RideDetails() {
     // Filter passengers with WhatsApp numbers
     const phoneNumbers = passengers
       .filter(p => p.user?.whatsappNumber)
-      .map(p => p.user?.whatsappNumber)
-      .join(',');
+      .map(p => {
+        const number = p.user?.whatsappNumber?.replace(/\D/g, '');
+        return number ? `${p.user?.name || p.user?.discordUsername}: ${number}` : null;
+      })
+      .filter(Boolean)
+      .join('\n');
 
     if (!phoneNumbers) {
       toast({
@@ -268,19 +295,13 @@ export default function RideDetails() {
     // Create group name based on ride details
     const groupName = `RideShare: ${formatDirection(ride?.direction || "")} ${formatDateTime(ride?.date || new Date())}`;
 
-    // WhatsApp doesn't have a direct group creation URL, so we'll copy text to clipboard instead
-    const messageText = `Create a WhatsApp group called "${groupName}" with these contacts:\n\n${
-      passengers
-        .filter(p => p.user?.whatsappNumber)
-        .map(p => `${p.user?.fullName}: ${p.user?.whatsappNumber}`)
-        .join('\n')
-    }`;
+    const messageText = `Create a WhatsApp group:\n\nGroup Name: "${groupName}"\n\nAdd these contacts:\n${phoneNumbers}`;
 
     navigator.clipboard.writeText(messageText);
 
     toast({
-      title: "Copied to Clipboard",
-      description: "Passenger information copied. Open WhatsApp and create a new group with these contacts.",
+      title: "WhatsApp Group Info Copied!",
+      description: "1. Open WhatsApp\n2. Click 'New Group'\n3. Add the copied contacts",
     });
   };
 
@@ -336,16 +357,25 @@ export default function RideDetails() {
     const directionText = formatDirection(ride.direction);
     const dateText = formatDateTime(ride.date);
     const totalCost = ride.cost + (ride.additionalStops * 5);
-    const perPersonCost = (totalCost / (ride.maxPassengers || 1)).toFixed(2);
+    // Cost explanation more detailed based on passenger count
+    const costDetails = totalCost === ride.cost ? 
+      `$${totalCost} SGD` : 
+      `$${ride.cost} SGD + $${ride.additionalStops * 5} SGD for additional stops`;
+
+    // Format all locations
+    const locationsText = ride.direction === "SG->FC" ?
+      `Pickup: ${ride.pickupLocation}` :
+      `Pickup: Forest City\nDrop-offs: ${ride.dropoffLocations.map(loc => 
+        typeof loc === 'string' ? loc : loc.location
+      ).join(', ')}`;
 
     const summary = `🚗 RideShare Trip Summary 🚗\n\n` +
       `Direction: ${directionText}\n` +
       `Date & Time: ${dateText}\n` +
-      `Pickup: ${ride.pickupLocation}\n` +
+      `${locationsText}\n` +
       `Passengers: ${totalPassengersCount}/${ride.maxPassengers}\n` +
-      `Total Cost: $${totalCost} SGD\n` +
-      `Cost per person: $${perPersonCost} SGD\n\n` +
-      `📱 Join through the RideShare app: https://rideshare.app/rides/${ride.id}`;
+      `Total Cost: ${costDetails}\n\n` +
+      `📱 Join through RideShare: https://ns-rideshare.replit.app/rides/${ride.id}`;
 
     try {
       navigator.clipboard.writeText(summary);
@@ -359,6 +389,37 @@ export default function RideDetails() {
         description: "Please try again or copy the text manually.",
         variant: "destructive",
       });
+    }
+  };
+
+  // Add direct messaging function
+  const openDirectMessage = (type: 'whatsapp' | 'discord', contact: string | null) => {
+    if (!contact) {
+      toast({
+        title: "Contact not available",
+        description: `No ${type} contact information provided.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    let url = '';
+    if (type === 'whatsapp') {
+      // Remove any non-numeric characters from phone number
+      const cleanNumber = contact.replace(/\D/g, '');
+      url = `https://wa.me/${cleanNumber}`;
+    } else if (type === 'discord') {
+      // Copy Discord username to clipboard
+      navigator.clipboard.writeText(contact);
+      toast({
+        title: "Discord username copied!",
+        description: "Open Discord and search for this username to start a conversation.",
+      });
+      return;
+    }
+
+    if (url) {
+      window.open(url, '_blank');
     }
   };
 
@@ -545,6 +606,7 @@ export default function RideDetails() {
                             label="WhatsApp"
                             value={ride.creator?.whatsappNumber}
                             icon={Phone}
+                            type="whatsapp"
                           />
                           <ContactInfo
                             label="Malaysian Number"
@@ -555,6 +617,7 @@ export default function RideDetails() {
                             label="Discord"
                             value={ride.creator?.discordUsername}
                             icon={Mail}
+                            type="discord"
                           />
                         </div>
                       </div>
@@ -756,6 +819,7 @@ export default function RideDetails() {
                                       label="WhatsApp"
                                       value={passenger.user.whatsappNumber}
                                       icon={Phone}
+                                      type="whatsapp"
                                     />
                                     <ContactInfo
                                       label="Malaysian Number"
@@ -766,6 +830,7 @@ export default function RideDetails() {
                                       label="Discord"
                                       value={passenger.user.discordUsername}
                                       icon={Mail}
+                                      type="discord"
                                     />
                                     <ContactInfo
                                       label="Revolut"
