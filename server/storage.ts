@@ -75,28 +75,28 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
-  
+
   async updateUser(id: number, userData: Partial<User>): Promise<User> {
     // Only allow updating specific fields for security
     const allowedFields = ['name', 'whatsappNumber', 'malaysianNumber', 'revolutUsername'];
     const updateData: Partial<User> = {};
-    
+
     for (const field of allowedFields) {
       if (field in userData) {
         updateData[field as keyof typeof updateData] = userData[field as keyof typeof userData];
       }
     }
-    
+
     const [updatedUser] = await db
       .update(users)
       .set(updateData)
       .where(eq(users.id, id))
       .returning();
-      
+
     if (!updatedUser) {
       throw new Error(`User with ID ${id} not found`);
     }
-    
+
     return updatedUser;
   }
 
@@ -154,32 +154,53 @@ export class DatabaseStorage implements IStorage {
 
   async getRide(id: number): Promise<Ride | undefined> {
     const [ride] = await db.select().from(rides).where(eq(rides.id, id));
-    
+
     if (!ride) return undefined;
-    
+
+    // Get all passengers for this ride
+    const passengers = await this.getPassengers(id);
+
+    // Calculate total passengers count from all joined passengers
+    const totalPassengers = passengers.reduce((sum, p) => sum + (p.passengerCount || 1), 0);
+
+    // Update the ride's current passenger count
+    const updatedRide = {
+      ...ride,
+      currentPassengers: totalPassengers
+    };
+
     // Get creator details
     const creator = await this.getUser(ride.creatorId);
     return {
-      ...ride,
+      ...updatedRide,
       creatorName: creator ? creator.name || creator.discordUsername : "Unknown"
     };
   }
 
   async getRides(): Promise<Ride[]> {
     const allRides = await db.select().from(rides);
-    
-    // Fetch creator details for each ride
-    const ridesWithCreatorInfo = await Promise.all(
+
+    // Fetch all passengers for all rides and creator details
+    const ridesWithDetails = await Promise.all(
       allRides.map(async (ride) => {
+        // Get passengers for this ride
+        const passengers = await this.getPassengers(ride.id);
+
+        // Calculate total passengers
+        const totalPassengers = passengers.reduce((sum, p) => sum + (p.passengerCount || 1), 0);
+
+        // Get creator details
         const creator = await this.getUser(ride.creatorId);
+
         return {
           ...ride,
+          currentPassengers: totalPassengers,
           creatorName: creator ? creator.name || creator.discordUsername : "Unknown",
         };
       })
     );
-    
-    return ridesWithCreatorInfo;
+
+    return ridesWithDetails;
   }
 
   async updateRide(id: number, ride: Partial<Ride>): Promise<Ride> {
@@ -191,19 +212,19 @@ export class DatabaseStorage implements IStorage {
     if (!updatedRide) throw new Error("Ride not found");
     return updatedRide;
   }
-  
+
   async deleteRide(id: number): Promise<void> {
     // First delete passengers
     await db
       .delete(ridePassengers)
       .where(eq(ridePassengers.rideId, id));
-    
+
     // Then delete the ride
     const result = await db
       .delete(rides)
       .where(eq(rides.id, id))
       .returning();
-    
+
     if (result.length === 0) throw new Error("Ride not found");
   }
 
@@ -252,7 +273,7 @@ export class DatabaseStorage implements IStorage {
 
   async getVendorRides(vendorId: number): Promise<Ride[]> {
     const vendorRides = await db.select().from(rides).where(eq(rides.vendorId, vendorId));
-    
+
     // Fetch creator details for each ride
     const ridesWithCreatorInfo = await Promise.all(
       vendorRides.map(async (ride) => {
@@ -263,7 +284,7 @@ export class DatabaseStorage implements IStorage {
         };
       })
     );
-    
+
     return ridesWithCreatorInfo;
   }
 
@@ -273,14 +294,14 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(ridePassengers)
       .where(eq(ridePassengers.userId, userId));
-    
+
     // Extract ride IDs from passenger records
     const rideIds = passengers.map(p => p.rideId);
-    
+
     if (rideIds.length === 0) {
       return [];
     }
-    
+
     // Get all rides with those IDs
     const joinedRides = await db
       .select()
@@ -292,10 +313,10 @@ export class DatabaseStorage implements IStorage {
           return { type: 'or', left: acc, right: condition } as any;
         }, null as any)
       );
-    
+
     // Filter out rides created by the user and add creator info
     const filteredRides = joinedRides.filter(ride => ride.creatorId !== userId);
-    
+
     // Fetch creator details for each ride
     const ridesWithCreatorInfo = await Promise.all(
       filteredRides.map(async (ride) => {
@@ -306,7 +327,7 @@ export class DatabaseStorage implements IStorage {
         };
       })
     );
-    
+
     return ridesWithCreatorInfo;
   }
 
