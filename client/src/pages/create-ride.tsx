@@ -7,8 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -49,7 +47,6 @@ export default function CreateRide() {
   const rideId = params?.id;
   const { toast } = useToast();
   const { user } = useAuth();
-  const [showPassportReminder, setShowPassportReminder] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Fetch ride data if editing
@@ -71,7 +68,7 @@ export default function CreateRide() {
     defaultValues: {
       direction: "SG->FC",
       date: new Date(),
-      maxPassengers: 4,
+      maxPassengers: 5,
       pickupLocation: "",
       dropoffLocations: [],
       organizerPassengerCount: 1,
@@ -392,21 +389,6 @@ export default function CreateRide() {
                 {/* Locations Section */}
                 <div className="space-y-4 pt-2">
                   <h3 className="font-medium">Locations</h3>
-
-                  {showPassportReminder && (
-                    <Alert className="bg-amber-50 border-amber-200">
-                      <AlertCircle className="h-4 w-4 text-amber-600" />
-                      <AlertDescription className="text-amber-800">
-                        Don't forget to bring your passport! Many travelers have forgotten them in the past.
-                        <button 
-                          className="ml-2 text-amber-600 underline" 
-                          onClick={() => setShowPassportReminder(false)}
-                        >
-                          Dismiss
-                        </button>
-                      </AlertDescription>
-                    </Alert>
-                  )}
 
                   {/* Passenger Count - Same for both directions */}
                   <FormField

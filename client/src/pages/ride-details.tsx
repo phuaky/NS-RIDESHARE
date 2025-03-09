@@ -488,7 +488,9 @@ export default function RideDetails() {
                           <p className="text-sm text-muted-foreground">
                             {ride.direction === "SG->FC"
                               ? ride.pickupLocation
-                              : ride.dropoffLocations.join(", ")}
+                              : ride.dropoffLocations.map(loc => 
+                                  typeof loc === 'string' ? loc : loc.location
+                                ).join(", ")}
                           </p>
                         </div>
                       </div>
