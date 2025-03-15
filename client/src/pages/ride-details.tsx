@@ -228,7 +228,7 @@ export default function RideDetails() {
 
 
   // Calculate remaining spots
-  const totalPassengersCount = passengers?.reduce((sum, p) => sum + (p.passengerCount || 1), 0) || 0;
+  const totalPassengersCount = ride.currentPassengers || 0;
   const remainingSpots = ride ? ride.maxPassengers - totalPassengersCount : 0;
   const isFull = remainingSpots <= 0;
 
