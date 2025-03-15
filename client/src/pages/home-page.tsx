@@ -43,11 +43,10 @@ export default function HomePage() {
     const summary = `🚗 RideShare Trip Summary 🚗\n\n` +
       `Direction: ${directionText}\n` +
       `Date & Time: ${dateText}\n` +
-      `Pickup: ${ride.pickupLocation}\n` +
+      `${ride.direction === "FC->SG" ? "Drop-off" : "Pickup"}: ${ride.pickupLocation}\n` +
       `Passengers: ${ride.currentPassengers}/${ride.maxPassengers}\n` +
-      `Total Cost: $${totalCost} SGD\n` +
-      `Cost per person: $${perPersonCost} SGD\n\n` +
-      `📱 Join through the RideShare app!`;
+      `Total Cost: $${totalCost} SGD\n\n` +
+      `📱 Join through RideShare: https://ns-rideshare.replit.app/rides/${ride.id}`;
 
     try {
       navigator.clipboard.writeText(summary);
