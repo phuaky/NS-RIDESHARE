@@ -142,29 +142,17 @@ export default function HomePage() {
       <NavBar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20">{/* Added pt-20 for navbar spacing */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-2xl font-bold">{stats.totalRides}</div>
-                <p className="text-sm text-muted-foreground">Total Rides</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 max-w-lg mx-auto">
+            <Card className="bg-gradient-to-br from-blue-50 to-purple-50">
+              <CardContent className="pt-8 pb-6 text-center">
+                <div className="text-3xl font-bold text-blue-600">{stats.totalRides}</div>
+                <p className="text-sm text-blue-600/80 mt-2 font-medium">Total Rides</p>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-2xl font-bold">{stats.totalUsers}</div>
-                <p className="text-sm text-muted-foreground">Total Users</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-2xl font-bold">{stats.sgToFcRides}</div>
-                <p className="text-sm text-muted-foreground">SG to FC Rides</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-2xl font-bold">{stats.fcToSgRides}</div>
-                <p className="text-sm text-muted-foreground">FC to SG Rides</p>
+            <Card className="bg-gradient-to-br from-green-50 to-blue-50">
+              <CardContent className="pt-8 pb-6 text-center">
+                <div className="text-3xl font-bold text-green-600">{stats.totalUsers}</div>
+                <p className="text-sm text-green-600/80 mt-2 font-medium">Total Users</p>
               </CardContent>
             </Card>
           </div>
