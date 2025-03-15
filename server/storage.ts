@@ -20,7 +20,8 @@ import { db, pool } from "./db";
 const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
-  // User operations
+  // User operations 
+  getAllUsers(): Promise<User[]>;
   getUser(id: number): Promise<User | undefined>;
   getUserByDiscordUsername(discordUsername: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
@@ -53,6 +54,10 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
+
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users);
+  }
 
   constructor() {
     this.sessionStore = new PostgresSessionStore({
