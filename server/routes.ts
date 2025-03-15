@@ -66,7 +66,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/rides", async (req, res) => {
+  app.get("/api/stats", async (req, res) => {
+    const rides = await storage.getRides();
+    const users = await storage.getAllUsers();
+    res.json({
+      totalRides: rides.length,
+      totalUsers: users.length,
+      sgToFcRides: rides.filter(r => r.direction === "SG->FC").length,
+      fcToSgRides: rides.filter(r => r.direction === "FC->SG").length
+    });
+  });
+
+app.get("/api/rides", async (req, res) => {
     const rides = await storage.getRides();
     res.json(rides);
   });

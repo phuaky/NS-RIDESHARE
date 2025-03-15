@@ -33,6 +33,11 @@ export default function HomePage() {
     enabled: !!user && activeTab === 'my-rides', // Only fetch when user is logged in and on My Rides tab
   });
 
+  // Fetch statistics
+  const { data: stats, isLoading: isLoadingStats } = useQuery({
+    queryKey: ['/api/stats'],
+  });
+
   // Generate shareable trip summary
   const generateTripSummary = (ride: Ride) => {
     const directionText = ride.direction === "SG->FC" ? "Singapore to Forest City" : "Forest City to Singapore";
@@ -63,7 +68,7 @@ export default function HomePage() {
     }
   };
 
-  const isLoading = isLoadingRides || (activeTab === 'my-rides' && isLoadingJoined);
+  const isLoading = isLoadingRides || isLoadingStats || (activeTab === 'my-rides' && isLoadingJoined);
 
   if (isLoading) {
     return (
@@ -106,11 +111,11 @@ export default function HomePage() {
   const sortedRides = [...(filteredRides || [])].sort((a, b) => {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
-    
+
     // Remove past rides (optional, can be handled by filter too)
     const isPastA = isRidePast(a);
     const isPastB = isRidePast(b);
-    
+
     // If both are past or both are future, sort according to selected option
     if (isPastA === isPastB) {
       switch (sortOption) {
@@ -122,7 +127,7 @@ export default function HomePage() {
           return dateA.getTime() - dateB.getTime();
       }
     }
-    
+
     // Put future rides before past ones
     return isPastA ? 1 : -1;
   });
@@ -136,6 +141,34 @@ export default function HomePage() {
     <div className="min-h-screen">
       <NavBar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20">{/* Added pt-20 for navbar spacing */}
+        {stats && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-2xl font-bold">{stats.totalRides}</div>
+                <p className="text-sm text-muted-foreground">Total Rides</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-2xl font-bold">{stats.totalUsers}</div>
+                <p className="text-sm text-muted-foreground">Total Users</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-2xl font-bold">{stats.sgToFcRides}</div>
+                <p className="text-sm text-muted-foreground">SG to FC Rides</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-2xl font-bold">{stats.fcToSgRides}</div>
+                <p className="text-sm text-muted-foreground">FC to SG Rides</p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
         {/* Create Ride Button - only show when logged in */}
         {user && !user?.isVendor && (
           <div className="mb-8 flex justify-center">
@@ -149,7 +182,7 @@ export default function HomePage() {
             </Button>
           </div>
         )}
-        
+
         {/* Login Benefits Banner - Show only when user is not logged in */}
         {!user && (
           <Card className="mb-8 bg-primary/5 border-primary/20">
@@ -200,7 +233,7 @@ export default function HomePage() {
               <TabsTrigger value="my-rides">My Rides</TabsTrigger>
             </TabsList>
           </div>
-          
+
           {/* Filtering and Sorting Controls */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="flex-1">
@@ -218,7 +251,7 @@ export default function HomePage() {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="flex-1">
               <Select value={sortOption} onValueChange={setSortOption}>
                 <SelectTrigger className="w-full">

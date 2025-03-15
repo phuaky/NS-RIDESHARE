@@ -343,3 +343,13 @@ export class DatabaseStorage implements IStorage {
 }
 
 export const storage = new DatabaseStorage();
+
+export async function getAllUsers(): Promise<User[]> {
+  return db.query.users.findMany();
+}
+
+export async function getUser(userId: string | number): Promise<User | undefined> {
+  return db.query.users.findFirst({
+    where: eq(users.id, Number(userId)),
+  });
+}
