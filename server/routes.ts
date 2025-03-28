@@ -331,6 +331,59 @@ app.get("/api/rides", async (req, res) => {
       res.status(400).json({ error: (error as Error).message });
     }
   });
+  
+  app.patch("/api/rides/:id/passengers/:passengerId/count", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+
+    const rideId = parseInt(req.params.id);
+    const passengerId = parseInt(req.params.passengerId);
+    const { passengerCount } = req.body;
+    
+    if (!passengerCount || passengerCount < 1) {
+      return res.status(400).json({ error: "Invalid passenger count" });
+    }
+
+    try {
+      // Get the passenger record to check if the user is authorized
+      const passenger = await storage.getPassenger(passengerId);
+      
+      if (!passenger) {
+        return res.status(404).json({ error: "Passenger not found" });
+      }
+      
+      if (passenger.rideId !== rideId) {
+        return res.status(400).json({ error: "Passenger does not belong to this ride" });
+      }
+      
+      // Check if the user is the ride creator or the passenger themself
+      const ride = await storage.getRide(rideId);
+      if (!ride) {
+        return res.status(404).json({ error: "Ride not found" });
+      }
+      
+      // Only allow the creator or the passenger to edit passenger count
+      if (ride.creatorId !== req.user.id && passenger.userId !== req.user.id) {
+        return res.status(403).json({ error: "Not authorized to edit this passenger" });
+      }
+      
+      // Check if the ride has capacity
+      const currentCount = passenger.passengerCount;
+      const diff = passengerCount - currentCount;
+      
+      if (diff > 0 && ride.currentPassengers + diff > ride.maxPassengers) {
+        return res.status(400).json({
+          error: `Cannot add ${diff} more passengers. Ride only has ${ride.maxPassengers - ride.currentPassengers} spaces left.`
+        });
+      }
+      
+      // Update passenger count
+      const updatedPassenger = await storage.updatePassengerCount(passengerId, passengerCount);
+      res.json(updatedPassenger);
+    } catch (error) {
+      console.error("Error updating passenger count:", error);
+      res.status(400).json({ error: (error as Error).message });
+    }
+  });
 
   app.post("/api/rides/:id/lockSequence", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);

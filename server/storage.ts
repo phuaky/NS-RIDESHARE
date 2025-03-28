@@ -44,6 +44,7 @@ export interface IStorage {
   addPassenger(passenger: InsertRidePassenger & { userId: number }): Promise<RidePassenger>;
   getPassengers(rideId: number): Promise<RidePassenger[]>;
   updatePassengerSequence(id: number, sequence: number): Promise<RidePassenger>;
+  updatePassengerCount(id: number, passengerCount: number): Promise<RidePassenger>;
   removePassenger(id: number): Promise<void>;
   getPassenger(id: number): Promise<RidePassenger | undefined>;
 
@@ -322,6 +323,38 @@ export class DatabaseStorage implements IStorage {
       .returning();
     if (!passenger) throw new Error("Passenger not found");
     return passenger;
+  }
+  
+  async updatePassengerCount(
+    id: number,
+    passengerCount: number
+  ): Promise<RidePassenger> {
+    // Get the current passenger to calculate the difference in passenger count
+    const oldPassenger = await this.getPassenger(id);
+    if (!oldPassenger) throw new Error("Passenger not found");
+    
+    // Update the passenger count
+    const [updatedPassenger] = await db
+      .update(ridePassengers)
+      .set({ passengerCount })
+      .where(eq(ridePassengers.id, id))
+      .returning();
+    
+    if (!updatedPassenger) throw new Error("Failed to update passenger count");
+    
+    // Get the ride to update total passenger count
+    const ride = await this.getRide(updatedPassenger.rideId);
+    if (ride) {
+      // Calculate the difference in passenger count
+      const diff = passengerCount - oldPassenger.passengerCount;
+      
+      // Update the ride's current passenger count
+      await this.updateRide(ride.id, {
+        currentPassengers: ride.currentPassengers + diff
+      });
+    }
+    
+    return updatedPassenger;
   }
 
   async getVendorRides(vendorId: number): Promise<Ride[]> {

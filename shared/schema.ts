@@ -115,11 +115,11 @@ export const insertRideSchema = createInsertSchema(rides)
     driverContactId: true,
   })
   .extend({
-    organizerPassengerCount: z.number().min(1).max(4),
+    organizerPassengerCount: z.number().min(1).max(10),
     dropoffLocations: z.array(
       z.object({
         location: z.string(),
-        passengerCount: z.number().min(1).max(4)
+        passengerCount: z.number().min(1).max(10)
       })
     ),
     driverContactId: z.number().optional(),
@@ -131,7 +131,7 @@ export const insertRidePassengerSchema = createInsertSchema(ridePassengers)
     dropoffLocation: true,
   })
   .extend({
-    passengerCount: z.number().min(1).max(4),
+    passengerCount: z.number().min(1).max(10),
   });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
