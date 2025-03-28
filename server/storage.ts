@@ -209,12 +209,58 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateRide(id: number, ride: Partial<Ride>): Promise<Ride> {
+    // Get existing ride to calculate current passengers
+    const existingRide = await this.getRide(id);
+    if (!existingRide) throw new Error("Ride not found");
+    
+    // Calculate current passengers count
+    // For creator passengers count, get it from the dropoffLocations of the incoming ride data
+    const creatorPassengerCount = ride.dropoffLocations && 
+      Array.isArray(ride.dropoffLocations) && 
+      ride.dropoffLocations.length > 0 && 
+      typeof ride.dropoffLocations[0] === 'object' && 
+      'passengerCount' in ride.dropoffLocations[0] 
+        ? ride.dropoffLocations[0].passengerCount 
+        : existingRide.dropoffLocations && 
+          Array.isArray(existingRide.dropoffLocations) && 
+          existingRide.dropoffLocations.length > 0 && 
+          typeof existingRide.dropoffLocations[0] === 'object' && 
+          'passengerCount' in existingRide.dropoffLocations[0]
+            ? existingRide.dropoffLocations[0].passengerCount
+            : 1;
+    
+    // Get other passengers from ride_passengers table
+    const passengers = await this.getPassengers(id);
+    const otherPassengersCount = passengers
+      .filter(p => p.userId !== existingRide.creatorId)
+      .reduce((sum, p) => sum + p.passengerCount, 0);
+    
+    // Calculate total current passengers
+    const currentPassengers = creatorPassengerCount + otherPassengersCount;
+
+    // If maxPassengers is being changed, ensure it's not less than currentPassengers
+    if (ride.maxPassengers !== undefined && ride.maxPassengers < currentPassengers) {
+      throw new Error("Cannot decrease max passengers below current passengers count");
+    }
+
     const [updatedRide] = await db
       .update(rides)
       .set(ride)
       .where(eq(rides.id, id))
       .returning();
+    
     if (!updatedRide) throw new Error("Ride not found");
+    
+    // Update creator's passenger count in ride_passengers table if needed
+    const creatorPassenger = passengers.find(p => p.userId === existingRide.creatorId);
+    if (creatorPassenger && creatorPassengerCount !== creatorPassenger.passengerCount) {
+      await db
+        .update(ridePassengers)
+        .set({ passengerCount: creatorPassengerCount })
+        .where(eq(ridePassengers.id, creatorPassenger.id))
+        .returning();
+    }
+    
     return updatedRide;
   }
 

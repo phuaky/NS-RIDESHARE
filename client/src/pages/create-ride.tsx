@@ -183,8 +183,29 @@ export default function CreateRide() {
 
       // Format dropoff locations based on direction
       if (submissionData.direction === "FC->SG") {
-        // For FC->SG, use the already formatted dropoffLocations (set by useEffect)
-        // We don't need to do anything as it's already correctly formatted
+        // For FC->SG, ensure the dropoffLocations have the correct passengerCount
+        if (Array.isArray(submissionData.dropoffLocations) && submissionData.dropoffLocations.length > 0) {
+          // Make sure the current dropoffLocation has the updated passengerCount
+          if (typeof submissionData.dropoffLocations[0] === 'object') {
+            submissionData.dropoffLocations[0] = {
+              ...submissionData.dropoffLocations[0],
+              location: submissionData.organizerLocation.trim(),
+              passengerCount: Number(submissionData.organizerPassengerCount)
+            };
+          } else {
+            // Convert string locations to proper format
+            submissionData.dropoffLocations = [{
+              location: submissionData.organizerLocation.trim(),
+              passengerCount: Number(submissionData.organizerPassengerCount)
+            }];
+          }
+        } else {
+          // Create new array if no dropoffLocations exist
+          submissionData.dropoffLocations = [{
+            location: submissionData.organizerLocation.trim(),
+            passengerCount: Number(submissionData.organizerPassengerCount)
+          }];
+        }
       } else {
         // For SG->FC, set dropoffLocations to the organizer's pickup location
         submissionData.dropoffLocations = [{
@@ -401,13 +422,14 @@ export default function CreateRide() {
                           <Input
                             type="number"
                             min="1"
-                            max="4"
+                            max={form.getValues('maxPassengers')}
                             {...field}
                             value={field.value === undefined || field.value === null ? 1 : field.value}
                             onChange={(e) => {
                               const value = parseInt(e.target.value);
+                              const maxValue = form.getValues('maxPassengers');
                               // Ensure value is valid, defaulting to 1 if parsing fails
-                              field.onChange(isNaN(value) ? 1 : Math.max(1, Math.min(4, value)));
+                              field.onChange(isNaN(value) ? 1 : Math.max(1, Math.min(maxValue, value)));
                             }}
                           />
                         </FormControl>
