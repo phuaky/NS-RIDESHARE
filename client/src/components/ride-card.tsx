@@ -76,7 +76,17 @@ export function RideCard({ ride, onJoin, onAssign, showActions = true, organizer
             </div>
             <div className="flex items-center text-sm">
               <MapPin className="h-4 w-4 mr-2" />
-              <span>{ride.direction === "FC->SG" ? "To: " : "From: "}{ride.pickupLocation}</span>
+              {ride.direction === "FC->SG" ? (
+                <span>To: {
+                  ride.dropoffLocations && ride.dropoffLocations.length > 0 
+                    ? (typeof ride.dropoffLocations[0] === 'string' 
+                        ? ride.dropoffLocations[0] 
+                        : ride.dropoffLocations[0].location)
+                    : "Unknown location"
+                }</span>
+              ) : (
+                <span>From: {ride.pickupLocation}</span>
+              )}
             </div>
             <div className="flex items-center text-sm">
               <Users className="h-4 w-4 mr-2" />

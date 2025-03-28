@@ -45,10 +45,23 @@ export default function HomePage() {
     const totalCost = ride.cost + (ride.additionalStops * 5);
     const perPersonCost = (totalCost / (ride.maxPassengers || 1)).toFixed(2);
 
+    // Format locations based on direction
+    let locationInfo = "";
+    if (ride.direction === "FC->SG") {
+      const dropoffLocation = ride.dropoffLocations && ride.dropoffLocations.length > 0 
+        ? (typeof ride.dropoffLocations[0] === 'string' 
+            ? ride.dropoffLocations[0] 
+            : ride.dropoffLocations[0].location)
+        : "Unknown location";
+      locationInfo = `Drop-off Location: ${dropoffLocation}`;
+    } else {
+      locationInfo = `Pickup Location: ${ride.pickupLocation}`;
+    }
+
     const summary = `🚗 RideShare Trip Summary 🚗\n\n` +
       `Direction: ${directionText}\n` +
       `Date & Time: ${dateText}\n` +
-      `${ride.direction === "FC->SG" ? "Drop-off Location" : "Pickup Location"}: ${ride.direction === "FC->SG" ? ride.dropoffLocations[0]?.location || 'Unknown' : ride.pickupLocation}\n` +
+      `${locationInfo}\n` +
       `Passengers: ${ride.currentPassengers}/${ride.maxPassengers}\n` +
       `Total Cost: $${totalCost} SGD\n\n` +
       `📱 Join through RideShare: https://ns-rideshare.replit.app/rides/${ride.id}`;

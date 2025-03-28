@@ -369,10 +369,19 @@ export default function RideDetails() {
         typeof loc === 'string' ? loc : loc.location
       ).join(', ')}`;
 
+    // Format locations based on direction
+    const locationDisplay = ride.direction === "FC->SG"
+      ? `Drop-off Location: ${ride.dropoffLocations && ride.dropoffLocations.length > 0 
+          ? (typeof ride.dropoffLocations[0] === 'string' 
+              ? ride.dropoffLocations[0] 
+              : ride.dropoffLocations[0].location)
+          : "Unknown location"}`
+      : `Pickup Location: ${ride.pickupLocation}`;
+
     const summary = `🚗 RideShare Trip Summary 🚗\n\n` +
       `Direction: ${directionText}\n` +
       `Date & Time: ${dateText}\n` +
-      `${ride.direction === "FC->SG" ? "Drop-off Location" : "Pickup Location"}: ${ride.pickupLocation}\n` +
+      `${locationDisplay}\n` +
       `Passengers: ${totalPassengersCount}/${ride.maxPassengers}\n` +
       `Total Cost: ${costDetails}\n\n` +
       `📱 Join through RideShare: https://ns-rideshare.replit.app/rides/${ride.id}`;
