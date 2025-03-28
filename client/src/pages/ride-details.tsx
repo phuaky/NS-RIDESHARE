@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2, Share2, Edit, MapPin, Users, MessageCircle, Calendar, DollarSign, Clock, CheckCircle, ChevronRight, AlertTriangle, Phone, Mail, User, UserMinus, Check, X } from "lucide-react";
+import { Loader2, Share2, Edit, MapPin, Users, MessageCircle, Calendar, DollarSign, Clock, CheckCircle, ChevronRight, AlertTriangle, Phone, Mail, User, UserMinus } from "lucide-react";
 import { LocationMap } from "@/components/map/location-map";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -371,41 +371,7 @@ export default function RideDetails() {
     }
   });
   
-  // Edit passenger count mutation
-  const editPassengerCountMutation = useMutation({
-    mutationFn: async ({ passengerId, passengerCount }: { passengerId: number, passengerCount: number }) => {
-      if (!user) throw new Error("You must be logged in to edit passenger count");
-      if (!ride) throw new Error("Ride not found");
-
-      const res = await apiRequest(
-        "PATCH",
-        `/api/rides/${rideId}/passengers/${passengerId}/count`,
-        { passengerCount }
-      );
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/rides/${rideId}`] });
-      queryClient.invalidateQueries({ queryKey: [`/api/rides/${rideId}/passengers`] });
-      refetchPassengers();
-      setEditPassengerId(null);
-      toast({
-        title: "Passenger Count Updated",
-        description: "Passenger count has been updated successfully.",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update passenger count",
-        variant: "destructive",
-      });
-    }
-  });
-  
-  // States for passenger count editing 
-  const [editPassengerId, setEditPassengerId] = useState<number | null>(null);
-  const [newPassengerCount, setNewPassengerCount] = useState<number>(1);
+  // Passenger count editing is removed as it wasn't working correctly
   
   // Handle passenger removal
   const handleRemovePassenger = (passengerId: number) => {
@@ -939,74 +905,9 @@ export default function RideDetails() {
                                     </Badge>
                                   )}
                                 </p>
-                                <div className="flex items-center mt-1">
-                                  <div className="text-sm text-muted-foreground flex items-center">
-                                    <span>Passengers: </span>
-                                    {editPassengerId === passenger.id ? (
-                                      <div className="inline-flex items-center ml-1">
-                                        <Input
-                                          type="number"
-                                          min="1"
-                                          max={ride.maxPassengers}
-                                          defaultValue={passenger.passengerCount || 1}
-                                          onChange={(e) => setNewPassengerCount(parseInt(e.target.value))}
-                                          className="w-16 h-7 px-2 py-1 text-sm"
-                                        />
-                                      </div>
-                                    ) : (
-                                      <span className="ml-1">{passenger.passengerCount || 1}</span>
-                                    )}
-                                  </div>
-                                  
-                                  {/* Edit passenger count buttons */}
-                                  {((isCreator && !isRidePast(ride.date)) || 
-                                    (user && passenger.userId === user.id && !isRidePast(ride.date))) && (
-                                    <div className="ml-2">
-                                      {editPassengerId === passenger.id ? (
-                                        <div className="flex space-x-1">
-                                          <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-6 w-6"
-                                            onClick={() => {
-                                              editPassengerCountMutation.mutate({
-                                                passengerId: passenger.id,
-                                                passengerCount: newPassengerCount
-                                              });
-                                            }}
-                                            disabled={editPassengerCountMutation.isPending}
-                                          >
-                                            {editPassengerCountMutation.isPending ? (
-                                              <Loader2 className="h-3 w-3 animate-spin" />
-                                            ) : (
-                                              <Check className="h-3 w-3" />
-                                            )}
-                                          </Button>
-                                          <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-6 w-6"
-                                            onClick={() => setEditPassengerId(null)}
-                                          >
-                                            <X className="h-3 w-3" />
-                                          </Button>
-                                        </div>
-                                      ) : (
-                                        <Button
-                                          variant="ghost"
-                                          size="icon"
-                                          className="h-6 w-6"
-                                          onClick={() => {
-                                            setEditPassengerId(passenger.id);
-                                            setNewPassengerCount(passenger.passengerCount || 1);
-                                          }}
-                                        >
-                                          <Edit className="h-3 w-3" />
-                                        </Button>
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                  Passengers: {passenger.passengerCount || 1}
+                                </p>
                               </div>
                               <div className="flex flex-col items-end space-y-2">
                                 <div className="flex flex-wrap justify-end gap-1 mt-1">
