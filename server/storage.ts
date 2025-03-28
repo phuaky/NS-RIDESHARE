@@ -44,6 +44,8 @@ export interface IStorage {
   addPassenger(passenger: InsertRidePassenger & { userId: number }): Promise<RidePassenger>;
   getPassengers(rideId: number): Promise<RidePassenger[]>;
   updatePassengerSequence(id: number, sequence: number): Promise<RidePassenger>;
+  removePassenger(id: number): Promise<void>;
+  getPassenger(id: number): Promise<RidePassenger | undefined>;
 
   // Vendor operations
   getVendorRides(vendorId: number): Promise<Ride[]>;
@@ -390,6 +392,36 @@ export class DatabaseStorage implements IStorage {
       .returning();
     if (!ride) throw new Error("Ride not found");
     return ride;
+  }
+
+  async getPassenger(id: number): Promise<RidePassenger | undefined> {
+    const [passenger] = await db
+      .select()
+      .from(ridePassengers)
+      .where(eq(ridePassengers.id, id));
+    return passenger;
+  }
+  
+  async removePassenger(id: number): Promise<void> {
+    // Get the passenger details first to update ride passenger count
+    const passenger = await this.getPassenger(id);
+    if (!passenger) throw new Error("Passenger not found");
+    
+    // Delete the passenger
+    const result = await db
+      .delete(ridePassengers)
+      .where(eq(ridePassengers.id, id))
+      .returning();
+    
+    if (result.length === 0) throw new Error("Passenger not found");
+    
+    // Update the ride's passenger count
+    const ride = await this.getRide(passenger.rideId);
+    if (ride) {
+      await this.updateRide(ride.id, {
+        currentPassengers: Math.max(0, ride.currentPassengers - passenger.passengerCount)
+      });
+    }
   }
 }
 

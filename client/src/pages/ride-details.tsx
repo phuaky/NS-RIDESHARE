@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2, Share2, Edit, MapPin, Users, MessageCircle, Calendar, DollarSign, Clock, CheckCircle, ChevronRight, AlertTriangle, Phone, Mail, User } from "lucide-react";
+import { Loader2, Share2, Edit, MapPin, Users, MessageCircle, Calendar, DollarSign, Clock, CheckCircle, ChevronRight, AlertTriangle, Phone, Mail, User, UserMinus } from "lucide-react";
 import { LocationMap } from "@/components/map/location-map";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -62,7 +62,9 @@ interface RideWithCreator extends Ride {
 const joinRideSchema = z.object({
   passengerCount: z.number()
     .min(1, "Must have at least 1 passenger")
-    .max(4, "Cannot exceed 4 passengers"),
+    .refine((val) => true, {
+      message: "Cannot exceed available capacity",
+    }),  // The actual max validation is applied dynamically in the form setup
   dropoffLocation: z.string().min(1, "Drop-off location is required"),
 });
 
@@ -168,14 +170,42 @@ export default function RideDetails() {
     queryKey: [`/api/rides/${rideId}/passengers`],
     enabled: !!rideId && !!user,
   });
+  
+  // Check if the current user is already a passenger
+  const isUserPassenger = passengers?.some(p => p.userId === user?.id);
+
+  // Check if the user is the ride creator
+  const isCreator = user && ride && user.id === ride.creator?.id;
+  const creator = ride?.creator;
+
+  // Calculate remaining spots
+  const totalPassengersCount = ride?.currentPassengers || 0;
+  const remainingSpots = ride ? ride.maxPassengers - totalPassengersCount : 0;
+  const isFull = remainingSpots <= 0;
 
   // Form for joining ride
   const form = useForm<JoinRideFormData>({
-    resolver: zodResolver(joinRideSchema),
+    resolver: zodResolver(
+      joinRideSchema.refine(
+        (data) => {
+          // Skip validation if ride is not loaded yet
+          if (!ride) return true;
+          
+          // Check if passenger count exceeds remaining spots
+          return data.passengerCount <= (remainingSpots || 0);
+        },
+        {
+          message: `Number must be less than or equal to ${remainingSpots}`,
+          path: ["passengerCount"],
+        }
+      )
+    ),
     defaultValues: {
       passengerCount: 1,
       dropoffLocation: "",
     },
+    // Update validation whenever remainingSpots changes
+    context: { remainingSpots },
   });
 
   // Join ride mutation
@@ -252,18 +282,7 @@ export default function RideDetails() {
     setDropoffLocations(locations);
   }, [ride, passengers]);
 
-  // Check if the current user is already a passenger
-  const isUserPassenger = passengers?.some(p => p.userId === user?.id);
-
-  // Check if the user is the ride creator
-  const isCreator = user && ride && user.id === ride.creator?.id;
-  const creator = ride?.creator;
-
-
-  // Calculate remaining spots
-  const totalPassengersCount = ride?.currentPassengers || 0;
-  const remainingSpots = ride ? ride.maxPassengers - totalPassengersCount : 0;
-  const isFull = remainingSpots <= 0;
+  // Variables are already defined above, removing duplicate definitions
 
   // Format date for display (using our shared utility)
   const formatDateTime = (dateString: string | Date) => {
@@ -293,6 +312,41 @@ export default function RideDetails() {
       return;
     }
     joinRideMutation.mutate(data);
+  };
+  
+  // Remove passenger mutation
+  const removePassengerMutation = useMutation({
+    mutationFn: async ({ passengerId }: { passengerId: number }) => {
+      if (!user) throw new Error("You must be logged in to remove a passenger");
+      if (!ride) throw new Error("Ride not found");
+
+      const res = await apiRequest(
+        "DELETE",
+        `/api/rides/${rideId}/passengers/${passengerId}`
+      );
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/rides/${rideId}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/rides/${rideId}/passengers`] });
+      refetchPassengers();
+      toast({
+        title: "Passenger Removed",
+        description: "Passenger has been removed from the ride successfully.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to remove passenger",
+        variant: "destructive",
+      });
+    }
+  });
+  
+  // Handle passenger removal
+  const handleRemovePassenger = (passengerId: number) => {
+    removePassengerMutation.mutate({ passengerId });
   };
 
   // Generate a WhatsApp group link with all passengers
@@ -662,13 +716,13 @@ export default function RideDetails() {
                                 <Input
                                   type="number"
                                   min={1}
-                                  max={Math.min(4, remainingSpots)}
+                                  max={remainingSpots}
                                   {...field}
                                   onChange={(e) => field.onChange(parseInt(e.target.value))}
                                 />
                               </FormControl>
                               <FormDescription>
-                                Maximum {Math.min(4, remainingSpots)} passengers allowed
+                                Maximum {remainingSpots} passengers allowed
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -826,35 +880,55 @@ export default function RideDetails() {
                                   Passengers: {passenger.passengerCount || 1}
                                 </p>
                               </div>
-                              <div className="flex items-center space-x-1">
-                                {passenger.user && (
-                                  <>
-                                    <ContactInfo
-                                      label="WhatsApp"
-                                      value={passenger.user.whatsappNumber}
-                                      icon={Phone}
-                                      type="whatsapp"
-                                    />
-                                    <ContactInfo
-                                      label="Malaysian Number"
-                                      value={passenger.user.malaysianNumber}
-                                      icon={Phone}
-                                    />
-                                    <ContactInfo
-                                      label="Discord"
-                                      value={passenger.user.discordUsername}
-                                      icon={Mail}
-                                      type="discord"
-                                    />
-                                    <ContactInfo
-                                      label="Revolut"
-                                      value={passenger.user.revolutUsername}
-                                      icon={User}
-                                    />
-                                  </>
-                                )}
-                                {isCreator && (
-                                  <Badge>Passenger {index + 1}</Badge>
+                              <div className="flex flex-col items-end space-y-2">
+                                <div className="flex items-center space-x-1">
+                                  {passenger.user && (
+                                    <>
+                                      <ContactInfo
+                                        label="WhatsApp"
+                                        value={passenger.user.whatsappNumber}
+                                        icon={Phone}
+                                        type="whatsapp"
+                                      />
+                                      <ContactInfo
+                                        label="Malaysian Number"
+                                        value={passenger.user.malaysianNumber}
+                                        icon={Phone}
+                                      />
+                                      <ContactInfo
+                                        label="Discord"
+                                        value={passenger.user.discordUsername}
+                                        icon={Mail}
+                                        type="discord"
+                                      />
+                                      <ContactInfo
+                                        label="Revolut"
+                                        value={passenger.user.revolutUsername}
+                                        icon={User}
+                                      />
+                                    </>
+                                  )}
+                                  {isCreator && (
+                                    <Badge>Passenger {index + 1}</Badge>
+                                  )}
+                                </div>
+                                
+                                {/* Remove passenger option */}
+                                {(isCreator || (user && passenger.userId === user.id)) && !isRidePast(ride.date) && (
+                                  <Button 
+                                    variant="destructive" 
+                                    size="sm"
+                                    onClick={() => handleRemovePassenger(passenger.id)}
+                                    disabled={removePassengerMutation.isPending}
+                                    className="ml-auto mt-2"
+                                  >
+                                    {removePassengerMutation.isPending && passenger.id === removePassengerMutation.variables?.passengerId ? (
+                                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                    ) : (
+                                      <UserMinus className="h-4 w-4 mr-2" />
+                                    )}
+                                    {user && passenger.userId === user.id ? "Leave Ride" : "Remove"}
+                                  </Button>
                                 )}
                               </div>
                             </div>

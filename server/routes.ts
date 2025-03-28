@@ -383,6 +383,45 @@ app.get("/api/rides", async (req, res) => {
     const rides = await storage.getVendorRides(req.user.id);
     res.json(rides);
   });
+
+  // New route to remove a passenger (can be used by both the passenger to leave or by the ride organizer)
+  app.delete("/api/rides/:rideId/passengers/:passengerId", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    const passengerId = parseInt(req.params.passengerId);
+    const rideId = parseInt(req.params.rideId);
+    
+    if (isNaN(passengerId) || isNaN(rideId)) {
+      return res.status(400).json({ error: "Invalid passenger or ride ID" });
+    }
+    
+    try {
+      // Get the passenger record first to check authorization
+      const passenger = await storage.getPassenger(passengerId);
+      if (!passenger) {
+        return res.status(404).json({ error: "Passenger not found" });
+      }
+      
+      // Get the ride to check if the current user is the organizer
+      const ride = await storage.getRide(rideId);
+      if (!ride) {
+        return res.status(404).json({ error: "Ride not found" });
+      }
+      
+      // Authorization check: only the ride creator or the passenger themselves can remove a passenger
+      if (ride.creatorId !== req.user.id && passenger.userId !== req.user.id) {
+        return res.status(403).json({ error: "Not authorized" });
+      }
+      
+      // Remove the passenger
+      await storage.removePassenger(passengerId);
+      
+      res.status(200).json({ message: "Passenger removed successfully" });
+    } catch (error) {
+      console.error("Error removing passenger:", error);
+      res.status(500).json({ error: (error as Error).message });
+    }
+  });
   
   // User profile update endpoint
   app.patch("/api/users/:id", async (req, res) => {
