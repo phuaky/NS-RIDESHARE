@@ -76,10 +76,43 @@ function ContactInfo({
   type 
 }: { 
   label: string; 
-  value: string | null; 
+  value: string | null | undefined; 
   icon: any;
   type?: 'whatsapp' | 'discord';
 }) {
+  const { toast } = useToast();
+
+  // Direct messaging function within the component
+  const openDirectMessage = (type: 'whatsapp' | 'discord', contact: string | null | undefined) => {
+    if (!contact) {
+      toast({
+        title: "Contact not available",
+        description: `No ${type} contact information provided.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    let url = '';
+    if (type === 'whatsapp') {
+      // Remove any non-numeric characters from phone number
+      const cleanNumber = contact.replace(/\D/g, '');
+      url = `https://wa.me/${cleanNumber}`;
+    } else if (type === 'discord') {
+      // Copy Discord username to clipboard
+      navigator.clipboard.writeText(contact);
+      toast({
+        title: "Discord username copied!",
+        description: "Open Discord and search for this username to start a conversation.",
+      });
+      return;
+    }
+
+    if (url) {
+      window.open(url, '_blank');
+    }
+  };
+
   if (!value) return null;
 
   return (
@@ -338,7 +371,7 @@ export default function RideDetails() {
     const messageText = `Create a Discord group called "${groupName}" with these users:\n\n${
       passengers
         .filter(p => p.user?.discordUsername)
-        .map(p => `${p.user?.fullName}: ${p.user?.discordUsername}`)
+        .map(p => `${p.user?.name || p.user?.discordUsername}: ${p.user?.discordUsername}`)
         .join('\n')
     }`;
 
@@ -362,26 +395,27 @@ export default function RideDetails() {
       `$${totalCost} SGD` : 
       `$${ride.cost} SGD + $${ride.additionalStops * 5} SGD for additional stops`;
 
-    // Format all locations
-    const locationsText = ride.direction === "SG->FC" ?
-      `Pickup: ${ride.pickupLocation}` :
-      `Pickup: Forest City\nDrop-offs: ${ride.dropoffLocations.map(loc => 
+    // Format locations based on direction with all drop-off locations
+    let locationSection = '';
+    if (ride.direction === "FC->SG") {
+      const dropoffLocations = ride.dropoffLocations.map(loc => 
         typeof loc === 'string' ? loc : loc.location
-      ).join(', ')}`;
-
-    // Format locations based on direction
-    const locationDisplay = ride.direction === "FC->SG"
-      ? `Drop-off Location: ${ride.dropoffLocations && ride.dropoffLocations.length > 0 
-          ? (typeof ride.dropoffLocations[0] === 'string' 
-              ? ride.dropoffLocations[0] 
-              : ride.dropoffLocations[0].location)
-          : "Unknown location"}`
-      : `Pickup Location: ${ride.pickupLocation}`;
+      );
+      
+      locationSection = `Pickup: Forest City\nDrop-off Locations (${dropoffLocations.length}):\n`;
+      
+      // Number each location
+      dropoffLocations.forEach((loc, index) => {
+        locationSection += `${index + 1}. ${loc}\n`;
+      });
+    } else {
+      locationSection = `Pickup Location: ${ride.pickupLocation}\nDrop-off: Forest City`;
+    }
 
     const summary = `🚗 RideShare Trip Summary 🚗\n\n` +
       `Direction: ${directionText}\n` +
       `Date & Time: ${dateText}\n` +
-      `${locationDisplay}\n` +
+      `${locationSection}\n` +
       `Passengers: ${totalPassengersCount}/${ride.maxPassengers}\n` +
       `Total Cost: ${costDetails}\n\n` +
       `📱 Join through RideShare: https://ns-rideshare.replit.app/rides/${ride.id}`;
@@ -401,36 +435,7 @@ export default function RideDetails() {
     }
   };
 
-  // Add direct messaging function
-  const openDirectMessage = (type: 'whatsapp' | 'discord', contact: string | null) => {
-    if (!contact) {
-      toast({
-        title: "Contact not available",
-        description: `No ${type} contact information provided.`,
-        variant: "destructive",
-      });
-      return;
-    }
-
-    let url = '';
-    if (type === 'whatsapp') {
-      // Remove any non-numeric characters from phone number
-      const cleanNumber = contact.replace(/\D/g, '');
-      url = `https://wa.me/${cleanNumber}`;
-    } else if (type === 'discord') {
-      // Copy Discord username to clipboard
-      navigator.clipboard.writeText(contact);
-      toast({
-        title: "Discord username copied!",
-        description: "Open Discord and search for this username to start a conversation.",
-      });
-      return;
-    }
-
-    if (url) {
-      window.open(url, '_blank');
-    }
-  };
+  // Direct messaging function has been moved to ContactInfo component
 
   if (isRideLoading) {
     return (
@@ -958,7 +963,7 @@ export default function RideDetails() {
                           <p className="mt-1">
                             {passenger.dropoffLocation}
                             <span className="text-sm text-muted-foreground ml-2">
-                              ({passenger.user?.fullName || "Unknown"})
+                              ({passenger.user?.name || passenger.user?.discordUsername || "Unknown"})
                             </span>
                           </p>
                         </div>

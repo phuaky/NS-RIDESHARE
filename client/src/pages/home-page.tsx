@@ -45,23 +45,27 @@ export default function HomePage() {
     const totalCost = ride.cost + (ride.additionalStops * 5);
     const perPersonCost = (totalCost / (ride.maxPassengers || 1)).toFixed(2);
 
-    // Format locations based on direction
-    let locationInfo = "";
+    // Format locations based on direction with all drop-off locations
+    let locationSection = '';
     if (ride.direction === "FC->SG") {
-      const dropoffLocation = ride.dropoffLocations && ride.dropoffLocations.length > 0 
-        ? (typeof ride.dropoffLocations[0] === 'string' 
-            ? ride.dropoffLocations[0] 
-            : ride.dropoffLocations[0].location)
-        : "Unknown location";
-      locationInfo = `Drop-off Location: ${dropoffLocation}`;
+      const dropoffLocations = ride.dropoffLocations.map(loc => 
+        typeof loc === 'string' ? loc : loc.location
+      );
+      
+      locationSection = `Pickup: Forest City\nDrop-off Locations (${dropoffLocations.length}):\n`;
+      
+      // Number each location
+      dropoffLocations.forEach((loc, index) => {
+        locationSection += `${index + 1}. ${loc}\n`;
+      });
     } else {
-      locationInfo = `Pickup Location: ${ride.pickupLocation}`;
+      locationSection = `Pickup Location: ${ride.pickupLocation}\nDrop-off: Forest City`;
     }
 
     const summary = `🚗 RideShare Trip Summary 🚗\n\n` +
       `Direction: ${directionText}\n` +
       `Date & Time: ${dateText}\n` +
-      `${locationInfo}\n` +
+      `${locationSection}\n` +
       `Passengers: ${ride.currentPassengers}/${ride.maxPassengers}\n` +
       `Total Cost: $${totalCost} SGD\n\n` +
       `📱 Join through RideShare: https://ns-rideshare.replit.app/rides/${ride.id}`;
