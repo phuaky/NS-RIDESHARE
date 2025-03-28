@@ -940,8 +940,9 @@ export default function RideDetails() {
                                   )}
                                 </p>
                                 <div className="flex items-center mt-1">
-                                  <p className="text-sm text-muted-foreground">
-                                    Passengers: {editPassengerId === passenger.id ? (
+                                  <div className="text-sm text-muted-foreground flex items-center">
+                                    <span>Passengers: </span>
+                                    {editPassengerId === passenger.id ? (
                                       <div className="inline-flex items-center ml-1">
                                         <Input
                                           type="number"
@@ -953,9 +954,9 @@ export default function RideDetails() {
                                         />
                                       </div>
                                     ) : (
-                                      passenger.passengerCount || 1
+                                      <span className="ml-1">{passenger.passengerCount || 1}</span>
                                     )}
-                                  </p>
+                                  </div>
                                   
                                   {/* Edit passenger count buttons */}
                                   {((isCreator && !isRidePast(ride.date)) || 

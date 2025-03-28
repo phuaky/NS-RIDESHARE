@@ -366,6 +366,8 @@ app.get("/api/rides", async (req, res) => {
         return res.status(403).json({ error: "Not authorized to edit this passenger" });
       }
       
+      console.log("Passenger edit authorized. User:", req.user.id, "Passenger:", passenger.userId, "Creator:", ride.creatorId);
+      
       // Check if the ride has capacity
       const currentCount = passenger.passengerCount;
       const diff = passengerCount - currentCount;
