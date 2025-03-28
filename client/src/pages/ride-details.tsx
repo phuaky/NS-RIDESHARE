@@ -372,7 +372,7 @@ export default function RideDetails() {
     const summary = `🚗 RideShare Trip Summary 🚗\n\n` +
       `Direction: ${directionText}\n` +
       `Date & Time: ${dateText}\n` +
-      `${ride.direction === "FC->SG" ? "Drop-off" : "Pickup"}: ${ride.pickupLocation}\n` +
+      `${ride.direction === "FC->SG" ? "Drop-off Location" : "Pickup Location"}: ${ride.pickupLocation}\n` +
       `Passengers: ${totalPassengersCount}/${ride.maxPassengers}\n` +
       `Total Cost: ${costDetails}\n\n` +
       `📱 Join through RideShare: https://ns-rideshare.replit.app/rides/${ride.id}`;
