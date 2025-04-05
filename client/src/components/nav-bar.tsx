@@ -32,8 +32,8 @@ export function NavBar() {
         <div className="flex justify-between h-16 items-center">
           {/* Logo always visible */}
           <Link href="/" className="flex items-center text-sm font-medium">
-            <Car className="h-5 w-5 mr-2" />
-            <span className="text-lg font-semibold">RideShare</span>
+            <Car className="h-5 w-5 mr-2 text-blue-600" />
+            <span className="text-lg font-semibold">NS RideShare</span>
           </Link>
 
           {/* Mobile menu button */}
