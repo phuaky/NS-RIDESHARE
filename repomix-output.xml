@@ -1,4 +1,4 @@
-This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
 
 <file_summary>
 This section contains a summary of this file.
@@ -31,6 +31,7 @@ The content is organized as follows:
 <notes>
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching these patterns are excluded: **/*.log, tmp/,  cache/**,  attached_assets/**
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Files are sorted by Git change count (files with more changes are at the bottom)
@@ -175,90 +176,105 @@ This section contains the contents of the repository's files.
 </file>
 
 <file path=".cache/replit/env/latest">
-declare -gx REPL_IDENTITY_KEY=k2.secret.SentdmN1teNuupVoqhLfiP6WnmZ1ys0jYBcjNZBDQuJDeIitGp_YVRRcGUEFvhmIgxxr0tKZy-jzgcnRhirXIg
-declare -gx depsBuildBuildPropagated=''
+declare -gx HOSTNAME=dfd4d08d4c7b
+declare -gx DIRENV_CONFIG=/etc/direnv
+declare -gx LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
+declare -gx REPL_PUBKEYS='{"crosis-ci":"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=","crosis-ci:1":"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=","crosis-ci:latest":"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=","prod":"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=","prod:1":"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=","prod:2":"8uGN+vfszlnV93/HCSHlVLG0xddMlPkir1Ni4JKT4+w=","prod:3":"9+MCOSHQSQlcodXoot8dC8NLhc862nLkx1/VMsbY2h8=","prod:4":"8uGN+vfszlnV93/HCSHlVLG0xddMlPkir1Ni4JKT4+w=","prod:5":"9+MCOSHQSQlcodXoot8dC8NLhc862nLkx1/VMsbY2h8=","prod:latest":"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=","vault-goval-token":"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E=","vault-goval-token:1":"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E=","vault-goval-token:latest":"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E="}'
 declare -gx NIX_PS1='\[\033[01;34m\]\w\[\033[00m\]\$ '
-declare -gx STRIP=strip
-declare -gx NIX_BUILD_TOP=/tmp
-declare -gx XDG_DATA_DIRS=/nix/store/nbad47q0m0m9c5xid7zh05hiknwircbp-patchelf-0.15.0/share:/nix/store/bcsji16g1szdg0j8znlvbkbfxpkvlgiz-replit-runtime-path/share
-declare -gx NIX_PROFILES='/nix/var/nix/profiles/default /home/runner/.nix-profile'
-declare -gx REPLIT_ENVIRONMENT=production
-declare -gx AR=ar
+declare -gx NIX_STORE=/nix/store
+declare -gx doCheck=''
+declare -gx REPL_LANGUAGE=nix
+declare -gx REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX=1
 declare -gx CXX=g++
-declare -gx GIT_ASKPASS=replit-git-askpass
-declare -gx CONFIG_SHELL=/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash
-declare -gx mesonFlags=''
 declare -gx HOST_PATH=/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/bin:/nix/store/ha8rh8jg19r8418baa8ps9b9kvd6szcf-attr-2.5.2-bin/bin:/nix/store/cnnmb3axmv43lj22gny3m4hj06i1nc7c-libcap-2.69/bin:/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/bin:/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5/bin:/nix/store/jjcsr5gs4qanf7ln5c6wgcq4sn75a978-findutils-4.9.0/bin:/nix/store/i34mknsjgrfyy71k2h79gda0bvagzc2j-diffutils-3.10/bin:/nix/store/5zjms21vpxlkbc0qyl5pmj2sidfmzmd7-gnused-4.9/bin:/nix/store/28gpmx3z6ss3znd7fhmrzmvk3x5lnfbk-gnugrep-3.11/bin:/nix/store/8vvkbgmnin1x2jkp7wcb2zg1p0vc4ks9-gawk-5.2.2/bin:/nix/store/rik7p68cq7yzlj5pmfpf4yv6jnrpvlgf-gnutar-1.35/bin:/nix/store/j5chw7v1x3vlmf3wmdpdb5gwh9hl0b80-gzip-1.13/bin:/nix/store/mxcq77rlan82dzpv3cgj0fh6qvv8ncil-bzip2-1.0.8-bin/bin:/nix/store/cdzpn0rdq810aknww3w9fy3wmw9ixr66-gnumake-4.4.1/bin:/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin:/nix/store/0lfxbmchigx9vs9qmrlbahcy6nxwfnj1-patch-2.7.6/bin:/nix/store/6i4xxaa812vsbli9jkq4mksdddrk27lw-xz-5.4.6-bin/bin:/nix/store/xx7x1dwybpssfhq8yikvzz38bh3yrq97-file-5.45/bin
-declare -gx cmakeFlags=''
-declare -gx phases=buildPhase
+declare -gx OBJCOPY=objcopy
+declare -gx NIX_BUILD_TOP=/tmp
+declare -gx REPLIT_LD_LIBRARY_PATH=/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib:/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib:/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib:/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib
+declare -gx NIX_PATH=nixpkgs=/home/runner/.nix-defexpr/channels/nixpkgs-stable-24_05:/home/runner/.nix-defexpr/channels
+declare -gx LANG=en_US.UTF-8
+declare -gx LIBGL_DRIVERS_PATH=/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib/dri
+declare -gx REPL_SLUG=workspace
+declare -gx REPL_IDENTITY=v2.public.Q2lRd1pUazVabUV3T0MwM09EZzRMVFF5WkRNdFlUa3dZUzFpTmpBNE9ERTBOVEUzWm1VU0JuQm9kV0ZyZVJvTVRsTXRVbWxrWlZOb1lYSmxJaVF3WlRrNVptRXdPQzAzT0RnNExUUXlaRE10WVRrd1lTMWlOakE0T0RFME5URTNabVU0Nk40RVdnOEtCMnBoYm1WM1lYa1NCSEJoYVdRPZUChpM3Q9VPJFPBdKsb6gyAv7H9QUbi6e1a_rYT7CznincYIP2Y30v74Zog2NOPyUfE7XqXeZH6CEukVbftmAc.R0FFaUJtTnZibTFoYmhLQkNIWXlMbkIxWW14cFl5NVJNbVI2VTFSYU1HVllWakprTVd4U1RteHdURlJGZEZOVFZYaEVWRWMxVTJSSVNUUlNNRlpQVmpGb2NHVlhkR2hSVjJodVVtdGtjRmRWZEV0U1JVcHpWREZTYzJKV2JGVlJWRkpOVmtkTk1GUXdVbTVrUlRWRlUyMTBUbVZVUm05VU1WSkRZVVY0V0ZOVVNrNVNSMk13VkZaU1VrMVZNVlZhUnpGaFZXMDVTbEpYWkdGa01rWkpWbTFvYUUweWRHaFJhMUp4WW5wT2JsVlhSa1JWTUd4SldWY3hSMlJXY0ZsYVIyaHNWVzA1U0ZNeVpGTmtNV3hZWWtkMFNtRnNXbmxVVjJzeFpESlNXRk51VG1oV01ERXhWRmQwUzFReFNYaGpSbVJzVWpOU1UxbHFSa1prUmtwMVdrWldWbUpIZUU1V1JtUnpVbTFXY2s5WGFGSmxiRll6VmxSS2MwMXNiSEpTYkU1WFUwaENVbFpyV1RWT2JGcEpVbXhhYW1SNk1EbElOazVwU0VSTVZtNXFhemx0Y1VwcFVGcE9jMTlqT0Rack1VZGxSWFpQUTJScFJFRnVjMFpEVEhWUmRXdGllVlozYlRBM2FGUldhMkpDYWxCd1NrMUNhVWxrZEMxT1drdHFORTFxY25GelJFazNUekpFZHk1U01FWkdZVlZLZEZSdVdtbGlWRVp2V1cxb1RWbHJSblZYV0d4TlltdEplRmRYTVRSalJtdzFUbFpLVG1KV1NUSldWRVpyVFVkV2RGTnNXbFJpYmtKWFZtMHhORlV4VW5KVmJVWk9WbTVDVjFVeWRFOVdSbHBaWVVWV1ZtVnJTbkpWYWtFeFUxWkdjbE5zV2s1U2JIQlRWbTF3VDFsWFVsZGlNMmhUWWxkb1UxWnFTbTlrVmxaWVpFZDBhV0pGTlZoWmExWlBWbTFLVldKRlZsWmhhMHBJV2tkNGMxWnNTblZTYkVwWFZsaENTbFl5Y0VOak1XUnpVbXhvYUZOR2NGTlVWV1JUVVRGYVIxcEZaRkppVlZwSlYydFZlRlV3TVhSVmEzUlhUVlphVkZWVVNrcGtNVkp5WVVaS1YyRXhjSFpXVmxwcllqSktjMVJ1U21sVFJWcFlXVzEwZDFReGJGZFZiR1JPVFZoQ1NGZHJWakJoYXpGeVYyeHNWMUp0YUZoV1JFWmhaRWRXU1dOR1pGZGlWa3BKVmtaU1MxUXlUWGxUYWxwV1lYcHNXRlJYZUV0aU1WbDVUVlJTVkUxcldrZFVWbFpyVmtkS1JsZHNXbHBXZWtVd1YxWmFjMDVzUmxWU2JYQnBVbGhDTmxaRVJsZFpWMFY1VTJ4c1ZsWkZXbGRaYTFwaFkyeHdTR1ZGV214U2JrSkdWakl4ZDJGSFJYaGpSemxYWVd0YVZGVjZSazVsUmxwelUyeEdWMUpGU2pOV01uUmhWMjFPZEdORk1WQlhSVFI2V2tWV1drNVdjRVZTV0ZKcFlsUldVVlF3WkdGVmJVcFlZVVJLVkZKV2NIaFdhMVp5WkVkU1JXRkZjR2xpVm5CUlYwUkplRlpWTVhSWmVsSnFWMGhDUmxWclpGWk9SbHBGWWtaU2FFMVdTalpYYlhodllsZFdjbUo2UWxoV1ZURTJWMjF6ZDJWc1pGWk9XRXBVVmtkU1dWZFhhM2RPVmtweVZXMDVUMkZVUmt4VWFrazFVa1Y0YzFOWVpGTmhNWEJ2Vm14V2QwMUdXa2hPVjBab1ZqQndWbFZ0TURWWGJVcFlWV3BLVm1GcmNGQlZNVnBQWkZaa2RGSnNUbE5sYldjdw
+declare -gx NIX_BINTOOLS=/nix/store/kln7kinji3b7sz8r50h4gn9yy6k1js9a-binutils-wrapper-2.41
+declare -gx REPL_IDENTITY_KEY=k2.secret.Dl-_pHrQecZ4PWuByGC8wILVA1tENVh7lj07W4C-UwfYE0ZlXGRChD4XBNFgsyITM5oLnRKK9sBFPM9P_NOpSw
+declare -gx GIT_EDITOR=replit-git-editor
+declare -gx NIX_LDFLAGS='-rpath /nix/store/yf3p5xmdpdvjjsa0c5g63q3jhhgwrryp-nix-shell/lib  -L/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/lib -L/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib -L/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib -L/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib -L/nix/store/5nk2ga7i2f030am4qpcdsd8qlk6i3z83-attr-2.5.2/lib -L/nix/store/yvhyhcfhc98wm86pw4ygk5jdr804iwrw-libcap-2.69-lib/lib -L/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib -L/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/lib -L/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib -L/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib -L/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib -L/nix/store/5nk2ga7i2f030am4qpcdsd8qlk6i3z83-attr-2.5.2/lib -L/nix/store/yvhyhcfhc98wm86pw4ygk5jdr804iwrw-libcap-2.69-lib/lib -L/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib'
+declare -gx NIX_CFLAGS_COMPILE=' -frandom-seed=yf3p5xmdpd -isystem /nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/include -isystem /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev/include -isystem /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev/include -isystem /nix/store/xslrgzkvciny0m0cqbgq4bnvydvpdkgx-libcap-2.69-dev/include -isystem /nix/store/nn78wg4rgns62w5sfzyxashxizd0lfva-attr-2.5.2-dev/include -isystem /nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/include -isystem /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev/include -isystem /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev/include -isystem /nix/store/xslrgzkvciny0m0cqbgq4bnvydvpdkgx-libcap-2.69-dev/include -isystem /nix/store/nn78wg4rgns62w5sfzyxashxizd0lfva-attr-2.5.2-dev/include'
+declare -gx REPLIT_PID1_VERSION=0.0.0-2f2097b
+declare -gx REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER=1
+declare -gx XDG_DATA_DIRS=/nix/store/nbad47q0m0m9c5xid7zh05hiknwircbp-patchelf-0.15.0/share:/nix/store/bcsji16g1szdg0j8znlvbkbfxpkvlgiz-replit-runtime-path/share
+declare -gx XDG_CONFIG_HOME=/home/runner/workspace/.config
+declare -gx STRINGS=strings
+declare -gx depsHostHostPropagated=''
+declare -gx REPLIT_SUBCLUSTER=paid
+declare -gx REPLIT_RIPPKGS_INDICES=/nix/store/l5gcmdp908sji4wchfp8csflhjcgnmm3-rippkgs-indices
+declare -gx REPL_IMAGE=gcr.io/marine-cycle-160323/nix:bf8590a3e2f0a8b70b7ca175eeed9074dffbfca9
+declare -gx REPLIT_RTLD_LOADER=1
+declare -gx stdenv=/nix/store/xfhkjnpqjwlf6hlk1ysmq3aaq80f3bjj-stdenv-linux
+declare -gx DISPLAY=:0
+declare -gx REPL_OWNER=phuaky
+declare -gx DOCKER_CONFIG=/home/runner/workspace/.config/docker
+declare -gx builder=/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash
+declare -gx nativeBuildInputs=''
 declare -gx npm_config_prefix=/home/runner/workspace/.config/npm/node_global
-declare -gx NIX_CC=/nix/store/9bv7dcvmfcjnmg5mnqwqlq2wxfn8d7yi-gcc-wrapper-13.2.0
-declare -gx CC=gcc
+declare -gx REPLIT_DB_URL=https://kv.replit.com/v0/eyJhbGciOiJIUzUxMiIsImlzcyI6ImNvbm1hbiIsImtpZCI6InByb2Q6MSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25tYW4iLCJleHAiOjE3NDM2MTA0NzMsImlhdCI6MTc0MzQ5ODg3MywiZGF0YWJhc2VfaWQiOiIwZTk5ZmEwOC03ODg4LTQyZDMtYTkwYS1iNjA4ODE0NTE3ZmUifQ.ZGqv7QkNr2zPZC4n4ltF5pB_8Ugmm5aUQ72dPiWgbmv8q9FijdHg4aV4zOsTQMMUHeCtY5OuwDrrMm6aIs_PHw
+declare -gx mesonFlags=''
+declare -gx SIZE=size
+declare -gx outputs=out
+declare -gx NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu=1
+declare -gx depsHostHost=''
+declare -gx NIXPKGS_ALLOW_UNFREE=1
+declare -gx REPLIT_DOMAINS=0e99fa08-7888-42d3-a90a-b608814517fe-00-10pgi1sgukcwk.janeway.replit.dev
+declare -gx RANLIB=ranlib
+declare -gx preferLocalBuild=1
+declare -gx depsBuildTargetPropagated=''
+declare -gx __ETC_PROFILE_SOURCED=1
+declare -gx __structuredAttrs=''
+declare -gx patches=''
+declare -gx NIX_ENFORCE_NO_NATIVE=1
+declare -gx AR=ar
+declare -gx depsBuildTarget=''
+declare -gx depsBuildBuildPropagated=''
+declare -gx REPL_HOME=/home/runner/workspace
 declare -gx NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu=1
+declare -gx cmakeFlags=''
+declare -gx propagatedBuildInputs=''
+declare -gx system=x86_64-linux
+declare -gx HOME=/home/runner
+declare -gx REPLIT_ENVIRONMENT=production
+declare -gx XDG_CACHE_HOME=/home/runner/workspace/.cache
+declare -gx XDG_DATA_HOME=/home/runner/workspace/.local/share
+declare -gx LD=ld
+declare -gx shell=/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash
+declare -gx configureFlags=''
 read -r _new_path <<< "/nix/store/0z5iwcvalafm3j2c5pfhllsfbxrbyzf4-postgresql-16.5/bin:/nix/store/r2wrscmjzn4f2f7wk7q2ms2h96mjwzv7-npx/bin:/home/runner/workspace/.config/npm/node_global/bin:/home/runner/workspace/node_modules/.bin:/nix/store/rrz8cqhldyl17bbs60g7d8vbaadkxc40-nodejs-20.18.1-wrapped/bin:/nix/store/7zaapw8wkywsw9z5lkkk5k608xpn7wfl-bun-1.2.3/bin:/nix/store/z8s3r4vwf4r26g2d7shnw5lva6ihim8f-pnpm-9.15.0/bin:/nix/store/jcgdksj946l5l42c2y9ks2l4g6n74h3f-yarn-1.22.22/bin:/nix/store/2s17mrby0ph00z22rkabfs9vzpzx1r70-prettier-3.3.3/bin:/nix/store/rdd4pnr4x9rqc9wgbibhngv217w2xvxl-bash-interactive-5.2p26/bin:/nix/store/nbad47q0m0m9c5xid7zh05hiknwircbp-patchelf-0.15.0/bin:/nix/store/9bv7dcvmfcjnmg5mnqwqlq2wxfn8d7yi-gcc-wrapper-13.2.0/bin:/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/bin:/nix/store/c2i631h8i5vcs1sqifwxfsazhwrg6wr5-glibc-2.39-52-bin/bin:/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5/bin:/nix/store/kln7kinji3b7sz8r50h4gn9yy6k1js9a-binutils-wrapper-2.41/bin:/nix/store/bgcaxhhxswzvmxjbbgvvaximm5hwghz1-binutils-2.41/bin:/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/bin:/nix/store/ha8rh8jg19r8418baa8ps9b9kvd6szcf-attr-2.5.2-bin/bin:/nix/store/cnnmb3axmv43lj22gny3m4hj06i1nc7c-libcap-2.69/bin:/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/bin:/nix/store/jjcsr5gs4qanf7ln5c6wgcq4sn75a978-findutils-4.9.0/bin:/nix/store/i34mknsjgrfyy71k2h79gda0bvagzc2j-diffutils-3.10/bin:/nix/store/5zjms21vpxlkbc0qyl5pmj2sidfmzmd7-gnused-4.9/bin:/nix/store/28gpmx3z6ss3znd7fhmrzmvk3x5lnfbk-gnugrep-3.11/bin:/nix/store/8vvkbgmnin1x2jkp7wcb2zg1p0vc4ks9-gawk-5.2.2/bin:/nix/store/rik7p68cq7yzlj5pmfpf4yv6jnrpvlgf-gnutar-1.35/bin:/nix/store/j5chw7v1x3vlmf3wmdpdb5gwh9hl0b80-gzip-1.13/bin:/nix/store/mxcq77rlan82dzpv3cgj0fh6qvv8ncil-bzip2-1.0.8-bin/bin:/nix/store/cdzpn0rdq810aknww3w9fy3wmw9ixr66-gnumake-4.4.1/bin:/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin:/nix/store/0lfxbmchigx9vs9qmrlbahcy6nxwfnj1-patch-2.7.6/bin:/nix/store/6i4xxaa812vsbli9jkq4mksdddrk27lw-xz-5.4.6-bin/bin:/nix/store/xx7x1dwybpssfhq8yikvzz38bh3yrq97-file-5.45/bin:/nix/store/rmzzfy35ld8zk6ljb5vy9xdvwjic3r6y-pid1/bin:/nix/store/bcsji16g1szdg0j8znlvbkbfxpkvlgiz-replit-runtime-path/bin:/home/runner/.nix-profile/bin:/home/runner/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 #PATH=/nix/store/0z5iwcvalafm3j2c5pfhllsfbxrbyzf4-postgresql-16.5/bin:/nix/store/r2wrscmjzn4f2f7wk7q2ms2h96mjwzv7-npx/bin:/home/runner/workspace/.config/npm/node_global/bin:/home/runner/workspace/node_modules/.bin:/nix/store/rrz8cqhldyl17bbs60g7d8vbaadkxc40-nodejs-20.18.1-wrapped/bin:/nix/store/7zaapw8wkywsw9z5lkkk5k608xpn7wfl-bun-1.2.3/bin:/nix/store/z8s3r4vwf4r26g2d7shnw5lva6ihim8f-pnpm-9.15.0/bin:/nix/store/jcgdksj946l5l42c2y9ks2l4g6n74h3f-yarn-1.22.22/bin:/nix/store/2s17mrby0ph00z22rkabfs9vzpzx1r70-prettier-3.3.3/bin:/nix/store/rdd4pnr4x9rqc9wgbibhngv217w2xvxl-bash-interactive-5.2p26/bin:/nix/store/nbad47q0m0m9c5xid7zh05hiknwircbp-patchelf-0.15.0/bin:/nix/store/9bv7dcvmfcjnmg5mnqwqlq2wxfn8d7yi-gcc-wrapper-13.2.0/bin:/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/bin:/nix/store/c2i631h8i5vcs1sqifwxfsazhwrg6wr5-glibc-2.39-52-bin/bin:/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5/bin:/nix/store/kln7kinji3b7sz8r50h4gn9yy6k1js9a-binutils-wrapper-2.41/bin:/nix/store/bgcaxhhxswzvmxjbbgvvaximm5hwghz1-binutils-2.41/bin:/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/bin:/nix/store/ha8rh8jg19r8418baa8ps9b9kvd6szcf-attr-2.5.2-bin/bin:/nix/store/cnnmb3axmv43lj22gny3m4hj06i1nc7c-libcap-2.69/bin:/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/bin:/nix/store/jjcsr5gs4qanf7ln5c6wgcq4sn75a978-findutils-4.9.0/bin:/nix/store/i34mknsjgrfyy71k2h79gda0bvagzc2j-diffutils-3.10/bin:/nix/store/5zjms21vpxlkbc0qyl5pmj2sidfmzmd7-gnused-4.9/bin:/nix/store/28gpmx3z6ss3znd7fhmrzmvk3x5lnfbk-gnugrep-3.11/bin:/nix/store/8vvkbgmnin1x2jkp7wcb2zg1p0vc4ks9-gawk-5.2.2/bin:/nix/store/rik7p68cq7yzlj5pmfpf4yv6jnrpvlgf-gnutar-1.35/bin:/nix/store/j5chw7v1x3vlmf3wmdpdb5gwh9hl0b80-gzip-1.13/bin:/nix/store/mxcq77rlan82dzpv3cgj0fh6qvv8ncil-bzip2-1.0.8-bin/bin:/nix/store/cdzpn0rdq810aknww3w9fy3wmw9ixr66-gnumake-4.4.1/bin:/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin:/nix/store/0lfxbmchigx9vs9qmrlbahcy6nxwfnj1-patch-2.7.6/bin:/nix/store/6i4xxaa812vsbli9jkq4mksdddrk27lw-xz-5.4.6-bin/bin:/nix/store/xx7x1dwybpssfhq8yikvzz38bh3yrq97-file-5.45/bin:/nix/store/rmzzfy35ld8zk6ljb5vy9xdvwjic3r6y-pid1/bin:/nix/store/bcsji16g1szdg0j8znlvbkbfxpkvlgiz-replit-runtime-path/bin:/home/runner/.nix-profile/bin:/home/runner/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 if [ -e "/run/replit/env/last" ]; then read -r _last_path < <(\grep '^#PATH=' /run/replit/env/last | cut -f 2 -d =); fi
 _user_components="$(\tr : $'\n' <<< "${PATH:-}" |\grep -xv -f <(\tr : $'\n' <<< "${_last_path}") |\tr $'\n' :)"
 declare -gx PATH="${_user_components}${_new_path}"
 declare -gx REPLIT_CLI=/nix/store/rv3hg5rqzmnl1775fsgjf4835mh182sa-pid1-0.0.1/bin/replit
+declare -gx REPLIT_NIX_CHANNEL=stable-24_05
+declare -gx REPL_ID=0e99fa08-7888-42d3-a90a-b608814517fe
+declare -gx NIX_HARDENING_ENABLE='bindnow format fortify fortify3 pic relro stackprotector strictoverflow'
+declare -gx NIX_CC=/nix/store/9bv7dcvmfcjnmg5mnqwqlq2wxfn8d7yi-gcc-wrapper-13.2.0
+declare -gx NIX_PROFILES='/nix/var/nix/profiles/default /home/runner/.nix-profile'
+declare -gx REPLIT_BASHRC=/nix/store/s4lshwgjxfy4lmilpjpg82swj27lb9ql-replit-bashrc/bashrc
+declare -gx STRIP=strip
+declare -gx propagatedNativeBuildInputs=''
+declare -gx depsTargetTarget=''
+declare -gx phases=buildPhase
+declare -gx CONFIG_SHELL=/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash
+declare -gx PROMPT_DIRTRIM=2
+declare -gx CC=gcc
+declare -gx _=/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5/bin/env
+declare -gx REPLIT_CLUSTER=janeway
 declare -gx strictDeps=''
 declare -gx doInstallCheck=''
-declare -gx REPLIT_NIX_CHANNEL=stable-24_05
-declare -gx REPL_LANGUAGE=nix
-declare -gx REPLIT_DB_URL=https://kv.replit.com/v0/eyJhbGciOiJIUzUxMiIsImlzcyI6ImNvbm1hbiIsImtpZCI6InByb2Q6MSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25tYW4iLCJleHAiOjE3NDMyNjEzNzEsImlhdCI6MTc0MzE0OTc3MSwiZGF0YWJhc2VfaWQiOiIwZTk5ZmEwOC03ODg4LTQyZDMtYTkwYS1iNjA4ODE0NTE3ZmUifQ._TlrD3Ux7WCn71dxnZbUNZujRvgEaShWTcM3SamZDFvHWvYA9lAyzKEKplttvlfS1xC4tRHAT1lKaIytManBmQ
-declare -gx shellHook=''
-declare -gx depsBuildTargetPropagated=''
-declare -gx REPLIT_RTLD_LOADER=1
-declare -gx out=/nix/store/yf3p5xmdpdvjjsa0c5g63q3jhhgwrryp-nix-shell
-declare -gx propagatedBuildInputs=''
-declare -gx stdenv=/nix/store/xfhkjnpqjwlf6hlk1ysmq3aaq80f3bjj-stdenv-linux
-declare -gx LD=ld
-declare -gx __structuredAttrs=''
-declare -gx REPLIT_RIPPKGS_INDICES=/nix/store/l5gcmdp908sji4wchfp8csflhjcgnmm3-rippkgs-indices
-declare -gx REPLIT_DEV_DOMAIN=0e99fa08-7888-42d3-a90a-b608814517fe-00-10pgi1sgukcwk.janeway.replit.dev
-declare -gx REPL_HOME=/home/runner/workspace
-declare -gx system=x86_64-linux
-declare -gx __ETC_PROFILE_SOURCED=1
-declare -gx SOURCE_DATE_EPOCH=315532800
-declare -gx REPL_OWNER_ID=77672
-declare -gx shell=/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash
-declare -gx configureFlags=''
-declare -gx REPLIT_PID1_VERSION=0.0.0-2f2097b
-declare -gx NIXPKGS_ALLOW_UNFREE=1
-declare -gx REPLIT_CLUSTER=janeway
-declare -gx NIX_HARDENING_ENABLE='bindnow format fortify fortify3 pic relro stackprotector strictoverflow'
-declare -gx NIX_STORE=/nix/store
-declare -gx NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu=1
-declare -gx propagatedNativeBuildInputs=''
-declare -gx NIX_CFLAGS_COMPILE=' -frandom-seed=yf3p5xmdpd -isystem /nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/include -isystem /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev/include -isystem /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev/include -isystem /nix/store/xslrgzkvciny0m0cqbgq4bnvydvpdkgx-libcap-2.69-dev/include -isystem /nix/store/nn78wg4rgns62w5sfzyxashxizd0lfva-attr-2.5.2-dev/include -isystem /nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/include -isystem /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev/include -isystem /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev/include -isystem /nix/store/xslrgzkvciny0m0cqbgq4bnvydvpdkgx-libcap-2.69-dev/include -isystem /nix/store/nn78wg4rgns62w5sfzyxashxizd0lfva-attr-2.5.2-dev/include'
-declare -gx NIX_BUILD_CORES=4
-declare -gx COLORTERM=truecolor
-declare -gx nativeBuildInputs=''
-declare -gx outputs=out
-declare -gx REPLIT_LD_LIBRARY_PATH=/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib:/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib:/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib:/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib
-declare -gx HOME=/home/runner
-declare -gx DOCKER_CONFIG=/home/runner/workspace/.config/docker
-declare -gx NIX_PATH=nixpkgs=/home/runner/.nix-defexpr/channels/nixpkgs-stable-24_05:/home/runner/.nix-defexpr/channels
-declare -gx PROMPT_DIRTRIM=2
-declare -gx NIX_ENFORCE_NO_NATIVE=1
-declare -gx DISPLAY=:0
-declare -gx NIX_LDFLAGS='-rpath /nix/store/yf3p5xmdpdvjjsa0c5g63q3jhhgwrryp-nix-shell/lib  -L/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/lib -L/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib -L/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib -L/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib -L/nix/store/5nk2ga7i2f030am4qpcdsd8qlk6i3z83-attr-2.5.2/lib -L/nix/store/yvhyhcfhc98wm86pw4ygk5jdr804iwrw-libcap-2.69-lib/lib -L/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib -L/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/lib -L/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib -L/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib -L/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib -L/nix/store/5nk2ga7i2f030am4qpcdsd8qlk6i3z83-attr-2.5.2/lib -L/nix/store/yvhyhcfhc98wm86pw4ygk5jdr804iwrw-libcap-2.69-lib/lib -L/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib'
-declare -gx depsHostHostPropagated=''
-declare -gx REPL_PUBKEYS='{"crosis-ci":"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=","crosis-ci:1":"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=","crosis-ci:latest":"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=","prod":"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=","prod:1":"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=","prod:2":"8uGN+vfszlnV93/HCSHlVLG0xddMlPkir1Ni4JKT4+w=","prod:3":"9+MCOSHQSQlcodXoot8dC8NLhc862nLkx1/VMsbY2h8=","prod:4":"8uGN+vfszlnV93/HCSHlVLG0xddMlPkir1Ni4JKT4+w=","prod:5":"9+MCOSHQSQlcodXoot8dC8NLhc862nLkx1/VMsbY2h8=","prod:latest":"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=","vault-goval-token":"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E=","vault-goval-token:1":"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E=","vault-goval-token:latest":"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E="}'
-declare -gx REPL_OWNER=phuaky
-declare -gx depsBuildBuild=''
 declare -gx depsTargetTargetPropagated=''
-declare -gx REPLIT_BASHRC=/nix/store/s4lshwgjxfy4lmilpjpg82swj27lb9ql-replit-bashrc/bashrc
-declare -gx REPL_IDENTITY=v2.public.Q2lRd1pUazVabUV3T0MwM09EZzRMVFF5WkRNdFlUa3dZUzFpTmpBNE9ERTBOVEUzWm1VU0JuQm9kV0ZyZVJvTVRsTXRVbWxrWlZOb1lYSmxJaVF3WlRrNVptRXdPQzAzT0RnNExUUXlaRE10WVRrd1lTMWlOakE0T0RFME5URTNabVU0Nk40RVdnOEtCMnBoYm1WM1lYa1NCSEJoYVdRPTRnRW6r3_U_FIJpHCS5BLY1Y0bacco1-5EGCtsirYjxapWgZ_Zyuhdn5ChCMQUdeZWjszDLymJsxITm0ykFzgQ.R0FFaUJtTnZibTFoYmhLQkNIWXlMbkIxWW14cFl5NVJNbVF6VTFoYVRWWXhjREprTVd4U1lVVnNWR0ZITVVKU1ZrNUZVVmRzVFdOWVJraE1NRXB2VVRGV2IwNXJaRnBSVmtwMlVUQmtRbFpYUmt0YU1qbHlWRlZrVms1Vk9WaFhiV2hPVWtka01GUnVjRzVPUlRsRVRVUkNUbUpXUmpaVVJtUkdUbFV4U0ZKWVVscGhiR3d6VkRCU2JtVkZOVVZXV0doUFRXeHdjMUl5Wkc1Vk1FcDFVVzA1YTFZd1dubGFWa3AyVWxVNVVHRnRWa05SYlRsTFUxZGthMk5XYkZoT1YzaHJUV3RaTVZJeVpGcGpWVXBKVVcxb2FGWXhSbkJVYkdSNlpWVjRkVkZxUmxwaVdHaDNWMWhyTVZWck1IbGlSWEJxWWtWd05GZHRjRXRTTVZwWFZteHNVbUpZYUVSVlZ6RktUVVprZEdKRmNGVldNRFZ2VkRGV05GWkhTbGhVYWtwcFpXMWpkMVV3Vm5aa01XUlhZa2hvVGxkSGVFdG9TMEUyYVZKQk9VOU1PSE5MY0haNmJtNHpXa2gxYTI5Nk1rMDRablJ2V1c5SU0zTkNiVGhVWldSVVdWQnVUMnBYVnpGQk1WZFJhRlpwUlZkelNXNTBOMlZ2VGtwcFZHRm9SeTFqYjAxR2VXeFZkVFJDWnk1U01FWkdZVlZLZEZSdVdtbGlWRVp2V1cxb1RWbHJSblZYV0d4TlltdEplRmRYTVRSalJtdzFUbFpLVG1KV1NUSldWRVpyVFVkV2RGTnNXbFJpYmtKWFZtMHhORlV4VW5KVmJVWk9WbTVDVjFVeWRFOVdSbHBaWVVWV1ZtVnJTbkpWYWtFeFUxWkdjbE5zV2s1U2JIQlRWbTF3VDFsWFVsZGlNMmhUWWxkb1UxWnFTbTlrVmxaWVpFZDBhV0pGTlZoWmExWlBWbTFLVldKRlZsWmhhMHBJV2tkNGMxWnNTblZTYkVwWFZsaENTbFl5Y0VOak1XUnpVbXhvYUZOR2NGTlVWV1JUVVRGYVIxcEZaRkppVlZwSlYydFZlRlV3TVhSVmEzUlhUVlphVkZWVVNrcGtNVkp5WVVaS1YyRXhjSFpXVmxwcllqSktjMVJ1U21sVFJWcFlXVzEwZDFReGJGZFZiR1JPVFZoQ1NGZHJWakJoYXpGeVYyeHNWMUp0YUZoV1JFWmhaRWRXU1dOR1pGZGlWa3BKVmtaU1MxUXlUWGxUYWxwV1lYcHNXRlJYZUV0aU1WbDVUVlJTVkUxcldrZFVWbFpyVmtkS1JsZHNXbHBXZWtVd1YxWmFjMDVzUmxWU2JYQnBVbGhDTmxaRVJsZFpWMFY1VTJ4c1ZsWkZXbGRaYTFwaFkyeHdTR1ZGV214U2JrSkdWakl4ZDJGSFJYaGpSemxYWVd0YVZGVjZSazVsUmxwelUyeEdWMUpGU2pOV01uUmhWMjFPZEdORk1WQlhSVFI2V2tWV1drNVdjRVZTV0ZKcFlsUldVVlF3WkdGVmJVcFlZVVJLVkZKV2NIaFdhMVp5WkVkU1JXRkZjR2xpVm5CUlYwUkplRlpWTVhSWmVsSnFWMGhDUmxWclpGWk9SbHBGWWtaU2FFMVdTalpYYlhodllsZFdjbUo2UWxoV1ZURTJWMjF6ZDJWc1pGWk9XRXBVVmtkU1dWZFhhM2RPVmtweVZXMDVUMkZVUmt4VWFrazFVa1Y0YzFOWVpGTmhNWEJ2Vm14V2QwMUdXa2hPVjBab1ZqQndWbFZ0TURWWGJVcFlWV3BLVm1GcmNGQlZNVnBQWkZaa2RGSnNUbE5sYldjdw
-declare -gx NM=nm
-declare -gx buildInputs='/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7 /nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev'
-declare -gx REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX=1
-declare -gx XDG_DATA_HOME=/home/runner/workspace/.local/share
+declare -gx NIX_BUILD_CORES=4
 declare -gx REPLIT_LD_AUDIT=/nix/store/n5x1kgbz8zjh63ymsijbislyi1n1hir6-replit_rtld_loader-1/rtld_loader.so
-declare -gx REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER=1
-declare -gx depsBuildTarget=''
-declare -gx OBJDUMP=objdump
-declare -gx _=/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5/bin/env
+declare -gx __EGL_VENDOR_LIBRARY_FILENAMES=/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/share/glvnd/egl_vendor.d/50_mesa.json
+declare -gx COLORTERM=truecolor
 declare -gx buildPhase='{ echo "------------------------------------------------------------";
   echo " WARNING: the existence of this path is not guaranteed.";
   echo " It is an internal implementation detail for pkgs.mkShell.";
@@ -268,38 +284,23 @@ declare -gx buildPhase='{ echo "------------------------------------------------
   export;
 } >> "$out"
 '
-declare -gx NIX_BINTOOLS=/nix/store/kln7kinji3b7sz8r50h4gn9yy6k1js9a-binutils-wrapper-2.41
-declare -gx USER=runner
-declare -gx REPL_ID=0e99fa08-7888-42d3-a90a-b608814517fe
-declare -gx REPLIT_DOMAINS=0e99fa08-7888-42d3-a90a-b608814517fe-00-10pgi1sgukcwk.janeway.replit.dev
-declare -gx XDG_CACHE_HOME=/home/runner/workspace/.cache
-declare -gx GIT_EDITOR=replit-git-editor
-declare -gx depsTargetTarget=''
-declare -gx depsHostHost=''
-declare -gx LIBGL_DRIVERS_PATH=/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib/dri
-declare -gx __EGL_VENDOR_LIBRARY_FILENAMES=/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/share/glvnd/egl_vendor.d/50_mesa.json
-declare -gx builder=/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash
-declare -gx OBJCOPY=objcopy
-declare -gx RANLIB=ranlib
-declare -gx LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
-declare -gx REPL_SLUG=workspace
-declare -gx preferLocalBuild=1
+declare -gx out=/nix/store/yf3p5xmdpdvjjsa0c5g63q3jhhgwrryp-nix-shell
+declare -gx REPL_OWNER_ID=77672
+declare -gx GIT_ASKPASS=replit-git-askpass
+declare -gx NM=nm
+declare -gx buildInputs='/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7 /nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev'
 declare -gx AS=as
-declare -gx STRINGS=strings
-declare -gx LANG=en_US.UTF-8
-declare -gx REPL_IMAGE=gcr.io/marine-cycle-160323/nix:bf8590a3e2f0a8b70b7ca175eeed9074dffbfca9
-declare -gx XDG_CONFIG_HOME=/home/runner/workspace/.config
-declare -gx patches=''
-declare -gx REPLIT_SUBCLUSTER=paid
+declare -gx SOURCE_DATE_EPOCH=315532800
+declare -gx OBJDUMP=objdump
 declare -gx READELF=readelf
-declare -gx doCheck=''
-declare -gx HOSTNAME=e017d925f100
-declare -gx DIRENV_CONFIG=/etc/direnv
-declare -gx SIZE=size
+declare -gx USER=runner
+declare -gx REPLIT_DEV_DOMAIN=0e99fa08-7888-42d3-a90a-b608814517fe-00-10pgi1sgukcwk.janeway.replit.dev
+declare -gx shellHook=''
+declare -gx depsBuildBuild=''
 </file>
 
 <file path=".cache/replit/env/latest.json">
-{"environment":{"AR":"ar","AS":"as","CC":"gcc","COLORTERM":"truecolor","CONFIG_SHELL":"/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash","CXX":"g++","DIRENV_CONFIG":"/etc/direnv","DISPLAY":":0","DOCKER_CONFIG":"/home/runner/workspace/.config/docker","GIT_ASKPASS":"replit-git-askpass","GIT_EDITOR":"replit-git-editor","HOME":"/home/runner","HOSTNAME":"e017d925f100","HOST_PATH":"/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/bin:/nix/store/ha8rh8jg19r8418baa8ps9b9kvd6szcf-attr-2.5.2-bin/bin:/nix/store/cnnmb3axmv43lj22gny3m4hj06i1nc7c-libcap-2.69/bin:/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/bin:/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5/bin:/nix/store/jjcsr5gs4qanf7ln5c6wgcq4sn75a978-findutils-4.9.0/bin:/nix/store/i34mknsjgrfyy71k2h79gda0bvagzc2j-diffutils-3.10/bin:/nix/store/5zjms21vpxlkbc0qyl5pmj2sidfmzmd7-gnused-4.9/bin:/nix/store/28gpmx3z6ss3znd7fhmrzmvk3x5lnfbk-gnugrep-3.11/bin:/nix/store/8vvkbgmnin1x2jkp7wcb2zg1p0vc4ks9-gawk-5.2.2/bin:/nix/store/rik7p68cq7yzlj5pmfpf4yv6jnrpvlgf-gnutar-1.35/bin:/nix/store/j5chw7v1x3vlmf3wmdpdb5gwh9hl0b80-gzip-1.13/bin:/nix/store/mxcq77rlan82dzpv3cgj0fh6qvv8ncil-bzip2-1.0.8-bin/bin:/nix/store/cdzpn0rdq810aknww3w9fy3wmw9ixr66-gnumake-4.4.1/bin:/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin:/nix/store/0lfxbmchigx9vs9qmrlbahcy6nxwfnj1-patch-2.7.6/bin:/nix/store/6i4xxaa812vsbli9jkq4mksdddrk27lw-xz-5.4.6-bin/bin:/nix/store/xx7x1dwybpssfhq8yikvzz38bh3yrq97-file-5.45/bin","LANG":"en_US.UTF-8","LD":"ld","LIBGL_DRIVERS_PATH":"/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib/dri","LOCALE_ARCHIVE":"/usr/lib/locale/locale-archive","NIXPKGS_ALLOW_UNFREE":"1","NIX_BINTOOLS":"/nix/store/kln7kinji3b7sz8r50h4gn9yy6k1js9a-binutils-wrapper-2.41","NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu":"1","NIX_BUILD_CORES":"4","NIX_BUILD_TOP":"/tmp","NIX_CC":"/nix/store/9bv7dcvmfcjnmg5mnqwqlq2wxfn8d7yi-gcc-wrapper-13.2.0","NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu":"1","NIX_CFLAGS_COMPILE":" -frandom-seed=yf3p5xmdpd -isystem /nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/include -isystem /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev/include -isystem /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev/include -isystem /nix/store/xslrgzkvciny0m0cqbgq4bnvydvpdkgx-libcap-2.69-dev/include -isystem /nix/store/nn78wg4rgns62w5sfzyxashxizd0lfva-attr-2.5.2-dev/include -isystem /nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/include -isystem /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev/include -isystem /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev/include -isystem /nix/store/xslrgzkvciny0m0cqbgq4bnvydvpdkgx-libcap-2.69-dev/include -isystem /nix/store/nn78wg4rgns62w5sfzyxashxizd0lfva-attr-2.5.2-dev/include","NIX_ENFORCE_NO_NATIVE":"1","NIX_HARDENING_ENABLE":"bindnow format fortify fortify3 pic relro stackprotector strictoverflow","NIX_LDFLAGS":"-rpath /nix/store/yf3p5xmdpdvjjsa0c5g63q3jhhgwrryp-nix-shell/lib  -L/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/lib -L/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib -L/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib -L/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib -L/nix/store/5nk2ga7i2f030am4qpcdsd8qlk6i3z83-attr-2.5.2/lib -L/nix/store/yvhyhcfhc98wm86pw4ygk5jdr804iwrw-libcap-2.69-lib/lib -L/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib -L/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/lib -L/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib -L/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib -L/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib -L/nix/store/5nk2ga7i2f030am4qpcdsd8qlk6i3z83-attr-2.5.2/lib -L/nix/store/yvhyhcfhc98wm86pw4ygk5jdr804iwrw-libcap-2.69-lib/lib -L/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib","NIX_PATH":"nixpkgs=/home/runner/.nix-defexpr/channels/nixpkgs-stable-24_05:/home/runner/.nix-defexpr/channels","NIX_PROFILES":"/nix/var/nix/profiles/default /home/runner/.nix-profile","NIX_PS1":"\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ ","NIX_STORE":"/nix/store","NM":"nm","OBJCOPY":"objcopy","OBJDUMP":"objdump","PATH":"/nix/store/0z5iwcvalafm3j2c5pfhllsfbxrbyzf4-postgresql-16.5/bin:/nix/store/r2wrscmjzn4f2f7wk7q2ms2h96mjwzv7-npx/bin:/home/runner/workspace/.config/npm/node_global/bin:/home/runner/workspace/node_modules/.bin:/nix/store/rrz8cqhldyl17bbs60g7d8vbaadkxc40-nodejs-20.18.1-wrapped/bin:/nix/store/7zaapw8wkywsw9z5lkkk5k608xpn7wfl-bun-1.2.3/bin:/nix/store/z8s3r4vwf4r26g2d7shnw5lva6ihim8f-pnpm-9.15.0/bin:/nix/store/jcgdksj946l5l42c2y9ks2l4g6n74h3f-yarn-1.22.22/bin:/nix/store/2s17mrby0ph00z22rkabfs9vzpzx1r70-prettier-3.3.3/bin:/nix/store/rdd4pnr4x9rqc9wgbibhngv217w2xvxl-bash-interactive-5.2p26/bin:/nix/store/nbad47q0m0m9c5xid7zh05hiknwircbp-patchelf-0.15.0/bin:/nix/store/9bv7dcvmfcjnmg5mnqwqlq2wxfn8d7yi-gcc-wrapper-13.2.0/bin:/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/bin:/nix/store/c2i631h8i5vcs1sqifwxfsazhwrg6wr5-glibc-2.39-52-bin/bin:/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5/bin:/nix/store/kln7kinji3b7sz8r50h4gn9yy6k1js9a-binutils-wrapper-2.41/bin:/nix/store/bgcaxhhxswzvmxjbbgvvaximm5hwghz1-binutils-2.41/bin:/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/bin:/nix/store/ha8rh8jg19r8418baa8ps9b9kvd6szcf-attr-2.5.2-bin/bin:/nix/store/cnnmb3axmv43lj22gny3m4hj06i1nc7c-libcap-2.69/bin:/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/bin:/nix/store/jjcsr5gs4qanf7ln5c6wgcq4sn75a978-findutils-4.9.0/bin:/nix/store/i34mknsjgrfyy71k2h79gda0bvagzc2j-diffutils-3.10/bin:/nix/store/5zjms21vpxlkbc0qyl5pmj2sidfmzmd7-gnused-4.9/bin:/nix/store/28gpmx3z6ss3znd7fhmrzmvk3x5lnfbk-gnugrep-3.11/bin:/nix/store/8vvkbgmnin1x2jkp7wcb2zg1p0vc4ks9-gawk-5.2.2/bin:/nix/store/rik7p68cq7yzlj5pmfpf4yv6jnrpvlgf-gnutar-1.35/bin:/nix/store/j5chw7v1x3vlmf3wmdpdb5gwh9hl0b80-gzip-1.13/bin:/nix/store/mxcq77rlan82dzpv3cgj0fh6qvv8ncil-bzip2-1.0.8-bin/bin:/nix/store/cdzpn0rdq810aknww3w9fy3wmw9ixr66-gnumake-4.4.1/bin:/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin:/nix/store/0lfxbmchigx9vs9qmrlbahcy6nxwfnj1-patch-2.7.6/bin:/nix/store/6i4xxaa812vsbli9jkq4mksdddrk27lw-xz-5.4.6-bin/bin:/nix/store/xx7x1dwybpssfhq8yikvzz38bh3yrq97-file-5.45/bin:/nix/store/rmzzfy35ld8zk6ljb5vy9xdvwjic3r6y-pid1/bin:/nix/store/bcsji16g1szdg0j8znlvbkbfxpkvlgiz-replit-runtime-path/bin:/home/runner/.nix-profile/bin:/home/runner/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin","PROMPT_DIRTRIM":"2","RANLIB":"ranlib","READELF":"readelf","REPLIT_BASHRC":"/nix/store/s4lshwgjxfy4lmilpjpg82swj27lb9ql-replit-bashrc/bashrc","REPLIT_CLI":"/nix/store/rv3hg5rqzmnl1775fsgjf4835mh182sa-pid1-0.0.1/bin/replit","REPLIT_CLUSTER":"janeway","REPLIT_DB_URL":"https://kv.replit.com/v0/eyJhbGciOiJIUzUxMiIsImlzcyI6ImNvbm1hbiIsImtpZCI6InByb2Q6MSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25tYW4iLCJleHAiOjE3NDMyNjEzNzEsImlhdCI6MTc0MzE0OTc3MSwiZGF0YWJhc2VfaWQiOiIwZTk5ZmEwOC03ODg4LTQyZDMtYTkwYS1iNjA4ODE0NTE3ZmUifQ._TlrD3Ux7WCn71dxnZbUNZujRvgEaShWTcM3SamZDFvHWvYA9lAyzKEKplttvlfS1xC4tRHAT1lKaIytManBmQ","REPLIT_DEV_DOMAIN":"0e99fa08-7888-42d3-a90a-b608814517fe-00-10pgi1sgukcwk.janeway.replit.dev","REPLIT_DOMAINS":"0e99fa08-7888-42d3-a90a-b608814517fe-00-10pgi1sgukcwk.janeway.replit.dev","REPLIT_ENVIRONMENT":"production","REPLIT_LD_AUDIT":"/nix/store/n5x1kgbz8zjh63ymsijbislyi1n1hir6-replit_rtld_loader-1/rtld_loader.so","REPLIT_LD_LIBRARY_PATH":"/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib:/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib:/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib:/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib","REPLIT_NIX_CHANNEL":"stable-24_05","REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX":"1","REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER":"1","REPLIT_PID1_VERSION":"0.0.0-2f2097b","REPLIT_RIPPKGS_INDICES":"/nix/store/l5gcmdp908sji4wchfp8csflhjcgnmm3-rippkgs-indices","REPLIT_RTLD_LOADER":"1","REPLIT_SUBCLUSTER":"paid","REPL_HOME":"/home/runner/workspace","REPL_ID":"0e99fa08-7888-42d3-a90a-b608814517fe","REPL_IDENTITY":"v2.public.Q2lRd1pUazVabUV3T0MwM09EZzRMVFF5WkRNdFlUa3dZUzFpTmpBNE9ERTBOVEUzWm1VU0JuQm9kV0ZyZVJvTVRsTXRVbWxrWlZOb1lYSmxJaVF3WlRrNVptRXdPQzAzT0RnNExUUXlaRE10WVRrd1lTMWlOakE0T0RFME5URTNabVU0Nk40RVdnOEtCMnBoYm1WM1lYa1NCSEJoYVdRPTRnRW6r3_U_FIJpHCS5BLY1Y0bacco1-5EGCtsirYjxapWgZ_Zyuhdn5ChCMQUdeZWjszDLymJsxITm0ykFzgQ.R0FFaUJtTnZibTFoYmhLQkNIWXlMbkIxWW14cFl5NVJNbVF6VTFoYVRWWXhjREprTVd4U1lVVnNWR0ZITVVKU1ZrNUZVVmRzVFdOWVJraE1NRXB2VVRGV2IwNXJaRnBSVmtwMlVUQmtRbFpYUmt0YU1qbHlWRlZrVms1Vk9WaFhiV2hPVWtka01GUnVjRzVPUlRsRVRVUkNUbUpXUmpaVVJtUkdUbFV4U0ZKWVVscGhiR3d6VkRCU2JtVkZOVVZXV0doUFRXeHdjMUl5Wkc1Vk1FcDFVVzA1YTFZd1dubGFWa3AyVWxVNVVHRnRWa05SYlRsTFUxZGthMk5XYkZoT1YzaHJUV3RaTVZJeVpGcGpWVXBKVVcxb2FGWXhSbkJVYkdSNlpWVjRkVkZxUmxwaVdHaDNWMWhyTVZWck1IbGlSWEJxWWtWd05GZHRjRXRTTVZwWFZteHNVbUpZYUVSVlZ6RktUVVprZEdKRmNGVldNRFZ2VkRGV05GWkhTbGhVYWtwcFpXMWpkMVV3Vm5aa01XUlhZa2hvVGxkSGVFdG9TMEUyYVZKQk9VOU1PSE5MY0haNmJtNHpXa2gxYTI5Nk1rMDRablJ2V1c5SU0zTkNiVGhVWldSVVdWQnVUMnBYVnpGQk1WZFJhRlpwUlZkelNXNTBOMlZ2VGtwcFZHRm9SeTFqYjAxR2VXeFZkVFJDWnk1U01FWkdZVlZLZEZSdVdtbGlWRVp2V1cxb1RWbHJSblZYV0d4TlltdEplRmRYTVRSalJtdzFUbFpLVG1KV1NUSldWRVpyVFVkV2RGTnNXbFJpYmtKWFZtMHhORlV4VW5KVmJVWk9WbTVDVjFVeWRFOVdSbHBaWVVWV1ZtVnJTbkpWYWtFeFUxWkdjbE5zV2s1U2JIQlRWbTF3VDFsWFVsZGlNMmhUWWxkb1UxWnFTbTlrVmxaWVpFZDBhV0pGTlZoWmExWlBWbTFLVldKRlZsWmhhMHBJV2tkNGMxWnNTblZTYkVwWFZsaENTbFl5Y0VOak1XUnpVbXhvYUZOR2NGTlVWV1JUVVRGYVIxcEZaRkppVlZwSlYydFZlRlV3TVhSVmEzUlhUVlphVkZWVVNrcGtNVkp5WVVaS1YyRXhjSFpXVmxwcllqSktjMVJ1U21sVFJWcFlXVzEwZDFReGJGZFZiR1JPVFZoQ1NGZHJWakJoYXpGeVYyeHNWMUp0YUZoV1JFWmhaRWRXU1dOR1pGZGlWa3BKVmtaU1MxUXlUWGxUYWxwV1lYcHNXRlJYZUV0aU1WbDVUVlJTVkUxcldrZFVWbFpyVmtkS1JsZHNXbHBXZWtVd1YxWmFjMDVzUmxWU2JYQnBVbGhDTmxaRVJsZFpWMFY1VTJ4c1ZsWkZXbGRaYTFwaFkyeHdTR1ZGV214U2JrSkdWakl4ZDJGSFJYaGpSemxYWVd0YVZGVjZSazVsUmxwelUyeEdWMUpGU2pOV01uUmhWMjFPZEdORk1WQlhSVFI2V2tWV1drNVdjRVZTV0ZKcFlsUldVVlF3WkdGVmJVcFlZVVJLVkZKV2NIaFdhMVp5WkVkU1JXRkZjR2xpVm5CUlYwUkplRlpWTVhSWmVsSnFWMGhDUmxWclpGWk9SbHBGWWtaU2FFMVdTalpYYlhodllsZFdjbUo2UWxoV1ZURTJWMjF6ZDJWc1pGWk9XRXBVVmtkU1dWZFhhM2RPVmtweVZXMDVUMkZVUmt4VWFrazFVa1Y0YzFOWVpGTmhNWEJ2Vm14V2QwMUdXa2hPVjBab1ZqQndWbFZ0TURWWGJVcFlWV3BLVm1GcmNGQlZNVnBQWkZaa2RGSnNUbE5sYldjdw","REPL_IDENTITY_KEY":"k2.secret.SentdmN1teNuupVoqhLfiP6WnmZ1ys0jYBcjNZBDQuJDeIitGp_YVRRcGUEFvhmIgxxr0tKZy-jzgcnRhirXIg","REPL_IMAGE":"gcr.io/marine-cycle-160323/nix:bf8590a3e2f0a8b70b7ca175eeed9074dffbfca9","REPL_LANGUAGE":"nix","REPL_OWNER":"phuaky","REPL_OWNER_ID":"77672","REPL_PUBKEYS":"{\"crosis-ci\":\"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=\",\"crosis-ci:1\":\"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=\",\"crosis-ci:latest\":\"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=\",\"prod\":\"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=\",\"prod:1\":\"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=\",\"prod:2\":\"8uGN+vfszlnV93/HCSHlVLG0xddMlPkir1Ni4JKT4+w=\",\"prod:3\":\"9+MCOSHQSQlcodXoot8dC8NLhc862nLkx1/VMsbY2h8=\",\"prod:4\":\"8uGN+vfszlnV93/HCSHlVLG0xddMlPkir1Ni4JKT4+w=\",\"prod:5\":\"9+MCOSHQSQlcodXoot8dC8NLhc862nLkx1/VMsbY2h8=\",\"prod:latest\":\"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=\",\"vault-goval-token\":\"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E=\",\"vault-goval-token:1\":\"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E=\",\"vault-goval-token:latest\":\"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E=\"}","REPL_SLUG":"workspace","SIZE":"size","SOURCE_DATE_EPOCH":"315532800","STRINGS":"strings","STRIP":"strip","USER":"runner","XDG_CACHE_HOME":"/home/runner/workspace/.cache","XDG_CONFIG_HOME":"/home/runner/workspace/.config","XDG_DATA_DIRS":"/nix/store/nbad47q0m0m9c5xid7zh05hiknwircbp-patchelf-0.15.0/share:/nix/store/bcsji16g1szdg0j8znlvbkbfxpkvlgiz-replit-runtime-path/share","XDG_DATA_HOME":"/home/runner/workspace/.local/share","_":"/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5/bin/env","__EGL_VENDOR_LIBRARY_FILENAMES":"/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/share/glvnd/egl_vendor.d/50_mesa.json","__ETC_PROFILE_SOURCED":"1","__structuredAttrs":"","buildInputs":"/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7 /nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev","buildPhase":"{ echo \"------------------------------------------------------------\";\n  echo \" WARNING: the existence of this path is not guaranteed.\";\n  echo \" It is an internal implementation detail for pkgs.mkShell.\";\n  echo \"------------------------------------------------------------\";\n  echo;\n  # Record all build inputs as runtime dependencies\n  export;\n} \u003e\u003e \"$out\"\n","builder":"/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash","cmakeFlags":"","configureFlags":"","depsBuildBuild":"","depsBuildBuildPropagated":"","depsBuildTarget":"","depsBuildTargetPropagated":"","depsHostHost":"","depsHostHostPropagated":"","depsTargetTarget":"","depsTargetTargetPropagated":"","doCheck":"","doInstallCheck":"","mesonFlags":"","nativeBuildInputs":"","npm_config_prefix":"/home/runner/workspace/.config/npm/node_global","out":"/nix/store/yf3p5xmdpdvjjsa0c5g63q3jhhgwrryp-nix-shell","outputs":"out","patches":"","phases":"buildPhase","preferLocalBuild":"1","propagatedBuildInputs":"","propagatedNativeBuildInputs":"","shell":"/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash","shellHook":"","stdenv":"/nix/store/xfhkjnpqjwlf6hlk1ysmq3aaq80f3bjj-stdenv-linux","strictDeps":"","system":"x86_64-linux"}}
+{"environment":{"AR":"ar","AS":"as","CC":"gcc","COLORTERM":"truecolor","CONFIG_SHELL":"/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash","CXX":"g++","DIRENV_CONFIG":"/etc/direnv","DISPLAY":":0","DOCKER_CONFIG":"/home/runner/workspace/.config/docker","GIT_ASKPASS":"replit-git-askpass","GIT_EDITOR":"replit-git-editor","HOME":"/home/runner","HOSTNAME":"dfd4d08d4c7b","HOST_PATH":"/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/bin:/nix/store/ha8rh8jg19r8418baa8ps9b9kvd6szcf-attr-2.5.2-bin/bin:/nix/store/cnnmb3axmv43lj22gny3m4hj06i1nc7c-libcap-2.69/bin:/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/bin:/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5/bin:/nix/store/jjcsr5gs4qanf7ln5c6wgcq4sn75a978-findutils-4.9.0/bin:/nix/store/i34mknsjgrfyy71k2h79gda0bvagzc2j-diffutils-3.10/bin:/nix/store/5zjms21vpxlkbc0qyl5pmj2sidfmzmd7-gnused-4.9/bin:/nix/store/28gpmx3z6ss3znd7fhmrzmvk3x5lnfbk-gnugrep-3.11/bin:/nix/store/8vvkbgmnin1x2jkp7wcb2zg1p0vc4ks9-gawk-5.2.2/bin:/nix/store/rik7p68cq7yzlj5pmfpf4yv6jnrpvlgf-gnutar-1.35/bin:/nix/store/j5chw7v1x3vlmf3wmdpdb5gwh9hl0b80-gzip-1.13/bin:/nix/store/mxcq77rlan82dzpv3cgj0fh6qvv8ncil-bzip2-1.0.8-bin/bin:/nix/store/cdzpn0rdq810aknww3w9fy3wmw9ixr66-gnumake-4.4.1/bin:/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin:/nix/store/0lfxbmchigx9vs9qmrlbahcy6nxwfnj1-patch-2.7.6/bin:/nix/store/6i4xxaa812vsbli9jkq4mksdddrk27lw-xz-5.4.6-bin/bin:/nix/store/xx7x1dwybpssfhq8yikvzz38bh3yrq97-file-5.45/bin","LANG":"en_US.UTF-8","LD":"ld","LIBGL_DRIVERS_PATH":"/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib/dri","LOCALE_ARCHIVE":"/usr/lib/locale/locale-archive","NIXPKGS_ALLOW_UNFREE":"1","NIX_BINTOOLS":"/nix/store/kln7kinji3b7sz8r50h4gn9yy6k1js9a-binutils-wrapper-2.41","NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu":"1","NIX_BUILD_CORES":"4","NIX_BUILD_TOP":"/tmp","NIX_CC":"/nix/store/9bv7dcvmfcjnmg5mnqwqlq2wxfn8d7yi-gcc-wrapper-13.2.0","NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu":"1","NIX_CFLAGS_COMPILE":" -frandom-seed=yf3p5xmdpd -isystem /nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/include -isystem /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev/include -isystem /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev/include -isystem /nix/store/xslrgzkvciny0m0cqbgq4bnvydvpdkgx-libcap-2.69-dev/include -isystem /nix/store/nn78wg4rgns62w5sfzyxashxizd0lfva-attr-2.5.2-dev/include -isystem /nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/include -isystem /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev/include -isystem /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev/include -isystem /nix/store/xslrgzkvciny0m0cqbgq4bnvydvpdkgx-libcap-2.69-dev/include -isystem /nix/store/nn78wg4rgns62w5sfzyxashxizd0lfva-attr-2.5.2-dev/include","NIX_ENFORCE_NO_NATIVE":"1","NIX_HARDENING_ENABLE":"bindnow format fortify fortify3 pic relro stackprotector strictoverflow","NIX_LDFLAGS":"-rpath /nix/store/yf3p5xmdpdvjjsa0c5g63q3jhhgwrryp-nix-shell/lib  -L/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/lib -L/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib -L/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib -L/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib -L/nix/store/5nk2ga7i2f030am4qpcdsd8qlk6i3z83-attr-2.5.2/lib -L/nix/store/yvhyhcfhc98wm86pw4ygk5jdr804iwrw-libcap-2.69-lib/lib -L/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib -L/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/lib -L/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib -L/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib -L/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib -L/nix/store/5nk2ga7i2f030am4qpcdsd8qlk6i3z83-attr-2.5.2/lib -L/nix/store/yvhyhcfhc98wm86pw4ygk5jdr804iwrw-libcap-2.69-lib/lib -L/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib","NIX_PATH":"nixpkgs=/home/runner/.nix-defexpr/channels/nixpkgs-stable-24_05:/home/runner/.nix-defexpr/channels","NIX_PROFILES":"/nix/var/nix/profiles/default /home/runner/.nix-profile","NIX_PS1":"\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ ","NIX_STORE":"/nix/store","NM":"nm","OBJCOPY":"objcopy","OBJDUMP":"objdump","PATH":"/nix/store/0z5iwcvalafm3j2c5pfhllsfbxrbyzf4-postgresql-16.5/bin:/nix/store/r2wrscmjzn4f2f7wk7q2ms2h96mjwzv7-npx/bin:/home/runner/workspace/.config/npm/node_global/bin:/home/runner/workspace/node_modules/.bin:/nix/store/rrz8cqhldyl17bbs60g7d8vbaadkxc40-nodejs-20.18.1-wrapped/bin:/nix/store/7zaapw8wkywsw9z5lkkk5k608xpn7wfl-bun-1.2.3/bin:/nix/store/z8s3r4vwf4r26g2d7shnw5lva6ihim8f-pnpm-9.15.0/bin:/nix/store/jcgdksj946l5l42c2y9ks2l4g6n74h3f-yarn-1.22.22/bin:/nix/store/2s17mrby0ph00z22rkabfs9vzpzx1r70-prettier-3.3.3/bin:/nix/store/rdd4pnr4x9rqc9wgbibhngv217w2xvxl-bash-interactive-5.2p26/bin:/nix/store/nbad47q0m0m9c5xid7zh05hiknwircbp-patchelf-0.15.0/bin:/nix/store/9bv7dcvmfcjnmg5mnqwqlq2wxfn8d7yi-gcc-wrapper-13.2.0/bin:/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/bin:/nix/store/c2i631h8i5vcs1sqifwxfsazhwrg6wr5-glibc-2.39-52-bin/bin:/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5/bin:/nix/store/kln7kinji3b7sz8r50h4gn9yy6k1js9a-binutils-wrapper-2.41/bin:/nix/store/bgcaxhhxswzvmxjbbgvvaximm5hwghz1-binutils-2.41/bin:/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7/bin:/nix/store/ha8rh8jg19r8418baa8ps9b9kvd6szcf-attr-2.5.2-bin/bin:/nix/store/cnnmb3axmv43lj22gny3m4hj06i1nc7c-libcap-2.69/bin:/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/bin:/nix/store/jjcsr5gs4qanf7ln5c6wgcq4sn75a978-findutils-4.9.0/bin:/nix/store/i34mknsjgrfyy71k2h79gda0bvagzc2j-diffutils-3.10/bin:/nix/store/5zjms21vpxlkbc0qyl5pmj2sidfmzmd7-gnused-4.9/bin:/nix/store/28gpmx3z6ss3znd7fhmrzmvk3x5lnfbk-gnugrep-3.11/bin:/nix/store/8vvkbgmnin1x2jkp7wcb2zg1p0vc4ks9-gawk-5.2.2/bin:/nix/store/rik7p68cq7yzlj5pmfpf4yv6jnrpvlgf-gnutar-1.35/bin:/nix/store/j5chw7v1x3vlmf3wmdpdb5gwh9hl0b80-gzip-1.13/bin:/nix/store/mxcq77rlan82dzpv3cgj0fh6qvv8ncil-bzip2-1.0.8-bin/bin:/nix/store/cdzpn0rdq810aknww3w9fy3wmw9ixr66-gnumake-4.4.1/bin:/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin:/nix/store/0lfxbmchigx9vs9qmrlbahcy6nxwfnj1-patch-2.7.6/bin:/nix/store/6i4xxaa812vsbli9jkq4mksdddrk27lw-xz-5.4.6-bin/bin:/nix/store/xx7x1dwybpssfhq8yikvzz38bh3yrq97-file-5.45/bin:/nix/store/rmzzfy35ld8zk6ljb5vy9xdvwjic3r6y-pid1/bin:/nix/store/bcsji16g1szdg0j8znlvbkbfxpkvlgiz-replit-runtime-path/bin:/home/runner/.nix-profile/bin:/home/runner/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin","PROMPT_DIRTRIM":"2","RANLIB":"ranlib","READELF":"readelf","REPLIT_BASHRC":"/nix/store/s4lshwgjxfy4lmilpjpg82swj27lb9ql-replit-bashrc/bashrc","REPLIT_CLI":"/nix/store/rv3hg5rqzmnl1775fsgjf4835mh182sa-pid1-0.0.1/bin/replit","REPLIT_CLUSTER":"janeway","REPLIT_DB_URL":"https://kv.replit.com/v0/eyJhbGciOiJIUzUxMiIsImlzcyI6ImNvbm1hbiIsImtpZCI6InByb2Q6MSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25tYW4iLCJleHAiOjE3NDM2MTA0NzMsImlhdCI6MTc0MzQ5ODg3MywiZGF0YWJhc2VfaWQiOiIwZTk5ZmEwOC03ODg4LTQyZDMtYTkwYS1iNjA4ODE0NTE3ZmUifQ.ZGqv7QkNr2zPZC4n4ltF5pB_8Ugmm5aUQ72dPiWgbmv8q9FijdHg4aV4zOsTQMMUHeCtY5OuwDrrMm6aIs_PHw","REPLIT_DEV_DOMAIN":"0e99fa08-7888-42d3-a90a-b608814517fe-00-10pgi1sgukcwk.janeway.replit.dev","REPLIT_DOMAINS":"0e99fa08-7888-42d3-a90a-b608814517fe-00-10pgi1sgukcwk.janeway.replit.dev","REPLIT_ENVIRONMENT":"production","REPLIT_LD_AUDIT":"/nix/store/n5x1kgbz8zjh63ymsijbislyi1n1hir6-replit_rtld_loader-1/rtld_loader.so","REPLIT_LD_LIBRARY_PATH":"/nix/store/xb4h083j02mr2ix7pgj7iawxh2hk100l-postgresql-15.7-lib/lib:/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/lib:/nix/store/jz3vvf4nsyirb25rh9dbhksm4gq6wybb-libglvnd-1.7.0/lib:/nix/store/pn9glkalcj7i5p549dpsl1c46pkb13xr-pulseaudio-17.0/lib","REPLIT_NIX_CHANNEL":"stable-24_05","REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX":"1","REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER":"1","REPLIT_PID1_VERSION":"0.0.0-2f2097b","REPLIT_RIPPKGS_INDICES":"/nix/store/l5gcmdp908sji4wchfp8csflhjcgnmm3-rippkgs-indices","REPLIT_RTLD_LOADER":"1","REPLIT_SUBCLUSTER":"paid","REPL_HOME":"/home/runner/workspace","REPL_ID":"0e99fa08-7888-42d3-a90a-b608814517fe","REPL_IDENTITY":"v2.public.Q2lRd1pUazVabUV3T0MwM09EZzRMVFF5WkRNdFlUa3dZUzFpTmpBNE9ERTBOVEUzWm1VU0JuQm9kV0ZyZVJvTVRsTXRVbWxrWlZOb1lYSmxJaVF3WlRrNVptRXdPQzAzT0RnNExUUXlaRE10WVRrd1lTMWlOakE0T0RFME5URTNabVU0Nk40RVdnOEtCMnBoYm1WM1lYa1NCSEJoYVdRPZUChpM3Q9VPJFPBdKsb6gyAv7H9QUbi6e1a_rYT7CznincYIP2Y30v74Zog2NOPyUfE7XqXeZH6CEukVbftmAc.R0FFaUJtTnZibTFoYmhLQkNIWXlMbkIxWW14cFl5NVJNbVI2VTFSYU1HVllWakprTVd4U1RteHdURlJGZEZOVFZYaEVWRWMxVTJSSVNUUlNNRlpQVmpGb2NHVlhkR2hSVjJodVVtdGtjRmRWZEV0U1JVcHpWREZTYzJKV2JGVlJWRkpOVmtkTk1GUXdVbTVrUlRWRlUyMTBUbVZVUm05VU1WSkRZVVY0V0ZOVVNrNVNSMk13VkZaU1VrMVZNVlZhUnpGaFZXMDVTbEpYWkdGa01rWkpWbTFvYUUweWRHaFJhMUp4WW5wT2JsVlhSa1JWTUd4SldWY3hSMlJXY0ZsYVIyaHNWVzA1U0ZNeVpGTmtNV3hZWWtkMFNtRnNXbmxVVjJzeFpESlNXRk51VG1oV01ERXhWRmQwUzFReFNYaGpSbVJzVWpOU1UxbHFSa1prUmtwMVdrWldWbUpIZUU1V1JtUnpVbTFXY2s5WGFGSmxiRll6VmxSS2MwMXNiSEpTYkU1WFUwaENVbFpyV1RWT2JGcEpVbXhhYW1SNk1EbElOazVwU0VSTVZtNXFhemx0Y1VwcFVGcE9jMTlqT0Rack1VZGxSWFpQUTJScFJFRnVjMFpEVEhWUmRXdGllVlozYlRBM2FGUldhMkpDYWxCd1NrMUNhVWxrZEMxT1drdHFORTFxY25GelJFazNUekpFZHk1U01FWkdZVlZLZEZSdVdtbGlWRVp2V1cxb1RWbHJSblZYV0d4TlltdEplRmRYTVRSalJtdzFUbFpLVG1KV1NUSldWRVpyVFVkV2RGTnNXbFJpYmtKWFZtMHhORlV4VW5KVmJVWk9WbTVDVjFVeWRFOVdSbHBaWVVWV1ZtVnJTbkpWYWtFeFUxWkdjbE5zV2s1U2JIQlRWbTF3VDFsWFVsZGlNMmhUWWxkb1UxWnFTbTlrVmxaWVpFZDBhV0pGTlZoWmExWlBWbTFLVldKRlZsWmhhMHBJV2tkNGMxWnNTblZTYkVwWFZsaENTbFl5Y0VOak1XUnpVbXhvYUZOR2NGTlVWV1JUVVRGYVIxcEZaRkppVlZwSlYydFZlRlV3TVhSVmEzUlhUVlphVkZWVVNrcGtNVkp5WVVaS1YyRXhjSFpXVmxwcllqSktjMVJ1U21sVFJWcFlXVzEwZDFReGJGZFZiR1JPVFZoQ1NGZHJWakJoYXpGeVYyeHNWMUp0YUZoV1JFWmhaRWRXU1dOR1pGZGlWa3BKVmtaU1MxUXlUWGxUYWxwV1lYcHNXRlJYZUV0aU1WbDVUVlJTVkUxcldrZFVWbFpyVmtkS1JsZHNXbHBXZWtVd1YxWmFjMDVzUmxWU2JYQnBVbGhDTmxaRVJsZFpWMFY1VTJ4c1ZsWkZXbGRaYTFwaFkyeHdTR1ZGV214U2JrSkdWakl4ZDJGSFJYaGpSemxYWVd0YVZGVjZSazVsUmxwelUyeEdWMUpGU2pOV01uUmhWMjFPZEdORk1WQlhSVFI2V2tWV1drNVdjRVZTV0ZKcFlsUldVVlF3WkdGVmJVcFlZVVJLVkZKV2NIaFdhMVp5WkVkU1JXRkZjR2xpVm5CUlYwUkplRlpWTVhSWmVsSnFWMGhDUmxWclpGWk9SbHBGWWtaU2FFMVdTalpYYlhodllsZFdjbUo2UWxoV1ZURTJWMjF6ZDJWc1pGWk9XRXBVVmtkU1dWZFhhM2RPVmtweVZXMDVUMkZVUmt4VWFrazFVa1Y0YzFOWVpGTmhNWEJ2Vm14V2QwMUdXa2hPVjBab1ZqQndWbFZ0TURWWGJVcFlWV3BLVm1GcmNGQlZNVnBQWkZaa2RGSnNUbE5sYldjdw","REPL_IDENTITY_KEY":"k2.secret.Dl-_pHrQecZ4PWuByGC8wILVA1tENVh7lj07W4C-UwfYE0ZlXGRChD4XBNFgsyITM5oLnRKK9sBFPM9P_NOpSw","REPL_IMAGE":"gcr.io/marine-cycle-160323/nix:bf8590a3e2f0a8b70b7ca175eeed9074dffbfca9","REPL_LANGUAGE":"nix","REPL_OWNER":"phuaky","REPL_OWNER_ID":"77672","REPL_PUBKEYS":"{\"crosis-ci\":\"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=\",\"crosis-ci:1\":\"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=\",\"crosis-ci:latest\":\"7YlpcYh82oR9NSTtSYtR5jDL4onNzCGJGq6b+9CuZII=\",\"prod\":\"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=\",\"prod:1\":\"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=\",\"prod:2\":\"8uGN+vfszlnV93/HCSHlVLG0xddMlPkir1Ni4JKT4+w=\",\"prod:3\":\"9+MCOSHQSQlcodXoot8dC8NLhc862nLkx1/VMsbY2h8=\",\"prod:4\":\"8uGN+vfszlnV93/HCSHlVLG0xddMlPkir1Ni4JKT4+w=\",\"prod:5\":\"9+MCOSHQSQlcodXoot8dC8NLhc862nLkx1/VMsbY2h8=\",\"prod:latest\":\"tGsjlu/BJvWTgvMaX7acuUb7AO1dXOrRiuk7y083RFE=\",\"vault-goval-token\":\"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E=\",\"vault-goval-token:1\":\"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E=\",\"vault-goval-token:latest\":\"D5jJoMx1Ml54HM92NLgXl+MzptwDqbSsfyFG6f52g9E=\"}","REPL_SLUG":"workspace","SIZE":"size","SOURCE_DATE_EPOCH":"315532800","STRINGS":"strings","STRIP":"strip","USER":"runner","XDG_CACHE_HOME":"/home/runner/workspace/.cache","XDG_CONFIG_HOME":"/home/runner/workspace/.config","XDG_DATA_DIRS":"/nix/store/nbad47q0m0m9c5xid7zh05hiknwircbp-patchelf-0.15.0/share:/nix/store/bcsji16g1szdg0j8znlvbkbfxpkvlgiz-replit-runtime-path/share","XDG_DATA_HOME":"/home/runner/workspace/.local/share","_":"/nix/store/php4qidg2bxzmm79vpri025bqi0fa889-coreutils-9.5/bin/env","__EGL_VENDOR_LIBRARY_FILENAMES":"/nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers/share/glvnd/egl_vendor.d/50_mesa.json","__ETC_PROFILE_SOURCED":"1","__structuredAttrs":"","buildInputs":"/nix/store/07s64wxjzk6z1glwxvl3yq81vdn42k40-postgresql-15.7 /nix/store/hggpnywm6l7cfh2ml1ynm50ap9x4f9rn-mesa-24.0.7-drivers /nix/store/smacbfb82wp7ncz2rwac68jd50qxr70a-libglvnd-1.7.0-dev /nix/store/a83znbrflv30lvhww0d2rljbyd5mw0c0-pulseaudio-17.0-dev","buildPhase":"{ echo \"------------------------------------------------------------\";\n  echo \" WARNING: the existence of this path is not guaranteed.\";\n  echo \" It is an internal implementation detail for pkgs.mkShell.\";\n  echo \"------------------------------------------------------------\";\n  echo;\n  # Record all build inputs as runtime dependencies\n  export;\n} \u003e\u003e \"$out\"\n","builder":"/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash","cmakeFlags":"","configureFlags":"","depsBuildBuild":"","depsBuildBuildPropagated":"","depsBuildTarget":"","depsBuildTargetPropagated":"","depsHostHost":"","depsHostHostPropagated":"","depsTargetTarget":"","depsTargetTargetPropagated":"","doCheck":"","doInstallCheck":"","mesonFlags":"","nativeBuildInputs":"","npm_config_prefix":"/home/runner/workspace/.config/npm/node_global","out":"/nix/store/yf3p5xmdpdvjjsa0c5g63q3jhhgwrryp-nix-shell","outputs":"out","patches":"","phases":"buildPhase","preferLocalBuild":"1","propagatedBuildInputs":"","propagatedNativeBuildInputs":"","shell":"/nix/store/306znyj77fv49kwnkpxmb0j2znqpa8bj-bash-5.2p26/bin/bash","shellHook":"","stdenv":"/nix/store/xfhkjnpqjwlf6hlk1ysmq3aaq80f3bjj-stdenv-linux","strictDeps":"","system":"x86_64-linux"}}
 </file>
 
 <file path=".cache/replit/modules/nodejs-20.res">
@@ -323,7 +324,7 @@ declare -gx SIZE=size
 </file>
 
 <file path=".cache/replit/toolchain.json">
-{"runs":[{"id":".replit/run","name":"sh -c 'npm run dev'","fileTypeAttrs":{},"run":{"command":{"args":["sh","-c","npm run dev"]}}},{"id":"module:nodejs-20/runner:nodeJS","name":"Node.js","fileParam":true,"language":"javascript","fileTypeAttrs":{},"displayVersion":"20.18.1","run":{"command":{"args":["sh","-c","/nix/store/rrz8cqhldyl17bbs60g7d8vbaadkxc40-nodejs-20.18.1-wrapped/bin/node $file"]}},"defaultEntrypoints":["index.js","main.js"]}],"debuggers":[{"id":"module:nodejs-20/debugger:nodeDAP","name":"Node DAP","fileParam":true,"language":"javascript","fileTypeAttrs":{}}],"languageServers":[{"id":"module:web/languageServer:typescript-language-server","name":"TypeScript Language Server","language":"javascript","fileTypeAttrs":{"extensions":[".js",".jsx",".ts",".tsx",".mjs",".mts",".cjs",".cts",".es6",".json"]},"config":{"startCommand":{"args":["sh","-c","/nix/store/9cd76kqpml5gkw8jjnjx0flwdf0a1gv1-typescript-language-server-4.3.3/bin/typescript-language-server --stdio"]},"initializationOptionsJson":"{\"tsserver\":{\"fallbackPath\":\"/nix/store/g6ns6m42fvybfzb2xjppcsfmb6k0jv5x-typescript-5.6.3/lib/node_modules/typescript/lib\"}}"},"displayVersion":"4.3.3"},{"id":"module:replit/languageServer:dotreplit-lsp","name":".replit LSP","language":"dotreplit","fileTypeAttrs":{},"config":{"startCommand":{"args":["sh","-c","/nix/store/bz8k1njgmm249fr5krhaq1jsi7jrhx5k-taplo-0.patched/bin/taplo lsp -c /nix/store/2zhz6va20gizdlqmvryab9b7pn6dp0v1-taplo-config.toml stdio"]}}},{"id":"module:web/languageServer:css","name":"CSS Language Server","language":"css","fileTypeAttrs":{"extensions":[".css",".less",".scss"]},"config":{"startCommand":{"args":["sh","-c","/nix/store/ydkb3d7r0zs7wd7jcwnk1v24qmzjqnkh-vscode-langservers-extracted-4.10.0/bin/vscode-css-language-server --stdio"]},"configurationJson":"{\"css\":{\"completion\":{\"completePropertyWithSemicolon\":true,\"triggerPropertyValueCompletion\":true},\"hover\":{\"documentation\":true,\"references\":true},\"lint\":{\"argumentsInColorFunction\":\"error\",\"boxModel\":\"ignore\",\"compatibleVendorPrefixes\":\"ignore\",\"duplicateProperties\":\"warning\",\"emptyRules\":\"warning\",\"float\":\"ignore\",\"fontFaceProperties\":\"warning\",\"hexColorLength\":\"error\",\"idSelector\":\"ignore\",\"ieHack\":\"ignore\",\"importStatement\":\"ignore\",\"important\":\"ignore\",\"propertyIgnoredDueToDisplay\":\"warning\",\"universalSelector\":\"ignore\",\"unknownAtRules\":\"warning\",\"unknownProperties\":\"warning\",\"unknownVendorSpecificProperties\":\"ignore\",\"validProperties\":[],\"vendorPrefix\":\"warning\",\"zeroUnits\":\"ignore\"},\"trace\":{\"server\":\"off\"}},\"less\":{\"completion\":{\"completePropertyWithSemicolon\":true,\"triggerPropertyValueCompletion\":true},\"hover\":{\"documentation\":true,\"references\":true},\"lint\":{\"argumentsInColorFunction\":\"error\",\"boxModel\":\"ignore\",\"compatibleVendorPrefixes\":\"ignore\",\"duplicateProperties\":\"warning\",\"emptyRules\":\"warning\",\"float\":\"ignore\",\"fontFaceProperties\":\"warning\",\"hexColorLength\":\"error\",\"idSelector\":\"ignore\",\"ieHack\":\"ignore\",\"importStatement\":\"ignore\",\"important\":\"ignore\",\"propertyIgnoredDueToDisplay\":\"warning\",\"universalSelector\":\"ignore\",\"unknownAtRules\":\"warning\",\"unknownProperties\":\"warning\",\"unknownVendorSpecificProperties\":\"ignore\",\"validProperties\":[],\"vendorPrefix\":\"warning\",\"zeroUnits\":\"ignore\"},\"trace\":{\"server\":\"off\"}},\"scss\":{\"completion\":{\"completePropertyWithSemicolon\":true,\"triggerPropertyValueCompletion\":true},\"hover\":{\"documentation\":true,\"references\":true},\"lint\":{\"argumentsInColorFunction\":\"error\",\"boxModel\":\"ignore\",\"compatibleVendorPrefixes\":\"ignore\",\"duplicateProperties\":\"warning\",\"emptyRules\":\"warning\",\"float\":\"ignore\",\"fontFaceProperties\":\"warning\",\"hexColorLength\":\"error\",\"idSelector\":\"ignore\",\"ieHack\":\"ignore\",\"importStatement\":\"ignore\",\"important\":\"ignore\",\"propertyIgnoredDueToDisplay\":\"warning\",\"universalSelector\":\"ignore\",\"unknownAtRules\":\"warning\",\"unknownProperties\":\"warning\",\"unknownVendorSpecificProperties\":\"ignore\",\"validProperties\":[],\"vendorPrefix\":\"warning\",\"zeroUnits\":\"ignore\"},\"trace\":{\"server\":\"off\"}}}","initializationOptionsJson":"{\"provideFormatter\":true}"}},{"id":"module:web/languageServer:html","name":"HTML Language Server","language":"html","fileTypeAttrs":{"extensions":[".html"]},"config":{"startCommand":{"args":["sh","-c","/nix/store/ydkb3d7r0zs7wd7jcwnk1v24qmzjqnkh-vscode-langservers-extracted-4.10.0/bin/vscode-html-language-server --stdio"]},"configurationJson":"{\"html\":{\"autoClosingTags\":true,\"autoCreateQuotes\":true,\"completion\":{\"attributeDefaultValue\":\"doublequotes\"},\"customData\":[],\"format\":{\"contentUnformatted\":\"pre,code,textarea\",\"enable\":true,\"endWithNewline\":false,\"extraLiners\":\"head, body, /html\",\"indentHandlebars\":false,\"indentInnerHtml\":false,\"preserveNewLines\":true,\"templating\":false,\"unformatted\":\"wbr\",\"unformattedContentDelimiter\":\"\",\"wrapAttributes\":\"auto\",\"wrapLineLength\":120},\"hover\":{\"documentation\":true,\"references\":true},\"mirrorCursorOnMatchingTag\":false,\"suggest\":{\"html5\":true},\"trace\":{\"server\":\"off\"},\"validate\":{\"scripts\":true,\"styles\":true}}}","initializationOptionsJson":"{\"enable\":true,\"provideFormatter\":true}"}}],"packagers":[{"id":"module:nodejs-20/packager:upmNodejs","name":"Node.js packager (npm, yarn, pnpm, bun)","language":"nodejs","packageSearch":true,"guessImports":true}],"formatters":[{"id":"module:nodejs-20/formatter:prettier","name":"Prettier","startCommand":{"args":["/nix/store/070ycjyhpfv8n895zq7yz6z0pp57g0q9-run-prettier/bin/run-prettier"],"lifecycle":"STDIN","splitStderr":true},"fileTypeAttrs":{"extensions":[".js",".jsx",".ts",".tsx",".json",".html"]},"displayVersion":"3.3.3","supportsRangeFormatting":true},{"id":"module:replit/languageServer:dotreplit-lsp","name":".replit LSP","fileTypeAttrs":{}},{"id":"module:web/languageServer:css","name":"CSS Language Server","fileTypeAttrs":{"extensions":[".css",".less",".scss"]}},{"id":"module:web/languageServer:html","name":"HTML Language Server","fileTypeAttrs":{"extensions":[".html"]}},{"id":"module:web/languageServer:typescript-language-server","name":"TypeScript Language Server","fileTypeAttrs":{"extensions":[".js",".jsx",".ts",".tsx",".mjs",".mts",".cjs",".cts",".es6",".json"]},"displayVersion":"4.3.3"}]}
+{"runs":[{"id":".replit/run","name":"sh -c 'npm run dev'","fileTypeAttrs":{},"run":{"command":{"args":["sh","-c","npm run dev"]}}},{"id":"module:nodejs-20/runner:nodeJS","name":"Node.js","fileParam":true,"language":"javascript","fileTypeAttrs":{},"displayVersion":"20.18.1","run":{"command":{"args":["sh","-c","/nix/store/rrz8cqhldyl17bbs60g7d8vbaadkxc40-nodejs-20.18.1-wrapped/bin/node $file"]}},"defaultEntrypoints":["index.js","main.js"]}],"debuggers":[{"id":"module:nodejs-20/debugger:nodeDAP","name":"Node DAP","fileParam":true,"language":"javascript","fileTypeAttrs":{}}],"languageServers":[{"id":"module:web/languageServer:typescript-language-server","name":"TypeScript Language Server","language":"javascript","fileTypeAttrs":{"extensions":[".js",".jsx",".ts",".tsx",".mjs",".mts",".cjs",".cts",".es6",".json"]},"config":{"startCommand":{"args":["sh","-c","/nix/store/9cd76kqpml5gkw8jjnjx0flwdf0a1gv1-typescript-language-server-4.3.3/bin/typescript-language-server --stdio"]},"initializationOptionsJson":"{\"tsserver\":{\"fallbackPath\":\"/nix/store/g6ns6m42fvybfzb2xjppcsfmb6k0jv5x-typescript-5.6.3/lib/node_modules/typescript/lib\"}}"},"displayVersion":"4.3.3"},{"id":"module:replit/languageServer:dotreplit-lsp","name":".replit LSP","language":"dotreplit","fileTypeAttrs":{},"config":{"startCommand":{"args":["sh","-c","/nix/store/bz8k1njgmm249fr5krhaq1jsi7jrhx5k-taplo-0.patched/bin/taplo lsp -c /nix/store/2zhz6va20gizdlqmvryab9b7pn6dp0v1-taplo-config.toml stdio"]}}},{"id":"module:web/languageServer:html","name":"HTML Language Server","language":"html","fileTypeAttrs":{"extensions":[".html"]},"config":{"startCommand":{"args":["sh","-c","/nix/store/ydkb3d7r0zs7wd7jcwnk1v24qmzjqnkh-vscode-langservers-extracted-4.10.0/bin/vscode-html-language-server --stdio"]},"configurationJson":"{\"html\":{\"autoClosingTags\":true,\"autoCreateQuotes\":true,\"completion\":{\"attributeDefaultValue\":\"doublequotes\"},\"customData\":[],\"format\":{\"contentUnformatted\":\"pre,code,textarea\",\"enable\":true,\"endWithNewline\":false,\"extraLiners\":\"head, body, /html\",\"indentHandlebars\":false,\"indentInnerHtml\":false,\"preserveNewLines\":true,\"templating\":false,\"unformatted\":\"wbr\",\"unformattedContentDelimiter\":\"\",\"wrapAttributes\":\"auto\",\"wrapLineLength\":120},\"hover\":{\"documentation\":true,\"references\":true},\"mirrorCursorOnMatchingTag\":false,\"suggest\":{\"html5\":true},\"trace\":{\"server\":\"off\"},\"validate\":{\"scripts\":true,\"styles\":true}}}","initializationOptionsJson":"{\"enable\":true,\"provideFormatter\":true}"}},{"id":"module:web/languageServer:css","name":"CSS Language Server","language":"css","fileTypeAttrs":{"extensions":[".css",".less",".scss"]},"config":{"startCommand":{"args":["sh","-c","/nix/store/ydkb3d7r0zs7wd7jcwnk1v24qmzjqnkh-vscode-langservers-extracted-4.10.0/bin/vscode-css-language-server --stdio"]},"configurationJson":"{\"css\":{\"completion\":{\"completePropertyWithSemicolon\":true,\"triggerPropertyValueCompletion\":true},\"hover\":{\"documentation\":true,\"references\":true},\"lint\":{\"argumentsInColorFunction\":\"error\",\"boxModel\":\"ignore\",\"compatibleVendorPrefixes\":\"ignore\",\"duplicateProperties\":\"warning\",\"emptyRules\":\"warning\",\"float\":\"ignore\",\"fontFaceProperties\":\"warning\",\"hexColorLength\":\"error\",\"idSelector\":\"ignore\",\"ieHack\":\"ignore\",\"importStatement\":\"ignore\",\"important\":\"ignore\",\"propertyIgnoredDueToDisplay\":\"warning\",\"universalSelector\":\"ignore\",\"unknownAtRules\":\"warning\",\"unknownProperties\":\"warning\",\"unknownVendorSpecificProperties\":\"ignore\",\"validProperties\":[],\"vendorPrefix\":\"warning\",\"zeroUnits\":\"ignore\"},\"trace\":{\"server\":\"off\"}},\"less\":{\"completion\":{\"completePropertyWithSemicolon\":true,\"triggerPropertyValueCompletion\":true},\"hover\":{\"documentation\":true,\"references\":true},\"lint\":{\"argumentsInColorFunction\":\"error\",\"boxModel\":\"ignore\",\"compatibleVendorPrefixes\":\"ignore\",\"duplicateProperties\":\"warning\",\"emptyRules\":\"warning\",\"float\":\"ignore\",\"fontFaceProperties\":\"warning\",\"hexColorLength\":\"error\",\"idSelector\":\"ignore\",\"ieHack\":\"ignore\",\"importStatement\":\"ignore\",\"important\":\"ignore\",\"propertyIgnoredDueToDisplay\":\"warning\",\"universalSelector\":\"ignore\",\"unknownAtRules\":\"warning\",\"unknownProperties\":\"warning\",\"unknownVendorSpecificProperties\":\"ignore\",\"validProperties\":[],\"vendorPrefix\":\"warning\",\"zeroUnits\":\"ignore\"},\"trace\":{\"server\":\"off\"}},\"scss\":{\"completion\":{\"completePropertyWithSemicolon\":true,\"triggerPropertyValueCompletion\":true},\"hover\":{\"documentation\":true,\"references\":true},\"lint\":{\"argumentsInColorFunction\":\"error\",\"boxModel\":\"ignore\",\"compatibleVendorPrefixes\":\"ignore\",\"duplicateProperties\":\"warning\",\"emptyRules\":\"warning\",\"float\":\"ignore\",\"fontFaceProperties\":\"warning\",\"hexColorLength\":\"error\",\"idSelector\":\"ignore\",\"ieHack\":\"ignore\",\"importStatement\":\"ignore\",\"important\":\"ignore\",\"propertyIgnoredDueToDisplay\":\"warning\",\"universalSelector\":\"ignore\",\"unknownAtRules\":\"warning\",\"unknownProperties\":\"warning\",\"unknownVendorSpecificProperties\":\"ignore\",\"validProperties\":[],\"vendorPrefix\":\"warning\",\"zeroUnits\":\"ignore\"},\"trace\":{\"server\":\"off\"}}}","initializationOptionsJson":"{\"provideFormatter\":true}"}}],"packagers":[{"id":"module:nodejs-20/packager:upmNodejs","name":"Node.js packager (npm, yarn, pnpm, bun)","language":"nodejs","packageSearch":true,"guessImports":true}],"formatters":[{"id":"module:nodejs-20/formatter:prettier","name":"Prettier","startCommand":{"args":["/nix/store/070ycjyhpfv8n895zq7yz6z0pp57g0q9-run-prettier/bin/run-prettier"],"lifecycle":"STDIN","splitStderr":true},"fileTypeAttrs":{"extensions":[".js",".jsx",".ts",".tsx",".json",".html"]},"displayVersion":"3.3.3","supportsRangeFormatting":true},{"id":"module:replit/languageServer:dotreplit-lsp","name":".replit LSP","fileTypeAttrs":{}},{"id":"module:web/languageServer:css","name":"CSS Language Server","fileTypeAttrs":{"extensions":[".css",".less",".scss"]}},{"id":"module:web/languageServer:html","name":"HTML Language Server","fileTypeAttrs":{"extensions":[".html"]}},{"id":"module:web/languageServer:typescript-language-server","name":"TypeScript Language Server","fileTypeAttrs":{"extensions":[".js",".jsx",".ts",".tsx",".mjs",".mts",".cjs",".cts",".es6",".json"]},"displayVersion":"4.3.3"}]}
 </file>
 
 <file path=".local/state/replit/agent/.latest.json">
@@ -7741,7 +7742,15 @@ import {
 } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Bus, MapPin, AlertTriangle, Phone, ExternalLink, IdCard, Clock } from "lucide-react";
+import {
+  Bus,
+  MapPin,
+  AlertTriangle,
+  Phone,
+  ExternalLink,
+  IdCard,
+  Clock,
+} from "lucide-react";
 import { LocationMap } from "@/components/map/location-map";
 
 export default function GuidePage() {
@@ -7750,55 +7759,58 @@ export default function GuidePage() {
     {
       id: "sg-1",
       position: [1.3521, 103.8198] as [number, number],
-      name: "Jurong East MRT"
+      name: "Jurong East MRT",
     },
     {
       id: "sg-2",
       position: [1.3644, 103.7731] as [number, number],
-      name: "Boon Lay MRT"
+      name: "Boon Lay MRT",
     },
     {
       id: "sg-3",
       position: [1.4431, 103.7861] as [number, number],
-      name: "Woodlands Checkpoint"
+      name: "Woodlands Checkpoint",
     },
     {
       id: "sg-4",
       position: [1.3387, 103.9092] as [number, number],
-      name: "Changi Airport"
-    }
+      name: "Changi Airport",
+    },
   ];
 
   const forestCityLocations = [
     {
       id: "fc-1",
       position: [1.4143, 103.6357] as [number, number],
-      name: "Forest City Mall"
+      name: "Forest City Mall",
     },
     {
       id: "fc-2",
       position: [1.4308, 103.6305] as [number, number],
-      name: "Golf Resort"
+      name: "Golf Resort",
     },
     {
       id: "fc-3",
       position: [1.4184, 103.6325] as [number, number],
-      name: "Shattuck St. Mary's School"
+      name: "Shattuck St. Mary's School",
     },
     {
       id: "fc-4",
-      position: [1.4255, 103.6240] as [number, number],
-      name: "Malaysian CIQ"
-    }
+      position: [1.4255, 103.624] as [number, number],
+      name: "Malaysian CIQ",
+    },
   ];
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
       <main className="container mx-auto py-6 px-4 pt-20">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">Singapore-Forest City Travel Guide</h1>
+          <h1 className="text-3xl font-bold mb-2">
+            Singapore-Forest City Travel Guide
+          </h1>
           <p className="text-muted-foreground mb-6">
-            Essential information for traveling between Singapore and Forest City
+            Essential information for traveling between Singapore and Forest
+            City
           </p>
         </div>
 
@@ -7807,19 +7819,24 @@ export default function GuidePage() {
           <div className="grid gap-4 md:grid-cols-2">
             <Alert className="bg-amber-50 border-amber-200">
               <IdCard className="h-4 w-4 text-amber-600" />
-              <AlertTitle className="text-amber-800">Passport Required</AlertTitle>
+              <AlertTitle className="text-amber-800">
+                Passport Required
+              </AlertTitle>
               <AlertDescription className="text-amber-700">
-                Ensure your passport has at least 6 months validity.
-                Many travelers forget their passports - double-check before leaving!
+                Ensure your passport has at least 6 months validity. Many
+                travelers forget their passports - double-check before leaving!
               </AlertDescription>
             </Alert>
-            
+
             <Alert className="bg-blue-50 border-blue-200">
               <Clock className="h-4 w-4 text-blue-600" />
-              <AlertTitle className="text-blue-800">Immigration Timing</AlertTitle>
+              <AlertTitle className="text-blue-800">
+                Immigration Timing
+              </AlertTitle>
               <AlertDescription className="text-blue-700">
-                Allow 45-60 minutes for immigration during peak hours.
-                Weekday mornings (Singapore entry) and evenings (Malaysia entry) are busiest.
+                Allow 45-60 minutes for immigration during peak hours. Weekday
+                mornings (Singapore entry) and evenings (Malaysia entry) are
+                busiest.
               </AlertDescription>
             </Alert>
           </div>
@@ -7844,35 +7861,53 @@ export default function GuidePage() {
                   <div>
                     <h4 className="font-medium">Quick Guide to Bus Travel</h4>
                     <ul className="list-disc list-inside mt-2 space-y-2">
-                      <li><strong>Journey:</strong> Jurong Town Hall Bus Interchange → CIQ 2nd Link → Forest City</li>
-                      <li><strong>Buses:</strong> Take CW3/CW4/CW4S/CW6/CW7, then FC1 after immigration</li>
-                      <li><strong>Total fare:</strong> S$5 (through-ticketing available)</li>
-                      <li><strong>Payment:</strong> Cash or ManjaLink card</li>
-                      <li><strong>Travel time:</strong> ~1.5-2 hours including immigration</li>
+                      <li>
+                        <strong>Journey:</strong> Jurong Town Hall Bus
+                        Interchange → CIQ 2nd Link → Forest City
+                      </li>
+                      <li>
+                        <strong>Buses:</strong> Take CW3/CW4/CW4S/CW6/CW7, then
+                        FC1 after immigration
+                      </li>
+                      <li>
+                        <strong>Total fare:</strong> S$5 (through-ticketing
+                        available)
+                      </li>
+                      <li>
+                        <strong>Payment:</strong> Cash or ManjaLink card
+                      </li>
+                      <li>
+                        <strong>Travel time:</strong> ~1.5-2 hours including
+                        immigration
+                      </li>
                     </ul>
                   </div>
-                  
+
                   <Alert className="bg-amber-50 border-amber-200 mt-4">
                     <Clock className="h-4 w-4 text-amber-600" />
-                    <AlertTitle className="text-amber-800">Important Notice</AlertTitle>
+                    <AlertTitle className="text-amber-800">
+                      Important Notice
+                    </AlertTitle>
                     <AlertDescription className="text-amber-700">
-                      Buses from CIQ 2nd Link depart <strong>only once per hour</strong>. Missing your bus could mean a long wait!
+                      Buses from CIQ 2nd Link depart{" "}
+                      <strong>only once per hour</strong>. Missing your bus
+                      could mean a long wait!
                     </AlertDescription>
                   </Alert>
-                    
+
                   <div className="mt-4 space-y-2">
-                    <a 
-                      href="https://www.causewaylink.com.my/important-announcement-for-cw3-cw4-passengers-relocating-to-jurong-town-hall-bus-interchange/" 
-                      target="_blank" 
+                    <a
+                      href="https://www.causewaylink.com.my/important-announcement-for-cw3-cw4-passengers-relocating-to-jurong-town-hall-bus-interchange/"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center text-blue-600 hover:underline text-sm"
                     >
                       <ExternalLink className="h-3 w-3 mr-1" />
                       Official CW3/CW4 Information
                     </a>
-                    <a 
-                      href="https://www.causewaylink.com.my/forest-city-fc1/" 
-                      target="_blank" 
+                    <a
+                      href="https://www.causewaylink.com.my/forest-city-fc1/"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center text-blue-600 hover:underline text-sm"
                     >
@@ -7880,7 +7915,7 @@ export default function GuidePage() {
                       FC1 Schedule Information
                     </a>
                   </div>
-                  
+
                   <div className="mt-4">
                     <Button asChild className="w-full">
                       <a href="/bus-guide">View Full Bus Guide</a>
@@ -7901,7 +7936,8 @@ export default function GuidePage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    These trusted drivers are frequently used by our community for transportation between Singapore and Forest City:
+                    These trusted drivers are frequently used by our community
+                    for transportation between Singapore and Forest City:
                   </p>
 
                   <div className="space-y-4 mt-4">
@@ -7914,19 +7950,19 @@ export default function GuidePage() {
                             <p>Trip: SGD 75 • Additional stop: SGD 5</p>
                           </div>
                           <div className="flex gap-2 mt-2">
-                            <a 
-                              href="https://sgmytaxi288service.com" 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
+                            <a
+                              href="https://sgmytaxi288service.com"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-xs text-blue-500 hover:underline flex items-center"
                             >
                               <ExternalLink className="h-3 w-3 mr-1" />
                               Website
                             </a>
-                            <a 
-                              href="https://wa.me/60192551688" 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
+                            <a
+                              href="https://wa.me/60192551688"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-xs text-green-500 hover:underline flex items-center"
                             >
                               <Phone className="h-3 w-3 mr-1" />
@@ -7934,7 +7970,9 @@ export default function GuidePage() {
                             </a>
                           </div>
                         </div>
-                        <span className="text-muted-foreground">+60 19-255 1688</span>
+                        <span className="text-muted-foreground">
+                          +60 19-255 1688
+                        </span>
                       </li>
                       <li className="flex items-center justify-between p-3 border rounded-md">
                         <div className="flex flex-col">
@@ -7943,10 +7981,10 @@ export default function GuidePage() {
                             <p>Trip: SGD 80 • Additional stop: SGD 10</p>
                           </div>
                           <div className="flex gap-2 mt-2">
-                            <a 
-                              href="https://wa.me/60167244913" 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
+                            <a
+                              href="https://wa.me/60167244913"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-xs text-green-500 hover:underline flex items-center"
                             >
                               <Phone className="h-3 w-3 mr-1" />
@@ -7954,7 +7992,9 @@ export default function GuidePage() {
                             </a>
                           </div>
                         </div>
-                        <span className="text-muted-foreground">+60 16-724 4913</span>
+                        <span className="text-muted-foreground">
+                          +60 16-724 4913
+                        </span>
                       </li>
                     </ul>
                   </div>
@@ -7962,7 +8002,7 @@ export default function GuidePage() {
                   <Alert className="mt-4">
                     <AlertDescription>
                       Have a trusted driver contact to share?{" "}
-                      <a 
+                      <a
                         href="https://discordapp.com/users/474860619217108992"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -7983,31 +8023,50 @@ export default function GuidePage() {
             <CardHeader>
               <CardTitle>Payment Information</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">              
+            <CardContent className="space-y-4">
               <div className="space-y-2">
                 <h3 className="font-medium">Ride Sharing Payments</h3>
                 <div className="bg-slate-50 p-3 rounded-md">
                   <h4 className="font-medium text-sm mb-2">Payment Options</h4>
                   <ul className="space-y-2 text-sm">
-                    <li><strong>BNPL:</strong> Awaiting Shawn's implementation.</li>
-                    <li><strong>Revolut:</strong> Preferred method - fee-free transfers between users</li>
-                    <li><strong>Cryptocurrency:</strong> USDC on BASE or SOL, for peer-to-peer payments</li>
-                    <li><strong>Cash:</strong> Pay in SGD or RM depending on driver preference</li>
+                    <li>
+                      <strong>BNPL:</strong> Awaiting Shawn's implementation.
+                    </li>
+                    <li>
+                      <strong>Revolut:</strong> Preferred method - fee-free
+                      transfers between users
+                    </li>
+                    <li>
+                      <strong>Cryptocurrency:</strong> USDC on BASE or SOL, for
+                      peer-to-peer payments
+                    </li>
+                    <li>
+                      <strong>Cash:</strong> Pay in SGD or RM depending on
+                      driver preference
+                    </li>
                   </ul>
                 </div>
 
                 <h3 className="font-medium mt-6">Bus Payments</h3>
                 <div className="bg-slate-50 p-3 rounded-md">
                   <ul className="space-y-2 text-sm">
-                    <li><strong>ManjaLink Card:</strong> Cashless payment option for regular commuters</li>
-                    <li><strong>Cash: </strong>Not tested.</li>
+                    <li>
+                      <strong>ManjaLink Card:</strong> Cashless payment option
+                      for regular commuters
+                    </li>
+                    <li>
+                      <strong>Contactless Bank Card:</strong> Visa, Apple Pay
+                    </li>
+                    <li>
+                      <strong>Cash: </strong>Not tested.
+                    </li>
                   </ul>
                 </div>
 
                 <div className="mt-4">
-                  <a 
-                    href="https://www.causewaylink.com.my/cashless-travel/?utm_source=cwl_homepage_shortcut&utm_medium=cwl_homepage_shortcut&utm_campaign=cwl_homepage_shortcut" 
-                    target="_blank" 
+                  <a
+                    href="https://www.causewaylink.com.my/cashless-travel/?utm_source=cwl_homepage_shortcut&utm_medium=cwl_homepage_shortcut&utm_campaign=cwl_homepage_shortcut"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center text-blue-600 hover:underline text-sm"
                   >
@@ -8824,7 +8883,17 @@ export function RideCard({ ride, onJoin, onAssign, showActions = true, organizer
             </div>
             <div className="flex items-center text-sm">
               <MapPin className="h-4 w-4 mr-2" />
-              <span>{ride.direction === "FC->SG" ? "To: " : "From: "}{ride.pickupLocation}</span>
+              {ride.direction === "FC->SG" ? (
+                <span>To: {
+                  ride.dropoffLocations && ride.dropoffLocations.length > 0 
+                    ? (typeof ride.dropoffLocations[0] === 'string' 
+                        ? ride.dropoffLocations[0] 
+                        : ride.dropoffLocations[0].location)
+                    : "Unknown location"
+                }</span>
+              ) : (
+                <span>From: {ride.pickupLocation}</span>
+              )}
             </div>
             <div className="flex items-center text-sm">
               <Users className="h-4 w-4 mr-2" />
@@ -9182,6 +9251,61 @@ app.get("/api/rides", async (req, res) => {
       res.status(400).json({ error: (error as Error).message });
     }
   });
+  
+  app.patch("/api/rides/:id/passengers/:passengerId/count", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+
+    const rideId = parseInt(req.params.id);
+    const passengerId = parseInt(req.params.passengerId);
+    const { passengerCount } = req.body;
+    
+    if (!passengerCount || passengerCount < 1) {
+      return res.status(400).json({ error: "Invalid passenger count" });
+    }
+
+    try {
+      // Get the passenger record to check if the user is authorized
+      const passenger = await storage.getPassenger(passengerId);
+      
+      if (!passenger) {
+        return res.status(404).json({ error: "Passenger not found" });
+      }
+      
+      if (passenger.rideId !== rideId) {
+        return res.status(400).json({ error: "Passenger does not belong to this ride" });
+      }
+      
+      // Check if the user is the ride creator or the passenger themself
+      const ride = await storage.getRide(rideId);
+      if (!ride) {
+        return res.status(404).json({ error: "Ride not found" });
+      }
+      
+      // Only allow the creator or the passenger to edit passenger count
+      if (ride.creatorId !== req.user.id && passenger.userId !== req.user.id) {
+        return res.status(403).json({ error: "Not authorized to edit this passenger" });
+      }
+      
+      console.log("Passenger edit authorized. User:", req.user.id, "Passenger:", passenger.userId, "Creator:", ride.creatorId);
+      
+      // Check if the ride has capacity
+      const currentCount = passenger.passengerCount;
+      const diff = passengerCount - currentCount;
+      
+      if (diff > 0 && ride.currentPassengers + diff > ride.maxPassengers) {
+        return res.status(400).json({
+          error: `Cannot add ${diff} more passengers. Ride only has ${ride.maxPassengers - ride.currentPassengers} spaces left.`
+        });
+      }
+      
+      // Update passenger count
+      const updatedPassenger = await storage.updatePassengerCount(passengerId, passengerCount);
+      res.json(updatedPassenger);
+    } catch (error) {
+      console.error("Error updating passenger count:", error);
+      res.status(400).json({ error: (error as Error).message });
+    }
+  });
 
   app.post("/api/rides/:id/lockSequence", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
@@ -9233,6 +9357,45 @@ app.get("/api/rides", async (req, res) => {
 
     const rides = await storage.getVendorRides(req.user.id);
     res.json(rides);
+  });
+
+  // New route to remove a passenger (can be used by both the passenger to leave or by the ride organizer)
+  app.delete("/api/rides/:rideId/passengers/:passengerId", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    const passengerId = parseInt(req.params.passengerId);
+    const rideId = parseInt(req.params.rideId);
+    
+    if (isNaN(passengerId) || isNaN(rideId)) {
+      return res.status(400).json({ error: "Invalid passenger or ride ID" });
+    }
+    
+    try {
+      // Get the passenger record first to check authorization
+      const passenger = await storage.getPassenger(passengerId);
+      if (!passenger) {
+        return res.status(404).json({ error: "Passenger not found" });
+      }
+      
+      // Get the ride to check if the current user is the organizer
+      const ride = await storage.getRide(rideId);
+      if (!ride) {
+        return res.status(404).json({ error: "Ride not found" });
+      }
+      
+      // Authorization check: only the ride creator or the passenger themselves can remove a passenger
+      if (ride.creatorId !== req.user.id && passenger.userId !== req.user.id) {
+        return res.status(403).json({ error: "Not authorized" });
+      }
+      
+      // Remove the passenger
+      await storage.removePassenger(passengerId);
+      
+      res.status(200).json({ message: "Passenger removed successfully" });
+    } catch (error) {
+      console.error("Error removing passenger:", error);
+      res.status(500).json({ error: (error as Error).message });
+    }
   });
   
   // User profile update endpoint
@@ -9296,6 +9459,660 @@ app.get("/api/rides", async (req, res) => {
 }
 </file>
 
+<file path="shared/schema.ts">
+import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  discordUsername: text("discord_username").notNull().unique(),
+  password: text("password").notNull(),
+  name: text("name"),
+  whatsappNumber: text("whatsapp_number"),
+  malaysianNumber: text("malaysian_number"),
+  revolutUsername: text("revolut_username"),
+  isVendor: boolean("is_vendor").notNull().default(false),
+  companyName: text("company_name"),
+  driverDetails: json("driver_details").$type<{
+    name: string;
+    contact: string;
+    carNumber: string;
+  }>(),
+});
+
+export const driverContacts = pgTable("driver_contacts", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  whatsappNumber: text("whatsapp_number").notNull(),
+  malaysianNumber: text("malaysian_number"),
+  vehicleType: text("vehicle_type").notNull(),
+  notes: text("notes"),
+  isActive: boolean("is_active").notNull().default(true),
+});
+
+export const rides = pgTable("rides", {
+  id: serial("id").primaryKey(),
+  creatorId: integer("creator_id").notNull(),
+  direction: text("direction").notNull(), // SG->FC or FC->SG
+  date: timestamp("date").notNull(),
+  maxPassengers: integer("max_passengers").notNull(),
+  currentPassengers: integer("current_passengers").notNull().default(0),
+  pickupLocation: text("pickup_location").notNull(),
+  dropoffLocations: json("dropoff_locations").$type<{
+    location: string;
+    passengerCount: number;
+  }[]>().notNull(),
+  status: text("status").notNull().default("open"), // open, assigned, completed
+  vendorId: integer("vendor_id"),
+  driverContactId: integer("driver_contact_id"),
+  cost: integer("cost").notNull().default(80),
+  additionalStops: integer("additional_stops").notNull().default(0),
+});
+
+export const ridePassengers = pgTable("ride_passengers", {
+  id: serial("id").primaryKey(),
+  rideId: integer("ride_id").notNull(),
+  userId: integer("user_id").notNull(),
+  dropoffLocation: text("dropoff_location").notNull(),
+  dropoffSequence: integer("dropoff_sequence"),
+  passengerCount: integer("passenger_count").notNull().default(1),
+});
+
+export const insertUserSchema = createInsertSchema(users)
+  .pick({
+    discordUsername: true,
+    password: true,
+    name: true,
+    whatsappNumber: true,
+    malaysianNumber: true,
+    revolutUsername: true,
+    isVendor: true,
+    companyName: true,
+    driverDetails: true,
+  })
+  .extend({
+    password: z.string().min(8),
+    name: z.string().optional(),
+    whatsappNumber: z.string()
+      .nullable()
+      .optional()
+      .transform(val => {
+        if (!val || val === "") return null;
+        return val;
+      }),
+    malaysianNumber: z.string()
+      .nullable()
+      .optional()
+      .transform(val => {
+        if (!val || val === "") return null;
+        return val;
+      }),
+    revolutUsername: z.string()
+      .nullable()
+      .optional()
+      .transform(val => {
+        if (!val || val === "") return null;
+        return val;
+      }),
+  });
+
+export const insertDriverContactSchema = createInsertSchema(driverContacts)
+  .pick({
+    name: true,
+    whatsappNumber: true,
+    malaysianNumber: true,
+    vehicleType: true,
+    notes: true,
+    isActive: true,
+  });
+
+export const insertRideSchema = createInsertSchema(rides)
+  .pick({
+    direction: true,
+    date: true,
+    maxPassengers: true,
+    pickupLocation: true,
+    dropoffLocations: true,
+    driverContactId: true,
+  })
+  .extend({
+    organizerPassengerCount: z.number().min(1).max(10),
+    dropoffLocations: z.array(
+      z.object({
+        location: z.string(),
+        passengerCount: z.number().min(1).max(10)
+      })
+    ),
+    driverContactId: z.number().optional(),
+  });
+
+export const insertRidePassengerSchema = createInsertSchema(ridePassengers)
+  .pick({
+    rideId: true,
+    dropoffLocation: true,
+  })
+  .extend({
+    passengerCount: z.number().min(1).max(10),
+  });
+
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type InsertDriverContact = z.infer<typeof insertDriverContactSchema>;
+export type InsertRide = z.infer<typeof insertRideSchema>;
+export type InsertRidePassenger = z.infer<typeof insertRidePassengerSchema>;
+export type User = typeof users.$inferSelect;
+export type DriverContact = typeof driverContacts.$inferSelect;
+export type Ride = typeof rides.$inferSelect;
+export type RidePassenger = typeof ridePassengers.$inferSelect;
+</file>
+
+<file path="client/src/pages/create-ride.tsx">
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { insertRideSchema, type InsertRide } from "@shared/schema";
+import { z } from "zod";
+import { NavBar } from "@/components/nav-bar";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useLocation, useRoute } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
+import { useState, useEffect } from "react";
+import { formatForDateTimeInput } from "@/lib/utils";
+
+// Define types for the form data
+interface DropoffLocation {
+  location: string;
+  passengerCount: number;
+}
+
+interface RideData {
+  id?: string;
+  creatorId?: string;
+  direction: "SG->FC" | "FC->SG";
+  date: Date | string;
+  maxPassengers: number;
+  pickupLocation?: string;
+  dropoffLocations?: DropoffLocation[] | string[];
+  organizerPassengerCount?: number;
+}
+
+export default function CreateRide() {
+  const [location, setLocation] = useLocation();
+  const [, params] = useRoute("/rides/edit/:id");
+  const isEditing = !!params?.id;
+  const rideId = params?.id;
+  const { toast } = useToast();
+  const { user } = useAuth();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Fetch ride data if editing
+  const { data: rideToEdit, isLoading } = useQuery<RideData>({
+    queryKey: [`/api/rides/${rideId}`],
+    enabled: isEditing,
+  });
+
+  // Extended form schema with organizerLocation field
+  const formSchema = insertRideSchema.extend({
+    organizerLocation: z.string().min(1, "Please specify your location"),
+    organizerPassengerCount: insertRideSchema.shape.organizerPassengerCount.default(1),
+    dropoffLocations: insertRideSchema.shape.dropoffLocations.default([])
+  });
+
+  // Form setup with validation
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      direction: "SG->FC",
+      date: new Date(),
+      maxPassengers: 5,
+      pickupLocation: "",
+      dropoffLocations: [],
+      organizerPassengerCount: 1,
+      organizerLocation: "",
+    },
+    mode: "onBlur", // Validate fields when they lose focus
+  });
+
+  // Load ride data into form when editing
+  useEffect(() => {
+    if (isEditing && rideToEdit && !isLoading) {
+      if (user?.id !== rideToEdit.creatorId) {
+        toast({
+          title: "Error",
+          description: "You are not authorized to edit this ride",
+          variant: "destructive",
+        });
+        setLocation("/home");
+        return;
+      }
+
+      // Convert ISO string date to Date object
+      const date = new Date(rideToEdit.date);
+
+      // Ensure we have a valid passengerCount
+      const passengerCount = 
+        Array.isArray(rideToEdit.dropoffLocations) && rideToEdit.dropoffLocations[0] && 
+        typeof rideToEdit.dropoffLocations[0] === 'object' && 'passengerCount' in rideToEdit.dropoffLocations[0]
+          ? rideToEdit.dropoffLocations[0].passengerCount
+          : typeof rideToEdit.organizerPassengerCount === 'number' 
+            ? rideToEdit.organizerPassengerCount 
+            : 1;
+
+      // Extract organizer location based on direction
+      let organizerLocation = "";
+      
+      if (rideToEdit.direction === "SG->FC") {
+        // For SG->FC, the organizer location is the pickup location
+        organizerLocation = rideToEdit.pickupLocation || "";
+      } else {
+        // For FC->SG, the organizer location is the first dropoff location
+        if (Array.isArray(rideToEdit.dropoffLocations) && rideToEdit.dropoffLocations[0]) {
+          if (typeof rideToEdit.dropoffLocations[0] === 'object' && 'location' in rideToEdit.dropoffLocations[0]) {
+            organizerLocation = rideToEdit.dropoffLocations[0].location;
+          } else if (typeof rideToEdit.dropoffLocations[0] === 'string') {
+            organizerLocation = rideToEdit.dropoffLocations[0];
+          }
+        }
+      }
+
+      // Reset form with ride data
+      form.reset({
+        direction: rideToEdit.direction,
+        date,
+        maxPassengers: rideToEdit.maxPassengers,
+        pickupLocation: rideToEdit.pickupLocation || "",
+        dropoffLocations: [],  // We'll manage this separately
+        organizerPassengerCount: passengerCount,
+        organizerLocation: organizerLocation,
+      });
+    }
+  }, [rideToEdit, isEditing, isLoading, form, toast, setLocation, user]);
+
+  // Watch form fields for dynamic updates
+  const currentDirection = form.watch('direction');
+  const organizerLocation = form.watch('organizerLocation');
+  const organizerPassengerCount = form.watch('organizerPassengerCount');
+
+  // Update dropoffLocations whenever organizerLocation or organizerPassengerCount changes
+  useEffect(() => {
+    if (organizerLocation && organizerPassengerCount) {
+      if (currentDirection === "FC->SG") {
+        form.setValue(
+          "dropoffLocations",
+          [{ location: organizerLocation.trim(), passengerCount: organizerPassengerCount }],
+          { shouldValidate: true }
+        );
+      }
+    }
+  }, [organizerLocation, organizerPassengerCount, currentDirection, form]);
+
+  // Mutation for creating or updating a ride
+  const rideMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const submissionData = { ...data };
+
+      // Ensure date is properly formatted for submission
+      if (submissionData.date instanceof Date) {
+        // Convert to ISO string for storage
+        submissionData.date = submissionData.date.toISOString();
+      } else if (typeof submissionData.date === 'string') {
+        // If date is already a string, parse it first to ensure it's valid
+        const date = new Date(submissionData.date);
+        if (isNaN(date.getTime())) {
+          throw new Error("Invalid date provided");
+        }
+        submissionData.date = date.toISOString();
+      }
+
+      // Ensure organizerPassengerCount is a number
+      submissionData.organizerPassengerCount = Number(submissionData.organizerPassengerCount);
+      if (isNaN(submissionData.organizerPassengerCount) || submissionData.organizerPassengerCount < 1) {
+        submissionData.organizerPassengerCount = 1;
+      }
+
+      // Set pickupLocation based on direction
+      if (submissionData.direction === "FC->SG") {
+        submissionData.pickupLocation = "Forest City"; // Fixed pickup point for FC->SG
+      } else {
+        submissionData.pickupLocation = submissionData.organizerLocation.trim(); // Organizer's pickup for SG->FC
+      }
+
+      // Format dropoff locations based on direction
+      if (submissionData.direction === "FC->SG") {
+        // For FC->SG, ensure the dropoffLocations have the correct passengerCount
+        if (Array.isArray(submissionData.dropoffLocations) && submissionData.dropoffLocations.length > 0) {
+          // Make sure the current dropoffLocation has the updated passengerCount
+          if (typeof submissionData.dropoffLocations[0] === 'object') {
+            submissionData.dropoffLocations[0] = {
+              ...submissionData.dropoffLocations[0],
+              location: submissionData.organizerLocation.trim(),
+              passengerCount: Number(submissionData.organizerPassengerCount)
+            };
+          } else {
+            // Convert string locations to proper format
+            submissionData.dropoffLocations = [{
+              location: submissionData.organizerLocation.trim(),
+              passengerCount: Number(submissionData.organizerPassengerCount)
+            }];
+          }
+        } else {
+          // Create new array if no dropoffLocations exist
+          submissionData.dropoffLocations = [{
+            location: submissionData.organizerLocation.trim(),
+            passengerCount: Number(submissionData.organizerPassengerCount)
+          }];
+        }
+      } else {
+        // For SG->FC, set dropoffLocations to the organizer's pickup location
+        submissionData.dropoffLocations = [{
+          location: submissionData.organizerLocation.trim(),
+          passengerCount: Number(submissionData.organizerPassengerCount)
+        }];
+      }
+
+      // Remove temporary field
+      delete submissionData.organizerLocation;
+
+      // Send request to API
+      if (isEditing && rideId) {
+        const res = await apiRequest("PATCH", `/api/rides/${rideId}`, submissionData);
+        return res.json();
+      } else {
+        const res = await apiRequest("POST", "/api/rides", submissionData);
+        return res.json();
+      }
+    },
+    onSuccess: (ride) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/rides"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/rides/${rideId}`] });
+
+      toast({
+        title: "Success",
+        description: isEditing ? "Ride updated successfully" : "Ride created successfully",
+      });
+
+      setLocation(`/rides/${ride.id}`);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete mutation - moved inside component
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      if (!rideId) throw new Error("No ride ID provided");
+      const res = await apiRequest("DELETE", `/api/rides/${rideId}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/rides"] });
+
+      toast({
+        title: "Success",
+        description: "Ride deleted successfully",
+      });
+
+      setLocation("/home");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Handle delete function - moved inside component
+  const handleDeleteRide = () => {
+    if (showDeleteConfirm) {
+      deleteMutation.mutate();
+    } else {
+      setShowDeleteConfirm(true);
+      toast({
+        title: "Confirm Deletion",
+        description: "Click Delete again to confirm. This action cannot be undone.",
+        variant: "destructive",
+      });
+
+      setTimeout(() => {
+        setShowDeleteConfirm(false);
+      }, 5000);
+    }
+  };
+
+  // Ensure organizerPassengerCount has a default value when switching directions
+  useEffect(() => {
+    const currentValue = form.getValues('organizerPassengerCount');
+    if (!currentValue || isNaN(Number(currentValue))) {
+      form.setValue('organizerPassengerCount', 1);
+    }
+  }, [currentDirection, form]);
+
+  return (
+    <div className="min-h-screen pt-20">
+      <NavBar />
+      <main className="max-w-3xl mx-auto px-4 py-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>{isEditing ? "Edit Ride" : "Create a New Ride"}</CardTitle>
+            <CardDescription>
+              {currentDirection === "FC->SG" 
+                ? "Enter your drop-off location in Singapore and the number of passengers in your group"
+                : "Enter your pickup location in Singapore and the number of passengers"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit((data) => {
+                  rideMutation.mutate(data);
+                })}
+                className="space-y-6"
+              >
+                {/* Direction Selection */}
+                <FormField
+                  control={form.control}
+                  name="direction"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>Direction</FormLabel>
+                      <FormControl>
+                        <div className="flex flex-col md:flex-row gap-3">
+                          <Button
+                            type="button"
+                            variant={field.value === "SG->FC" ? "default" : "outline"}
+                            className="flex-1 justify-center py-6 text-base"
+                            onClick={() => field.onChange("SG->FC")}
+                          >
+                            Singapore to Forest City
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={field.value === "FC->SG" ? "default" : "outline"}
+                            className="flex-1 justify-center py-6 text-base"
+                            onClick={() => field.onChange("FC->SG")}
+                          >
+                            Forest City to Singapore
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Max Passengers */}
+                <FormField
+                  control={form.control}
+                  name="maxPassengers"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Maximum Total Passengers</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="1"
+                          max="10"
+                          {...field}
+                          onChange={(e) => field.onChange(parseInt(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Date and Time */}
+                <FormField
+                  control={form.control}
+                  name="date"
+                  render={({ field: { value, onChange, ...fieldProps } }) => {
+                    // Format date for datetime-local input
+                    const dateValue = value instanceof Date 
+                      ? formatForDateTimeInput(value)
+                      : '';
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Date and Time</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="datetime-local" 
+                            value={dateValue}
+                            onChange={(e) => {
+                              if (e.target.value) {
+                                // When user inputs date, store it directly
+                                const inputDate = new Date(e.target.value);
+                                if (!isNaN(inputDate.getTime())) {
+                                  onChange(inputDate);
+                                }
+                              }
+                            }}
+                            {...fieldProps}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                {/* Locations Section */}
+                <div className="space-y-4 pt-2">
+                  <h3 className="font-medium">Locations</h3>
+
+                  {/* Passenger Count - Same for both directions */}
+                  <FormField
+                    control={form.control}
+                    name="organizerPassengerCount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Number of Passengers at Your Location</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="1"
+                            max={form.getValues('maxPassengers')}
+                            {...field}
+                            value={field.value === undefined || field.value === null ? 1 : field.value}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value);
+                              const maxValue = form.getValues('maxPassengers');
+                              // Ensure value is valid, defaulting to 1 if parsing fails
+                              field.onChange(isNaN(value) ? 1 : Math.max(1, Math.min(maxValue, value)));
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Organizer Location - dynamic label based on direction */}
+                  <FormField
+                    control={form.control}
+                    name="organizerLocation"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {currentDirection === "SG->FC" 
+                            ? "Your Pickup Location in Singapore" 
+                            : "Your Drop-off Location in Singapore"}
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            {...field} 
+                            placeholder={
+                              currentDirection === "SG->FC" 
+                                ? "e.g., Pasir Ris MRT" 
+                                : "e.g., Tampines Mall"
+                            }
+                            className="min-h-[100px]"
+                          />
+                        </FormControl>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          You can enter multiple lines of text for detailed location instructions
+                        </p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Submit and Delete Buttons */}
+                <div className="space-y-4">
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={rideMutation.isPending}
+                  >
+                    {rideMutation.isPending 
+                      ? isEditing ? "Updating..." : "Creating..." 
+                      : isEditing ? "Update Ride" : "Create Ride"
+                    }
+                  </Button>
+
+                  {isEditing && (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      className="w-full"
+                      onClick={handleDeleteRide}
+                      disabled={deleteMutation.isPending}
+                    >
+                      {deleteMutation.isPending ? "Deleting..." : "Delete Ride"}
+                    </Button>
+                  )}
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </main>
+    </div>
+  );
+}
+</file>
+
 <file path="client/src/pages/home-page.tsx">
 import { useQuery } from "@tanstack/react-query";
 import { NavBar } from "@/components/nav-bar";
@@ -9344,10 +10161,27 @@ export default function HomePage() {
     const totalCost = ride.cost + (ride.additionalStops * 5);
     const perPersonCost = (totalCost / (ride.maxPassengers || 1)).toFixed(2);
 
+    // Format locations based on direction with all drop-off locations
+    let locationSection = '';
+    if (ride.direction === "FC->SG") {
+      const dropoffLocations = ride.dropoffLocations.map(loc => 
+        typeof loc === 'string' ? loc : loc.location
+      );
+      
+      locationSection = `Pickup: Forest City\nDrop-off Locations (${dropoffLocations.length}):\n`;
+      
+      // Number each location
+      dropoffLocations.forEach((loc, index) => {
+        locationSection += `${index + 1}. ${loc}\n`;
+      });
+    } else {
+      locationSection = `Pickup Location: ${ride.pickupLocation}\nDrop-off: Forest City`;
+    }
+
     const summary = `🚗 RideShare Trip Summary 🚗\n\n` +
       `Direction: ${directionText}\n` +
       `Date & Time: ${dateText}\n` +
-      `${ride.direction === "FC->SG" ? "Drop-off Location" : "Pickup Location"}: ${ride.direction === "FC->SG" ? ride.dropoffLocations[0]?.location || 'Unknown' : ride.pickupLocation}\n` +
+      `${locationSection}\n` +
       `Passengers: ${ride.currentPassengers}/${ride.maxPassengers}\n` +
       `Total Cost: $${totalCost} SGD\n\n` +
       `📱 Join through RideShare: https://ns-rideshare.replit.app/rides/${ride.id}`;
@@ -9694,638 +10528,6 @@ export default function HomePage() {
 }
 </file>
 
-<file path="shared/schema.ts">
-import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
-
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  discordUsername: text("discord_username").notNull().unique(),
-  password: text("password").notNull(),
-  name: text("name"),
-  whatsappNumber: text("whatsapp_number"),
-  malaysianNumber: text("malaysian_number"),
-  revolutUsername: text("revolut_username"),
-  isVendor: boolean("is_vendor").notNull().default(false),
-  companyName: text("company_name"),
-  driverDetails: json("driver_details").$type<{
-    name: string;
-    contact: string;
-    carNumber: string;
-  }>(),
-});
-
-export const driverContacts = pgTable("driver_contacts", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  whatsappNumber: text("whatsapp_number").notNull(),
-  malaysianNumber: text("malaysian_number"),
-  vehicleType: text("vehicle_type").notNull(),
-  notes: text("notes"),
-  isActive: boolean("is_active").notNull().default(true),
-});
-
-export const rides = pgTable("rides", {
-  id: serial("id").primaryKey(),
-  creatorId: integer("creator_id").notNull(),
-  direction: text("direction").notNull(), // SG->FC or FC->SG
-  date: timestamp("date").notNull(),
-  maxPassengers: integer("max_passengers").notNull(),
-  currentPassengers: integer("current_passengers").notNull().default(0),
-  pickupLocation: text("pickup_location").notNull(),
-  dropoffLocations: json("dropoff_locations").$type<{
-    location: string;
-    passengerCount: number;
-  }[]>().notNull(),
-  status: text("status").notNull().default("open"), // open, assigned, completed
-  vendorId: integer("vendor_id"),
-  driverContactId: integer("driver_contact_id"),
-  cost: integer("cost").notNull().default(80),
-  additionalStops: integer("additional_stops").notNull().default(0),
-});
-
-export const ridePassengers = pgTable("ride_passengers", {
-  id: serial("id").primaryKey(),
-  rideId: integer("ride_id").notNull(),
-  userId: integer("user_id").notNull(),
-  dropoffLocation: text("dropoff_location").notNull(),
-  dropoffSequence: integer("dropoff_sequence"),
-  passengerCount: integer("passenger_count").notNull().default(1),
-});
-
-export const insertUserSchema = createInsertSchema(users)
-  .pick({
-    discordUsername: true,
-    password: true,
-    name: true,
-    whatsappNumber: true,
-    malaysianNumber: true,
-    revolutUsername: true,
-    isVendor: true,
-    companyName: true,
-    driverDetails: true,
-  })
-  .extend({
-    password: z.string().min(8),
-    name: z.string().optional(),
-    whatsappNumber: z.string()
-      .nullable()
-      .optional()
-      .transform(val => {
-        if (!val || val === "") return null;
-        return val;
-      }),
-    malaysianNumber: z.string()
-      .nullable()
-      .optional()
-      .transform(val => {
-        if (!val || val === "") return null;
-        return val;
-      }),
-    revolutUsername: z.string()
-      .nullable()
-      .optional()
-      .transform(val => {
-        if (!val || val === "") return null;
-        return val;
-      }),
-  });
-
-export const insertDriverContactSchema = createInsertSchema(driverContacts)
-  .pick({
-    name: true,
-    whatsappNumber: true,
-    malaysianNumber: true,
-    vehicleType: true,
-    notes: true,
-    isActive: true,
-  });
-
-export const insertRideSchema = createInsertSchema(rides)
-  .pick({
-    direction: true,
-    date: true,
-    maxPassengers: true,
-    pickupLocation: true,
-    dropoffLocations: true,
-    driverContactId: true,
-  })
-  .extend({
-    organizerPassengerCount: z.number().min(1).max(4),
-    dropoffLocations: z.array(
-      z.object({
-        location: z.string(),
-        passengerCount: z.number().min(1).max(4)
-      })
-    ),
-    driverContactId: z.number().optional(),
-  });
-
-export const insertRidePassengerSchema = createInsertSchema(ridePassengers)
-  .pick({
-    rideId: true,
-    dropoffLocation: true,
-  })
-  .extend({
-    passengerCount: z.number().min(1).max(4),
-  });
-
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type InsertDriverContact = z.infer<typeof insertDriverContactSchema>;
-export type InsertRide = z.infer<typeof insertRideSchema>;
-export type InsertRidePassenger = z.infer<typeof insertRidePassengerSchema>;
-export type User = typeof users.$inferSelect;
-export type DriverContact = typeof driverContacts.$inferSelect;
-export type Ride = typeof rides.$inferSelect;
-export type RidePassenger = typeof ridePassengers.$inferSelect;
-</file>
-
-<file path="client/src/pages/create-ride.tsx">
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { insertRideSchema, type InsertRide } from "@shared/schema";
-import { z } from "zod";
-import { NavBar } from "@/components/nav-bar";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import { useLocation, useRoute } from "wouter";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/use-auth";
-import { useState, useEffect } from "react";
-import { formatForDateTimeInput } from "@/lib/utils";
-
-// Define types for the form data
-interface DropoffLocation {
-  location: string;
-  passengerCount: number;
-}
-
-interface RideData {
-  id?: string;
-  creatorId?: string;
-  direction: "SG->FC" | "FC->SG";
-  date: Date | string;
-  maxPassengers: number;
-  pickupLocation?: string;
-  dropoffLocations?: DropoffLocation[] | string[];
-  organizerPassengerCount?: number;
-}
-
-export default function CreateRide() {
-  const [location, setLocation] = useLocation();
-  const [, params] = useRoute("/rides/edit/:id");
-  const isEditing = !!params?.id;
-  const rideId = params?.id;
-  const { toast } = useToast();
-  const { user } = useAuth();
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-  // Fetch ride data if editing
-  const { data: rideToEdit, isLoading } = useQuery<RideData>({
-    queryKey: [`/api/rides/${rideId}`],
-    enabled: isEditing,
-  });
-
-  // Extended form schema with organizerLocation field
-  const formSchema = insertRideSchema.extend({
-    organizerLocation: z.string().min(1, "Please specify your location"),
-    organizerPassengerCount: insertRideSchema.shape.organizerPassengerCount.default(1),
-    dropoffLocations: insertRideSchema.shape.dropoffLocations.default([])
-  });
-
-  // Form setup with validation
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      direction: "SG->FC",
-      date: new Date(),
-      maxPassengers: 5,
-      pickupLocation: "",
-      dropoffLocations: [],
-      organizerPassengerCount: 1,
-      organizerLocation: "",
-    },
-    mode: "onBlur", // Validate fields when they lose focus
-  });
-
-  // Load ride data into form when editing
-  useEffect(() => {
-    if (isEditing && rideToEdit && !isLoading) {
-      if (user?.id !== rideToEdit.creatorId) {
-        toast({
-          title: "Error",
-          description: "You are not authorized to edit this ride",
-          variant: "destructive",
-        });
-        setLocation("/home");
-        return;
-      }
-
-      // Convert ISO string date to Date object
-      const date = new Date(rideToEdit.date);
-
-      // Ensure we have a valid passengerCount
-      const passengerCount = 
-        Array.isArray(rideToEdit.dropoffLocations) && rideToEdit.dropoffLocations[0] && 
-        typeof rideToEdit.dropoffLocations[0] === 'object' && 'passengerCount' in rideToEdit.dropoffLocations[0]
-          ? rideToEdit.dropoffLocations[0].passengerCount
-          : typeof rideToEdit.organizerPassengerCount === 'number' 
-            ? rideToEdit.organizerPassengerCount 
-            : 1;
-
-      // Extract organizer location based on direction
-      let organizerLocation = "";
-      
-      if (rideToEdit.direction === "SG->FC") {
-        // For SG->FC, the organizer location is the pickup location
-        organizerLocation = rideToEdit.pickupLocation || "";
-      } else {
-        // For FC->SG, the organizer location is the first dropoff location
-        if (Array.isArray(rideToEdit.dropoffLocations) && rideToEdit.dropoffLocations[0]) {
-          if (typeof rideToEdit.dropoffLocations[0] === 'object' && 'location' in rideToEdit.dropoffLocations[0]) {
-            organizerLocation = rideToEdit.dropoffLocations[0].location;
-          } else if (typeof rideToEdit.dropoffLocations[0] === 'string') {
-            organizerLocation = rideToEdit.dropoffLocations[0];
-          }
-        }
-      }
-
-      // Reset form with ride data
-      form.reset({
-        direction: rideToEdit.direction,
-        date,
-        maxPassengers: rideToEdit.maxPassengers,
-        pickupLocation: rideToEdit.pickupLocation || "",
-        dropoffLocations: [],  // We'll manage this separately
-        organizerPassengerCount: passengerCount,
-        organizerLocation: organizerLocation,
-      });
-    }
-  }, [rideToEdit, isEditing, isLoading, form, toast, setLocation, user]);
-
-  // Watch form fields for dynamic updates
-  const currentDirection = form.watch('direction');
-  const organizerLocation = form.watch('organizerLocation');
-  const organizerPassengerCount = form.watch('organizerPassengerCount');
-
-  // Update dropoffLocations whenever organizerLocation or organizerPassengerCount changes
-  useEffect(() => {
-    if (organizerLocation && organizerPassengerCount) {
-      if (currentDirection === "FC->SG") {
-        form.setValue(
-          "dropoffLocations",
-          [{ location: organizerLocation.trim(), passengerCount: organizerPassengerCount }],
-          { shouldValidate: true }
-        );
-      }
-    }
-  }, [organizerLocation, organizerPassengerCount, currentDirection, form]);
-
-  // Mutation for creating or updating a ride
-  const rideMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const submissionData = { ...data };
-
-      // Ensure date is properly formatted for submission
-      if (submissionData.date instanceof Date) {
-        // Convert to ISO string for storage
-        submissionData.date = submissionData.date.toISOString();
-      } else if (typeof submissionData.date === 'string') {
-        // If date is already a string, parse it first to ensure it's valid
-        const date = new Date(submissionData.date);
-        if (isNaN(date.getTime())) {
-          throw new Error("Invalid date provided");
-        }
-        submissionData.date = date.toISOString();
-      }
-
-      // Ensure organizerPassengerCount is a number
-      submissionData.organizerPassengerCount = Number(submissionData.organizerPassengerCount);
-      if (isNaN(submissionData.organizerPassengerCount) || submissionData.organizerPassengerCount < 1) {
-        submissionData.organizerPassengerCount = 1;
-      }
-
-      // Set pickupLocation based on direction
-      if (submissionData.direction === "FC->SG") {
-        submissionData.pickupLocation = "Forest City"; // Fixed pickup point for FC->SG
-      } else {
-        submissionData.pickupLocation = submissionData.organizerLocation.trim(); // Organizer's pickup for SG->FC
-      }
-
-      // Format dropoff locations based on direction
-      if (submissionData.direction === "FC->SG") {
-        // For FC->SG, use the already formatted dropoffLocations (set by useEffect)
-        // We don't need to do anything as it's already correctly formatted
-      } else {
-        // For SG->FC, set dropoffLocations to the organizer's pickup location
-        submissionData.dropoffLocations = [{
-          location: submissionData.organizerLocation.trim(),
-          passengerCount: Number(submissionData.organizerPassengerCount)
-        }];
-      }
-
-      // Remove temporary field
-      delete submissionData.organizerLocation;
-
-      // Send request to API
-      if (isEditing && rideId) {
-        const res = await apiRequest("PATCH", `/api/rides/${rideId}`, submissionData);
-        return res.json();
-      } else {
-        const res = await apiRequest("POST", "/api/rides", submissionData);
-        return res.json();
-      }
-    },
-    onSuccess: (ride) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/rides"] });
-      queryClient.invalidateQueries({ queryKey: [`/api/rides/${rideId}`] });
-
-      toast({
-        title: "Success",
-        description: isEditing ? "Ride updated successfully" : "Ride created successfully",
-      });
-
-      setLocation(`/rides/${ride.id}`);
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Delete mutation - moved inside component
-  const deleteMutation = useMutation({
-    mutationFn: async () => {
-      if (!rideId) throw new Error("No ride ID provided");
-      const res = await apiRequest("DELETE", `/api/rides/${rideId}`);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/rides"] });
-
-      toast({
-        title: "Success",
-        description: "Ride deleted successfully",
-      });
-
-      setLocation("/home");
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Handle delete function - moved inside component
-  const handleDeleteRide = () => {
-    if (showDeleteConfirm) {
-      deleteMutation.mutate();
-    } else {
-      setShowDeleteConfirm(true);
-      toast({
-        title: "Confirm Deletion",
-        description: "Click Delete again to confirm. This action cannot be undone.",
-        variant: "destructive",
-      });
-
-      setTimeout(() => {
-        setShowDeleteConfirm(false);
-      }, 5000);
-    }
-  };
-
-  // Ensure organizerPassengerCount has a default value when switching directions
-  useEffect(() => {
-    const currentValue = form.getValues('organizerPassengerCount');
-    if (!currentValue || isNaN(Number(currentValue))) {
-      form.setValue('organizerPassengerCount', 1);
-    }
-  }, [currentDirection, form]);
-
-  return (
-    <div className="min-h-screen pt-20">
-      <NavBar />
-      <main className="max-w-3xl mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>{isEditing ? "Edit Ride" : "Create a New Ride"}</CardTitle>
-            <CardDescription>
-              {currentDirection === "FC->SG" 
-                ? "Enter your drop-off location in Singapore and the number of passengers in your group"
-                : "Enter your pickup location in Singapore and the number of passengers"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit((data) => {
-                  rideMutation.mutate(data);
-                })}
-                className="space-y-6"
-              >
-                {/* Direction Selection */}
-                <FormField
-                  control={form.control}
-                  name="direction"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Direction</FormLabel>
-                      <FormControl>
-                        <div className="flex flex-col md:flex-row gap-3">
-                          <Button
-                            type="button"
-                            variant={field.value === "SG->FC" ? "default" : "outline"}
-                            className="flex-1 justify-center py-6 text-base"
-                            onClick={() => field.onChange("SG->FC")}
-                          >
-                            Singapore to Forest City
-                          </Button>
-                          <Button
-                            type="button"
-                            variant={field.value === "FC->SG" ? "default" : "outline"}
-                            className="flex-1 justify-center py-6 text-base"
-                            onClick={() => field.onChange("FC->SG")}
-                          >
-                            Forest City to Singapore
-                          </Button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Max Passengers */}
-                <FormField
-                  control={form.control}
-                  name="maxPassengers"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Maximum Total Passengers</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="1"
-                          max="10"
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value))}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Date and Time */}
-                <FormField
-                  control={form.control}
-                  name="date"
-                  render={({ field: { value, onChange, ...fieldProps } }) => {
-                    // Format date for datetime-local input
-                    const dateValue = value instanceof Date 
-                      ? formatForDateTimeInput(value)
-                      : '';
-
-                    return (
-                      <FormItem>
-                        <FormLabel>Date and Time</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="datetime-local" 
-                            value={dateValue}
-                            onChange={(e) => {
-                              if (e.target.value) {
-                                // When user inputs date, store it directly
-                                const inputDate = new Date(e.target.value);
-                                if (!isNaN(inputDate.getTime())) {
-                                  onChange(inputDate);
-                                }
-                              }
-                            }}
-                            {...fieldProps}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-
-                {/* Locations Section */}
-                <div className="space-y-4 pt-2">
-                  <h3 className="font-medium">Locations</h3>
-
-                  {/* Passenger Count - Same for both directions */}
-                  <FormField
-                    control={form.control}
-                    name="organizerPassengerCount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Number of Passengers at Your Location</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min="1"
-                            max="4"
-                            {...field}
-                            value={field.value === undefined || field.value === null ? 1 : field.value}
-                            onChange={(e) => {
-                              const value = parseInt(e.target.value);
-                              // Ensure value is valid, defaulting to 1 if parsing fails
-                              field.onChange(isNaN(value) ? 1 : Math.max(1, Math.min(4, value)));
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Organizer Location - dynamic label based on direction */}
-                  <FormField
-                    control={form.control}
-                    name="organizerLocation"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {currentDirection === "SG->FC" 
-                            ? "Your Pickup Location in Singapore" 
-                            : "Your Drop-off Location in Singapore"}
-                        </FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            {...field} 
-                            placeholder={
-                              currentDirection === "SG->FC" 
-                                ? "e.g., Pasir Ris MRT" 
-                                : "e.g., Tampines Mall"
-                            }
-                            className="min-h-[100px]"
-                          />
-                        </FormControl>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          You can enter multiple lines of text for detailed location instructions
-                        </p>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Submit and Delete Buttons */}
-                <div className="space-y-4">
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={rideMutation.isPending}
-                  >
-                    {rideMutation.isPending 
-                      ? isEditing ? "Updating..." : "Creating..." 
-                      : isEditing ? "Update Ride" : "Create Ride"
-                    }
-                  </Button>
-
-                  {isEditing && (
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      className="w-full"
-                      onClick={handleDeleteRide}
-                      disabled={deleteMutation.isPending}
-                    >
-                      {deleteMutation.isPending ? "Deleting..." : "Delete Ride"}
-                    </Button>
-                  )}
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-      </main>
-    </div>
-  );
-}
-</file>
-
 <file path="server/storage.ts">
 import {
   type User,
@@ -10373,6 +10575,9 @@ export interface IStorage {
   addPassenger(passenger: InsertRidePassenger & { userId: number }): Promise<RidePassenger>;
   getPassengers(rideId: number): Promise<RidePassenger[]>;
   updatePassengerSequence(id: number, sequence: number): Promise<RidePassenger>;
+  updatePassengerCount(id: number, passengerCount: number): Promise<RidePassenger>;
+  removePassenger(id: number): Promise<void>;
+  getPassenger(id: number): Promise<RidePassenger | undefined>;
 
   // Vendor operations
   getVendorRides(vendorId: number): Promise<Ride[]>;
@@ -10538,12 +10743,58 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateRide(id: number, ride: Partial<Ride>): Promise<Ride> {
+    // Get existing ride to calculate current passengers
+    const existingRide = await this.getRide(id);
+    if (!existingRide) throw new Error("Ride not found");
+    
+    // Calculate current passengers count
+    // For creator passengers count, get it from the dropoffLocations of the incoming ride data
+    const creatorPassengerCount = ride.dropoffLocations && 
+      Array.isArray(ride.dropoffLocations) && 
+      ride.dropoffLocations.length > 0 && 
+      typeof ride.dropoffLocations[0] === 'object' && 
+      'passengerCount' in ride.dropoffLocations[0] 
+        ? ride.dropoffLocations[0].passengerCount 
+        : existingRide.dropoffLocations && 
+          Array.isArray(existingRide.dropoffLocations) && 
+          existingRide.dropoffLocations.length > 0 && 
+          typeof existingRide.dropoffLocations[0] === 'object' && 
+          'passengerCount' in existingRide.dropoffLocations[0]
+            ? existingRide.dropoffLocations[0].passengerCount
+            : 1;
+    
+    // Get other passengers from ride_passengers table
+    const passengers = await this.getPassengers(id);
+    const otherPassengersCount = passengers
+      .filter(p => p.userId !== existingRide.creatorId)
+      .reduce((sum, p) => sum + p.passengerCount, 0);
+    
+    // Calculate total current passengers
+    const currentPassengers = creatorPassengerCount + otherPassengersCount;
+
+    // If maxPassengers is being changed, ensure it's not less than currentPassengers
+    if (ride.maxPassengers !== undefined && ride.maxPassengers < currentPassengers) {
+      throw new Error("Cannot decrease max passengers below current passengers count");
+    }
+
     const [updatedRide] = await db
       .update(rides)
       .set(ride)
       .where(eq(rides.id, id))
       .returning();
+    
     if (!updatedRide) throw new Error("Ride not found");
+    
+    // Update creator's passenger count in ride_passengers table if needed
+    const creatorPassenger = passengers.find(p => p.userId === existingRide.creatorId);
+    if (creatorPassenger && creatorPassengerCount !== creatorPassenger.passengerCount) {
+      await db
+        .update(ridePassengers)
+        .set({ passengerCount: creatorPassengerCount })
+        .where(eq(ridePassengers.id, creatorPassenger.id))
+        .returning();
+    }
+    
     return updatedRide;
   }
 
@@ -10603,6 +10854,38 @@ export class DatabaseStorage implements IStorage {
       .returning();
     if (!passenger) throw new Error("Passenger not found");
     return passenger;
+  }
+  
+  async updatePassengerCount(
+    id: number,
+    passengerCount: number
+  ): Promise<RidePassenger> {
+    // Get the current passenger to calculate the difference in passenger count
+    const oldPassenger = await this.getPassenger(id);
+    if (!oldPassenger) throw new Error("Passenger not found");
+    
+    // Update the passenger count
+    const [updatedPassenger] = await db
+      .update(ridePassengers)
+      .set({ passengerCount })
+      .where(eq(ridePassengers.id, id))
+      .returning();
+    
+    if (!updatedPassenger) throw new Error("Failed to update passenger count");
+    
+    // Get the ride to update total passenger count
+    const ride = await this.getRide(updatedPassenger.rideId);
+    if (ride) {
+      // Calculate the difference in passenger count
+      const diff = passengerCount - oldPassenger.passengerCount;
+      
+      // Update the ride's current passenger count
+      await this.updateRide(ride.id, {
+        currentPassengers: ride.currentPassengers + diff
+      });
+    }
+    
+    return updatedPassenger;
   }
 
   async getVendorRides(vendorId: number): Promise<Ride[]> {
@@ -10674,6 +10957,36 @@ export class DatabaseStorage implements IStorage {
     if (!ride) throw new Error("Ride not found");
     return ride;
   }
+
+  async getPassenger(id: number): Promise<RidePassenger | undefined> {
+    const [passenger] = await db
+      .select()
+      .from(ridePassengers)
+      .where(eq(ridePassengers.id, id));
+    return passenger;
+  }
+  
+  async removePassenger(id: number): Promise<void> {
+    // Get the passenger details first to update ride passenger count
+    const passenger = await this.getPassenger(id);
+    if (!passenger) throw new Error("Passenger not found");
+    
+    // Delete the passenger
+    const result = await db
+      .delete(ridePassengers)
+      .where(eq(ridePassengers.id, id))
+      .returning();
+    
+    if (result.length === 0) throw new Error("Passenger not found");
+    
+    // Update the ride's passenger count
+    const ride = await this.getRide(passenger.rideId);
+    if (ride) {
+      await this.updateRide(ride.id, {
+        currentPassengers: Math.max(0, ride.currentPassengers - passenger.passengerCount)
+      });
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();
@@ -10701,7 +11014,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2, Share2, Edit, MapPin, Users, MessageCircle, Calendar, DollarSign, Clock, CheckCircle, ChevronRight, AlertTriangle, Phone, Mail, User } from "lucide-react";
+import { Loader2, Share2, Edit, MapPin, Users, MessageCircle, Calendar, DollarSign, Clock, CheckCircle, ChevronRight, AlertTriangle, Phone, Mail, User, UserMinus } from "lucide-react";
 import { LocationMap } from "@/components/map/location-map";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -10754,7 +11067,9 @@ interface RideWithCreator extends Ride {
 const joinRideSchema = z.object({
   passengerCount: z.number()
     .min(1, "Must have at least 1 passenger")
-    .max(4, "Cannot exceed 4 passengers"),
+    .refine((val) => true, {
+      message: "Cannot exceed available capacity",
+    }),  // The actual max validation is applied dynamically in the form setup
   dropoffLocation: z.string().min(1, "Drop-off location is required"),
 });
 
@@ -10768,10 +11083,67 @@ function ContactInfo({
   type 
 }: { 
   label: string; 
-  value: string | null; 
+  value: string | null | undefined; 
   icon: any;
-  type?: 'whatsapp' | 'discord';
+  type?: 'whatsapp' | 'discord' | 'phone' | string;
 }) {
+  const { toast } = useToast();
+
+  // Direct messaging function within the component
+  const openDirectMessage = (type: string | undefined, contact: string | null | undefined) => {
+    if (!contact) {
+      toast({
+        title: "Contact not available",
+        description: `No ${label} contact information provided.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    let url = '';
+    let message = '';
+    
+    if (type === 'whatsapp') {
+      // Remove any non-numeric characters from phone number
+      const cleanNumber = contact.replace(/\D/g, '');
+      url = `https://wa.me/${cleanNumber}`;
+      message = "Opening WhatsApp chat";
+    } else if (type === 'discord') {
+      // Copy Discord username to clipboard
+      navigator.clipboard.writeText(contact);
+      toast({
+        title: "Discord username copied!",
+        description: "Open Discord and search for this username to start a conversation.",
+      });
+      return;
+    } else if (type === 'phone') {
+      // For Malaysian numbers - create a tel: link
+      const cleanNumber = contact.replace(/\D/g, '');
+      url = `tel:${cleanNumber}`;
+      
+      // But also copy to clipboard as a fallback
+      navigator.clipboard.writeText(cleanNumber);
+      message = "Calling phone number (also copied to clipboard)";
+    } else {
+      // For any other type, just copy to clipboard
+      navigator.clipboard.writeText(contact);
+      toast({
+        title: `${label} copied to clipboard`,
+        description: `${contact}`,
+      });
+      return;
+    }
+
+    if (url) {
+      window.open(url, '_blank');
+      if (message) {
+        toast({
+          title: message,
+        });
+      }
+    }
+  };
+
   if (!value) return null;
 
   return (
@@ -10795,7 +11167,10 @@ function ContactInfo({
         </TooltipTrigger>
         <TooltipContent>
           <p>{label}: {value}</p>
-          {type && <p className="text-xs text-muted-foreground">Click to open chat</p>}
+          {type === 'whatsapp' && <p className="text-xs text-muted-foreground">Click to open WhatsApp chat</p>}
+          {type === 'phone' && <p className="text-xs text-muted-foreground">Click to call or copy number</p>}
+          {type === 'discord' && <p className="text-xs text-muted-foreground">Click to copy username</p>}
+          {!type && <p className="text-xs text-muted-foreground">Click to copy</p>}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -10827,14 +11202,42 @@ export default function RideDetails() {
     queryKey: [`/api/rides/${rideId}/passengers`],
     enabled: !!rideId && !!user,
   });
+  
+  // Check if the current user is already a passenger
+  const isUserPassenger = passengers?.some(p => p.userId === user?.id);
+
+  // Check if the user is the ride creator
+  const isCreator = user && ride && user.id === ride.creator?.id;
+  const creator = ride?.creator;
+
+  // Calculate remaining spots
+  const totalPassengersCount = ride?.currentPassengers || 0;
+  const remainingSpots = ride ? ride.maxPassengers - totalPassengersCount : 0;
+  const isFull = remainingSpots <= 0;
 
   // Form for joining ride
   const form = useForm<JoinRideFormData>({
-    resolver: zodResolver(joinRideSchema),
+    resolver: zodResolver(
+      joinRideSchema.refine(
+        (data) => {
+          // Skip validation if ride is not loaded yet
+          if (!ride) return true;
+          
+          // Check if passenger count exceeds remaining spots
+          return data.passengerCount <= (remainingSpots || 0);
+        },
+        {
+          message: `Number must be less than or equal to ${remainingSpots}`,
+          path: ["passengerCount"],
+        }
+      )
+    ),
     defaultValues: {
       passengerCount: 1,
       dropoffLocation: "",
     },
+    // Update validation whenever remainingSpots changes
+    context: { remainingSpots },
   });
 
   // Join ride mutation
@@ -10911,18 +11314,7 @@ export default function RideDetails() {
     setDropoffLocations(locations);
   }, [ride, passengers]);
 
-  // Check if the current user is already a passenger
-  const isUserPassenger = passengers?.some(p => p.userId === user?.id);
-
-  // Check if the user is the ride creator
-  const isCreator = user && ride && user.id === ride.creator?.id;
-  const creator = ride?.creator;
-
-
-  // Calculate remaining spots
-  const totalPassengersCount = ride?.currentPassengers || 0;
-  const remainingSpots = ride ? ride.maxPassengers - totalPassengersCount : 0;
-  const isFull = remainingSpots <= 0;
+  // Variables are already defined above, removing duplicate definitions
 
   // Format date for display (using our shared utility)
   const formatDateTime = (dateString: string | Date) => {
@@ -10952,6 +11344,43 @@ export default function RideDetails() {
       return;
     }
     joinRideMutation.mutate(data);
+  };
+  
+  // Remove passenger mutation
+  const removePassengerMutation = useMutation({
+    mutationFn: async ({ passengerId }: { passengerId: number }) => {
+      if (!user) throw new Error("You must be logged in to remove a passenger");
+      if (!ride) throw new Error("Ride not found");
+
+      const res = await apiRequest(
+        "DELETE",
+        `/api/rides/${rideId}/passengers/${passengerId}`
+      );
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/rides/${rideId}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/rides/${rideId}/passengers`] });
+      refetchPassengers();
+      toast({
+        title: "Passenger Removed",
+        description: "Passenger has been removed from the ride successfully.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to remove passenger",
+        variant: "destructive",
+      });
+    }
+  });
+  
+  // Passenger count editing is removed as it wasn't working correctly
+  
+  // Handle passenger removal
+  const handleRemovePassenger = (passengerId: number) => {
+    removePassengerMutation.mutate({ passengerId });
   };
 
   // Generate a WhatsApp group link with all passengers
@@ -11030,7 +11459,7 @@ export default function RideDetails() {
     const messageText = `Create a Discord group called "${groupName}" with these users:\n\n${
       passengers
         .filter(p => p.user?.discordUsername)
-        .map(p => `${p.user?.fullName}: ${p.user?.discordUsername}`)
+        .map(p => `${p.user?.name || p.user?.discordUsername}: ${p.user?.discordUsername}`)
         .join('\n')
     }`;
 
@@ -11054,17 +11483,27 @@ export default function RideDetails() {
       `$${totalCost} SGD` : 
       `$${ride.cost} SGD + $${ride.additionalStops * 5} SGD for additional stops`;
 
-    // Format all locations
-    const locationsText = ride.direction === "SG->FC" ?
-      `Pickup: ${ride.pickupLocation}` :
-      `Pickup: Forest City\nDrop-offs: ${ride.dropoffLocations.map(loc => 
+    // Format locations based on direction with all drop-off locations
+    let locationSection = '';
+    if (ride.direction === "FC->SG") {
+      const dropoffLocations = ride.dropoffLocations.map(loc => 
         typeof loc === 'string' ? loc : loc.location
-      ).join(', ')}`;
+      );
+      
+      locationSection = `Pickup: Forest City\nDrop-off Locations (${dropoffLocations.length}):\n`;
+      
+      // Number each location
+      dropoffLocations.forEach((loc, index) => {
+        locationSection += `${index + 1}. ${loc}\n`;
+      });
+    } else {
+      locationSection = `Pickup Location: ${ride.pickupLocation}\nDrop-off: Forest City`;
+    }
 
     const summary = `🚗 RideShare Trip Summary 🚗\n\n` +
       `Direction: ${directionText}\n` +
       `Date & Time: ${dateText}\n` +
-      `${ride.direction === "FC->SG" ? "Drop-off Location" : "Pickup Location"}: ${ride.pickupLocation}\n` +
+      `${locationSection}\n` +
       `Passengers: ${totalPassengersCount}/${ride.maxPassengers}\n` +
       `Total Cost: ${costDetails}\n\n` +
       `📱 Join through RideShare: https://ns-rideshare.replit.app/rides/${ride.id}`;
@@ -11084,36 +11523,7 @@ export default function RideDetails() {
     }
   };
 
-  // Add direct messaging function
-  const openDirectMessage = (type: 'whatsapp' | 'discord', contact: string | null) => {
-    if (!contact) {
-      toast({
-        title: "Contact not available",
-        description: `No ${type} contact information provided.`,
-        variant: "destructive",
-      });
-      return;
-    }
-
-    let url = '';
-    if (type === 'whatsapp') {
-      // Remove any non-numeric characters from phone number
-      const cleanNumber = contact.replace(/\D/g, '');
-      url = `https://wa.me/${cleanNumber}`;
-    } else if (type === 'discord') {
-      // Copy Discord username to clipboard
-      navigator.clipboard.writeText(contact);
-      toast({
-        title: "Discord username copied!",
-        description: "Open Discord and search for this username to start a conversation.",
-      });
-      return;
-    }
-
-    if (url) {
-      window.open(url, '_blank');
-    }
-  };
+  // Direct messaging function has been moved to ContactInfo component
 
   if (isRideLoading) {
     return (
@@ -11340,13 +11750,13 @@ export default function RideDetails() {
                                 <Input
                                   type="number"
                                   min={1}
-                                  max={Math.min(4, remainingSpots)}
+                                  max={remainingSpots}
                                   {...field}
                                   onChange={(e) => field.onChange(parseInt(e.target.value))}
                                 />
                               </FormControl>
                               <FormDescription>
-                                Maximum {Math.min(4, remainingSpots)} passengers allowed
+                                Maximum {remainingSpots} passengers allowed
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -11504,35 +11914,56 @@ export default function RideDetails() {
                                   Passengers: {passenger.passengerCount || 1}
                                 </p>
                               </div>
-                              <div className="flex items-center space-x-1">
-                                {passenger.user && (
-                                  <>
-                                    <ContactInfo
-                                      label="WhatsApp"
-                                      value={passenger.user.whatsappNumber}
-                                      icon={Phone}
-                                      type="whatsapp"
-                                    />
-                                    <ContactInfo
-                                      label="Malaysian Number"
-                                      value={passenger.user.malaysianNumber}
-                                      icon={Phone}
-                                    />
-                                    <ContactInfo
-                                      label="Discord"
-                                      value={passenger.user.discordUsername}
-                                      icon={Mail}
-                                      type="discord"
-                                    />
-                                    <ContactInfo
-                                      label="Revolut"
-                                      value={passenger.user.revolutUsername}
-                                      icon={User}
-                                    />
-                                  </>
-                                )}
-                                {isCreator && (
-                                  <Badge>Passenger {index + 1}</Badge>
+                              <div className="flex flex-col items-end space-y-2">
+                                <div className="flex flex-wrap justify-end gap-1 mt-1">
+                                  {passenger.user && (
+                                    <>
+                                      <ContactInfo
+                                        label="WhatsApp"
+                                        value={passenger.user.whatsappNumber}
+                                        icon={Phone}
+                                        type="whatsapp"
+                                      />
+                                      <ContactInfo
+                                        label="Malaysian Number"
+                                        value={passenger.user.malaysianNumber}
+                                        icon={Phone}
+                                        type="phone"
+                                      />
+                                      <ContactInfo
+                                        label="Discord"
+                                        value={passenger.user.discordUsername}
+                                        icon={Mail}
+                                        type="discord"
+                                      />
+                                      <ContactInfo
+                                        label="Revolut"
+                                        value={passenger.user.revolutUsername}
+                                        icon={User}
+                                      />
+                                    </>
+                                  )}
+                                  {isCreator && (
+                                    <Badge>Passenger {index + 1}</Badge>
+                                  )}
+                                </div>
+                                
+                                {/* Remove passenger option */}
+                                {(isCreator || (user && passenger.userId === user.id)) && !isRidePast(ride.date) && (
+                                  <Button 
+                                    variant="destructive" 
+                                    size="sm"
+                                    onClick={() => handleRemovePassenger(passenger.id)}
+                                    disabled={removePassengerMutation.isPending}
+                                    className="w-full sm:w-auto mt-2"
+                                  >
+                                    {removePassengerMutation.isPending && passenger.id === removePassengerMutation.variables?.passengerId ? (
+                                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                    ) : (
+                                      <UserMinus className="h-4 w-4 mr-2" />
+                                    )}
+                                    {user && passenger.userId === user.id ? "Leave Ride" : "Remove Passenger"}
+                                  </Button>
                                 )}
                               </div>
                             </div>
@@ -11641,7 +12072,7 @@ export default function RideDetails() {
                           <p className="mt-1">
                             {passenger.dropoffLocation}
                             <span className="text-sm text-muted-foreground ml-2">
-                              ({passenger.user?.fullName || "Unknown"})
+                              ({passenger.user?.name || passenger.user?.discordUsername || "Unknown"})
                             </span>
                           </p>
                         </div>
