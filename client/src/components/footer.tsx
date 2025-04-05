@@ -6,7 +6,12 @@ export function Footer() {
     <footer className="border-t py-4 mt-auto bg-background">
       <div className="container flex flex-col items-center justify-center gap-2 md:flex-row md:justify-between">
         <div className="text-sm text-muted-foreground">
-          <span>vibe coded with <span className="text-red-500">♥</span> by Kuan</span>
+          <span>vibe coded with <span className="text-red-500">♥</span> by <a 
+            href="https://x.com/phuakuanyu" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground transition-colors underline"
+          >Kuan</a></span>
         </div>
         <div className="flex items-center gap-2">
           <a 
