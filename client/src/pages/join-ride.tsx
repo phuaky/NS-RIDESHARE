@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertRidePassengerSchema } from "@shared/schema";
+import { insertRidePassengerSchema, Ride } from "@shared/schema";
 import { NavBar } from "@/components/nav-bar";
 import { useLocation, useRoute } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -40,7 +40,7 @@ export default function JoinRide() {
   const [selectedLocation, setSelectedLocation] = useState<LocationPoint | null>(null);
   const [showPassportReminder, setShowPassportReminder] = useState(true);
 
-  const { data: ride, isLoading } = useQuery({
+  const { data: ride, isLoading } = useQuery<Ride>({
     queryKey: [`/api/rides/${rideId}`],
     enabled: !!rideId,
   });
@@ -75,7 +75,6 @@ export default function JoinRide() {
       toast({
         title: "Success",
         description: "Successfully joined the ride",
-        variant: "success",
       });
       setLocation("/home");
     },
@@ -148,18 +147,20 @@ export default function JoinRide() {
             </CardHeader>
             <CardContent>
               {showPassportReminder && ride.direction === "SG->FC" && (
-                <Alert variant="warning" className="bg-amber-50 border-amber-200 mb-6">
-                  <AlertCircle className="h-4 w-4 text-amber-600" />
-                  <AlertDescription className="text-amber-800">
-                    Don't forget to bring your passport! Many travelers have forgotten them in the past.
-                    <button 
-                      className="ml-2 text-amber-600 underline" 
-                      onClick={() => setShowPassportReminder(false)}
-                    >
-                      Dismiss
-                    </button>
-                  </AlertDescription>
-                </Alert>
+                <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-6">
+                  <div className="flex">
+                    <AlertCircle className="h-5 w-5 text-amber-600 mr-2 flex-shrink-0" />
+                    <div className="text-amber-800">
+                      Don't forget to bring your passport! Many travelers have forgotten them in the past.
+                      <button 
+                        className="ml-2 text-amber-600 underline" 
+                        onClick={() => setShowPassportReminder(false)}
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  </div>
+                </div>
               )}
               
               <Form {...form}>

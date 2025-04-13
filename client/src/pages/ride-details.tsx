@@ -729,7 +729,9 @@ export default function RideDetails() {
                   <CardHeader>
                     <CardTitle className="text-lg">Join This Ride</CardTitle>
                     <CardDescription>
-                      There are {remainingSpots} spots left on this ride
+                      {ride.direction === "SG->FC" 
+                        ? `Specify where in Singapore we should pick you up. ${remainingSpots} spots left.`
+                        : `Specify where in Singapore we should drop you off. ${remainingSpots} spots left.`}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -763,9 +765,20 @@ export default function RideDetails() {
                           name="dropoffLocation"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Drop-off Location</FormLabel>
+                              <FormLabel>
+                                {ride.direction === "SG->FC" 
+                                  ? "Pick-up Location" 
+                                  : "Drop-off Location"}
+                              </FormLabel>
                               <FormControl>
-                                <Input {...field} placeholder="Enter your drop-off location" />
+                                <Input 
+                                  {...field} 
+                                  placeholder={
+                                    ride.direction === "SG->FC"
+                                      ? "Where should we pick you up in Singapore?"
+                                      : "Where should we drop you off in Singapore?"
+                                  }
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
