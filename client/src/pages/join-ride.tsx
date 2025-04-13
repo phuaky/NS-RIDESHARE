@@ -141,7 +141,9 @@ export default function JoinRide() {
             <CardHeader>
               <CardTitle>Join This Ride</CardTitle>
               <CardDescription>
-                Select your drop-off location to join this ride
+                {ride.direction === "SG->FC" 
+                  ? "Select your pick-up location in Singapore" 
+                  : "Select your drop-off location in Singapore"}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -172,11 +174,19 @@ export default function JoinRide() {
                     name="dropoffLocation"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Drop-off Location</FormLabel>
+                        <FormLabel>
+                          {ride.direction === "SG->FC" 
+                            ? "Pick-up Location" 
+                            : "Drop-off Location"}
+                        </FormLabel>
                         <FormControl>
                           <Input 
                             {...field} 
-                            placeholder="Select a location on the map or enter here" 
+                            placeholder={
+                              ride.direction === "SG->FC"
+                                ? "Where should we pick you up in Singapore?"
+                                : "Where should we drop you off in Singapore?"
+                            }
                           />
                         </FormControl>
                         <FormMessage />
