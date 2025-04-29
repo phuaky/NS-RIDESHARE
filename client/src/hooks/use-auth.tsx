@@ -16,7 +16,8 @@ type AuthContextType = {
   logoutMutation: UseMutationResult<void, Error, void>;
   registerMutation: UseMutationResult<SelectUser, Error, InsertUser>;
   resetPasswordMutation: UseMutationResult<{message: string}, Error, PasswordResetData>;
-  requestPasswordResetMutation: UseMutationResult<{message: string}, Error, {discordUsername: string}>;
+  requestPasswordResetMutation: UseMutationResult<{message: string, resetToken: string}, Error, {discordUsername: string}>;
+  completePasswordResetMutation: UseMutationResult<{message: string}, Error, CompletePasswordResetData>;
   adminResetPasswordMutation: UseMutationResult<{message: string}, Error, AdminPasswordResetData>;
 };
 
@@ -27,6 +28,10 @@ type PasswordResetData = {
 };
 type AdminPasswordResetData = {
   discordUsername: string;
+  newPassword: string;
+};
+type CompletePasswordResetData = {
+  resetToken: string;
   newPassword: string;
 };
 
@@ -151,6 +156,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
     },
   });
+  
+  const completePasswordResetMutation = useMutation({
+    mutationFn: async (data: CompletePasswordResetData) => {
+      const res = await apiRequest("POST", "/api/complete-password-reset", data);
+      return await res.json();
+    },
+    onSuccess: (data: {message: string}) => {
+      toast({
+        title: "Success",
+        description: data.message,
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Password reset failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   return (
     <AuthContext.Provider
@@ -163,6 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         registerMutation,
         resetPasswordMutation,
         requestPasswordResetMutation,
+        completePasswordResetMutation,
         adminResetPasswordMutation,
       }}
     >

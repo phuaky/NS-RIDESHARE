@@ -143,6 +143,14 @@ export function setupAuth(app: Express) {
     res.json(safeUser);
   });
   
+  // In-memory storage for reset tokens (in production, this would be in the database)
+  const passwordResetTokens = new Map();
+  
+  // Generate a secure random token for password reset
+  function generateResetToken() {
+    return randomBytes(32).toString('hex');
+  }
+  
   // Route to request a password reset
   app.post("/api/request-password-reset", async (req, res) => {
     try {
@@ -156,21 +164,73 @@ export function setupAuth(app: Express) {
       const user = await storage.getUserByDiscordUsername(discordUsername);
       if (!user) {
         // For security reasons, don't reveal if user exists or not
-        return res.status(200).json({ message: "If an account with that Discord username exists, a password reset has been initiated." });
+        return res.status(200).json({ 
+          message: "If an account with that Discord username exists, a password reset has been initiated." 
+        });
       }
 
-      // For a real implementation, we would:
-      // 1. Generate a unique token
-      // 2. Store the token with an expiration time
-      // 3. Send an email/message with a reset link
+      // Generate a secure reset token with 1-hour expiry
+      const resetToken = generateResetToken();
+      const expiry = new Date();
+      expiry.setHours(expiry.getHours() + 1); // Token valid for 1 hour
       
-      // For our simple implementation, logged-in users can reset their own password
-      // and admins can help users reset their password by verifying their identity
+      // Store the token (in memory for now, in production this would be in the database)
+      passwordResetTokens.set(resetToken, {
+        userId: user.id,
+        discordUsername: user.discordUsername,
+        expiry
+      });
       
-      return res.status(200).json({ message: "If an account with that Discord username exists, a password reset has been initiated." });
+      console.log(`Password reset token generated for user ${discordUsername}: ${resetToken}`);
+      
+      return res.status(200).json({ 
+        message: "Password reset initiated. Use the token below to reset your password.",
+        resetToken
+      });
     } catch (error) {
       console.error("Password reset request error:", error);
       res.status(500).json({ error: "Failed to process password reset request" });
+    }
+  });
+  
+  // Route to complete the password reset using a token
+  app.post("/api/complete-password-reset", async (req, res) => {
+    try {
+      const { resetToken, newPassword } = req.body;
+      
+      if (!resetToken || !newPassword) {
+        return res.status(400).json({ error: "Reset token and new password are required" });
+      }
+      
+      if (newPassword.length < 8) {
+        return res.status(400).json({ error: "New password must be at least 8 characters long" });
+      }
+      
+      // Verify the token
+      const tokenData = passwordResetTokens.get(resetToken);
+      
+      if (!tokenData) {
+        return res.status(400).json({ error: "Invalid or expired reset token" });
+      }
+      
+      // Check if token is expired
+      if (new Date() > tokenData.expiry) {
+        // Clean up expired token
+        passwordResetTokens.delete(resetToken);
+        return res.status(400).json({ error: "Reset token has expired" });
+      }
+      
+      // Update the password
+      const hashedPassword = await hashPassword(newPassword);
+      await storage.updateUserPassword(tokenData.userId, hashedPassword);
+      
+      // Clean up used token
+      passwordResetTokens.delete(resetToken);
+      
+      res.status(200).json({ message: "Password has been reset successfully" });
+    } catch (error) {
+      console.error("Password reset completion error:", error);
+      res.status(500).json({ error: "Failed to reset password" });
     }
   });
 
