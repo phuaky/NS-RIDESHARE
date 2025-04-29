@@ -476,21 +476,23 @@ export default function ProfilePage() {
         
         <PasswordResetCard />
         
-        {/* Admin section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <KeyRound className="h-5 w-5" />
-              Admin Tools
-            </CardTitle>
-            <CardDescription>
-              Reset password for another user
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <AdminPasswordResetCard />
-          </CardContent>
-        </Card>
+        {/* Admin section - only visible for admin with ID 1 and username "phuaky" */}
+        {user && user.id === 1 && user.discordUsername === "phuaky" && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <KeyRound className="h-5 w-5" />
+                Admin Tools
+              </CardTitle>
+              <CardDescription>
+                Reset password for another user
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AdminPasswordResetCard />
+            </CardContent>
+          </Card>
+        )}
       </main>
     </div>
   );

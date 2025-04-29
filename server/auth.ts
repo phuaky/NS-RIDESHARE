@@ -215,8 +215,10 @@ export function setupAuth(app: Express) {
         return res.status(401).json({ error: "Authentication required" });
       }
       
-      // For a real app, we'd check if the user is an admin here
-      // This is a simplified example where we're trusting the authenticated user
+      // Check if the user is the admin (user with ID 1 and username "phuaky")
+      if (req.user.id !== 1 || req.user.discordUsername !== "phuaky") {
+        return res.status(403).json({ error: "Forbidden: Only admin (phuaky) can reset passwords" });
+      }
       
       const { discordUsername, newPassword } = req.body;
       
