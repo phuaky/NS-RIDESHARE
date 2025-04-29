@@ -229,7 +229,7 @@ function ForgotPasswordForm({ onBack }: ForgotPasswordFormProps) {
 }
 
 export default function AuthPage() {
-  const [tab, setTab] = useState("login");
+  const [tab, setTab] = useState<"login" | "register" | "forgot-password">("login");
   // Login form state
   const [discordUsername, setDiscordUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -369,7 +369,7 @@ export default function AuthPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue={tab} onValueChange={setTab}>
+            <Tabs value={tab} onValueChange={(value) => setTab(value as "login" | "register" | "forgot-password")}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Login</TabsTrigger>
                 <TabsTrigger value="register">Register</TabsTrigger>
