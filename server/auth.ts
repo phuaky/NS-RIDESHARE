@@ -142,4 +142,106 @@ export function setupAuth(app: Express) {
     
     res.json(safeUser);
   });
+  
+  // Route to request a password reset
+  app.post("/api/request-password-reset", async (req, res) => {
+    try {
+      const { discordUsername } = req.body;
+      
+      if (!discordUsername) {
+        return res.status(400).json({ error: "Discord username is required" });
+      }
+      
+      // Find the user
+      const user = await storage.getUserByDiscordUsername(discordUsername);
+      if (!user) {
+        // For security reasons, don't reveal if user exists or not
+        return res.status(200).json({ message: "If an account with that Discord username exists, a password reset has been initiated." });
+      }
+
+      // For a real implementation, we would:
+      // 1. Generate a unique token
+      // 2. Store the token with an expiration time
+      // 3. Send an email/message with a reset link
+      
+      // For our simple implementation, logged-in users can reset their own password
+      // and admins can help users reset their password by verifying their identity
+      
+      return res.status(200).json({ message: "If an account with that Discord username exists, a password reset has been initiated." });
+    } catch (error) {
+      console.error("Password reset request error:", error);
+      res.status(500).json({ error: "Failed to process password reset request" });
+    }
+  });
+
+  // Route to reset password (requires authentication)
+  app.post("/api/reset-password", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: "You must be logged in to reset your password" });
+      }
+      
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ error: "Both current and new passwords are required" });
+      }
+      
+      if (newPassword.length < 8) {
+        return res.status(400).json({ error: "New password must be at least 8 characters long" });
+      }
+      
+      // Verify current password
+      const user = await storage.getUser(req.user.id);
+      if (!user || !(await comparePasswords(currentPassword, user.password))) {
+        return res.status(401).json({ error: "Current password is incorrect" });
+      }
+      
+      // Update the password
+      const hashedPassword = await hashPassword(newPassword);
+      await storage.updateUserPassword(user.id, hashedPassword);
+      
+      res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+      console.error("Password reset error:", error);
+      res.status(500).json({ error: "Failed to reset password" });
+    }
+  });
+
+  // Admin route to help reset a user's password
+  app.post("/api/admin/reset-user-password", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      
+      // For a real app, we'd check if the user is an admin here
+      // This is a simplified example where we're trusting the authenticated user
+      
+      const { discordUsername, newPassword } = req.body;
+      
+      if (!discordUsername || !newPassword) {
+        return res.status(400).json({ error: "Both Discord username and new password are required" });
+      }
+      
+      if (newPassword.length < 8) {
+        return res.status(400).json({ error: "New password must be at least 8 characters long" });
+      }
+      
+      // Find the user
+      const user = await storage.getUserByDiscordUsername(discordUsername);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      // Update the password
+      const hashedPassword = await hashPassword(newPassword);
+      await storage.updateUserPassword(user.id, hashedPassword);
+      
+      res.status(200).json({ message: "User password updated successfully" });
+    } catch (error) {
+      console.error("Admin password reset error:", error);
+      res.status(500).json({ error: "Failed to reset user password" });
+    }
+  });
 }

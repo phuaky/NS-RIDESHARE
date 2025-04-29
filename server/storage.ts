@@ -26,6 +26,7 @@ export interface IStorage {
   getUserByDiscordUsername(discordUsername: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, userData: Partial<User>): Promise<User>;
+  updateUserPassword(id: number, newPassword: string): Promise<User>;
 
   // Driver contact operations
   createDriverContact(contact: InsertDriverContact): Promise<DriverContact>;
@@ -98,6 +99,20 @@ export class DatabaseStorage implements IStorage {
     const [updatedUser] = await db
       .update(users)
       .set(updateData)
+      .where(eq(users.id, id))
+      .returning();
+
+    if (!updatedUser) {
+      throw new Error(`User with ID ${id} not found`);
+    }
+
+    return updatedUser;
+  }
+  
+  async updateUserPassword(id: number, newPassword: string): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ password: newPassword })
       .where(eq(users.id, id))
       .returning();
 
