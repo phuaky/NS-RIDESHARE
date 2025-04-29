@@ -12,6 +12,146 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, UserCog, Lock, KeyRound } from "lucide-react";
 
+function AdminPasswordResetCard() {
+  const { adminResetPasswordMutation } = useAuth();
+  const [adminResetData, setAdminResetData] = useState({
+    discordUsername: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [adminResetError, setAdminResetError] = useState("");
+  const [adminResetSuccess, setAdminResetSuccess] = useState(false);
+  
+  const handleAdminResetChange = (field: string, value: string) => {
+    setAdminResetData(prev => ({ ...prev, [field]: value }));
+  };
+  
+  const handleAdminResetSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdminResetError("");
+    setAdminResetSuccess(false);
+    
+    // Validation
+    if (!adminResetData.discordUsername) {
+      setAdminResetError("Please enter the user's Discord username");
+      return;
+    }
+    
+    if (!adminResetData.newPassword) {
+      setAdminResetError("Please enter a new password");
+      return;
+    }
+    
+    if (adminResetData.newPassword.length < 8) {
+      setAdminResetError("New password must be at least 8 characters long");
+      return;
+    }
+    
+    if (adminResetData.newPassword !== adminResetData.confirmPassword) {
+      setAdminResetError("New passwords do not match");
+      return;
+    }
+    
+    // Submit admin password reset
+    adminResetPasswordMutation.mutate({
+      discordUsername: adminResetData.discordUsername,
+      newPassword: adminResetData.newPassword
+    }, {
+      onSuccess: () => {
+        setAdminResetSuccess(true);
+        // Clear form fields after successful password reset
+        setAdminResetData({
+          discordUsername: "",
+          newPassword: "",
+          confirmPassword: ""
+        });
+      },
+      onError: (error) => {
+        setAdminResetError(error.message);
+      }
+    });
+  };
+  
+  return (
+    <div>
+      {adminResetSuccess ? (
+        <div className="bg-green-100 text-green-700 p-4 rounded-md">
+          <p className="font-medium">Password reset successful!</p>
+          <p className="text-sm mt-1">
+            The user's password has been updated.
+          </p>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="mt-3"
+            onClick={() => setAdminResetSuccess(false)}
+          >
+            Reset another password
+          </Button>
+        </div>
+      ) : (
+        <form onSubmit={handleAdminResetSubmit} className="space-y-4">
+          {adminResetError && (
+            <div className="bg-red-100 text-red-600 p-2 rounded mb-4 text-sm">
+              {adminResetError}
+            </div>
+          )}
+          
+          <div className="space-y-2">
+            <Label htmlFor="admin-reset-username">User's Discord Username</Label>
+            <Input
+              id="admin-reset-username"
+              type="text"
+              value={adminResetData.discordUsername}
+              onChange={(e) => handleAdminResetChange("discordUsername", e.target.value)}
+              required
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="admin-reset-password">New Password</Label>
+            <Input
+              id="admin-reset-password"
+              type="password"
+              value={adminResetData.newPassword}
+              onChange={(e) => handleAdminResetChange("newPassword", e.target.value)}
+              required
+              minLength={8}
+            />
+            <p className="text-xs text-muted-foreground">
+              Minimum 8 characters
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="admin-confirm-password">Confirm New Password</Label>
+            <Input
+              id="admin-confirm-password"
+              type="password"
+              value={adminResetData.confirmPassword}
+              onChange={(e) => handleAdminResetChange("confirmPassword", e.target.value)}
+              required
+            />
+          </div>
+          
+          <Button 
+            type="submit" 
+            className="w-full mt-6"
+            disabled={adminResetPasswordMutation.isPending}
+          >
+            {adminResetPasswordMutation.isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Resetting Password...
+              </>
+            ) : "Reset User's Password"}
+          </Button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 function PasswordResetCard() {
   const { resetPasswordMutation } = useAuth();
   const [passwordData, setPasswordData] = useState({
@@ -335,6 +475,22 @@ export default function ProfilePage() {
         </Card>
         
         <PasswordResetCard />
+        
+        {/* Admin section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <KeyRound className="h-5 w-5" />
+              Admin Tools
+            </CardTitle>
+            <CardDescription>
+              Reset password for another user
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AdminPasswordResetCard />
+          </CardContent>
+        </Card>
       </main>
     </div>
   );
