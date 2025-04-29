@@ -15,215 +15,43 @@ interface ForgotPasswordFormProps {
 }
 
 function ForgotPasswordForm({ onBack }: ForgotPasswordFormProps) {
-  const [resetUsername, setResetUsername] = useState("");
-  const [resetError, setResetError] = useState("");
-  const [resetToken, setResetToken] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [step, setStep] = useState<"request" | "reset">("request");
-  const { requestPasswordResetMutation, completePasswordResetMutation } = useAuth();
-  
-  // Request a password reset token
-  const handleResetRequest = (e: React.FormEvent) => {
-    e.preventDefault();
-    setResetError("");
-    
-    if (!resetUsername) {
-      setResetError("Please enter your Discord username");
-      return;
-    }
-    
-    requestPasswordResetMutation.mutate(
-      { discordUsername: resetUsername },
-      {
-        onSuccess: (data) => {
-          if (data.resetToken) {
-            // If we got a token, move to reset step
-            setResetToken(data.resetToken);
-            setStep("reset");
-          } else {
-            // If no token (user not found), show generic message
-            setResetError("If an account with that username exists, you will receive a reset link.");
-          }
-        },
-        onError: (error) => {
-          setResetError(error.message);
-        }
-      }
-    );
-  };
-  
-  // Complete the password reset using the token
-  const handleCompleteReset = (e: React.FormEvent) => {
-    e.preventDefault();
-    setResetError("");
-    
-    // Validate passwords
-    if (!newPassword) {
-      setResetError("Please enter a new password");
-      return;
-    }
-    
-    if (newPassword.length < 8) {
-      setResetError("New password must be at least 8 characters long");
-      return;
-    }
-    
-    if (newPassword !== confirmPassword) {
-      setResetError("Passwords do not match");
-      return;
-    }
-    
-    // Submit the password reset
-    completePasswordResetMutation.mutate(
-      { 
-        resetToken,
-        newPassword
-      },
-      {
-        onSuccess: () => {
-          // Clear everything and return to login
-          setResetToken("");
-          setNewPassword("");
-          setConfirmPassword("");
-          onBack();
-        },
-        onError: (error) => {
-          setResetError(error.message);
-        }
-      }
-    );
-  };
-  
-  // Request step UI
-  const renderRequestStep = () => (
-    <>
-      <div className="text-center mb-6">
-        <Lock className="h-10 w-10 mx-auto mb-2 text-muted-foreground" />
-        <h3 className="text-lg font-medium">Forgot your password?</h3>
-        <p className="text-sm text-muted-foreground mt-1">
-          Enter your Discord username to request a password reset.
-        </p>
-      </div>
-      
-      <form onSubmit={handleResetRequest} className="space-y-4">
-        {resetError && (
-          <div className="bg-red-100 text-red-600 p-2 rounded text-sm">
-            {resetError}
-          </div>
-        )}
-        
-        <div className="space-y-2">
-          <Label htmlFor="discord-username-reset">Discord Username</Label>
-          <Input
-            id="discord-username-reset"
-            type="text"
-            value={resetUsername}
-            onChange={(e) => setResetUsername(e.target.value)}
-            required
-          />
-        </div>
-        
-        <Button 
-          type="submit" 
-          className="w-full"
-          disabled={requestPasswordResetMutation.isPending}
-        >
-          {requestPasswordResetMutation.isPending ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Submitting...
-            </>
-          ) : "Request Password Reset"}
-        </Button>
-      </form>
-    </>
-  );
-  
-  // Reset step UI
-  const renderResetStep = () => (
-    <>
-      <div className="text-center mb-6">
-        <Lock className="h-10 w-10 mx-auto mb-2 text-muted-foreground" />
-        <h3 className="text-lg font-medium">Reset your password</h3>
-        <p className="text-sm text-muted-foreground mt-1">
-          Enter a new password for your account.
-        </p>
-      </div>
-      
-      <form onSubmit={handleCompleteReset} className="space-y-4">
-        {resetError && (
-          <div className="bg-red-100 text-red-600 p-2 rounded text-sm">
-            {resetError}
-          </div>
-        )}
-        
-        <div className="bg-blue-50 p-3 rounded-md mb-4">
-          <p className="text-sm text-blue-700">
-            <span className="font-semibold">Reset token:</span> {resetToken}
-          </p>
-          <p className="text-xs text-blue-600 mt-1">
-            This token is valid for 1 hour. Keep it secure.
-          </p>
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="new-password">New Password</Label>
-          <Input
-            id="new-password"
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            required
-            minLength={8}
-          />
-          <p className="text-xs text-muted-foreground">
-            Minimum 8 characters
-          </p>
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="confirm-password">Confirm New Password</Label>
-          <Input
-            id="confirm-password"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-        
-        <Button 
-          type="submit" 
-          className="w-full"
-          disabled={completePasswordResetMutation.isPending}
-        >
-          {completePasswordResetMutation.isPending ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Resetting Password...
-            </>
-          ) : "Reset Password"}
-        </Button>
-      </form>
-    </>
-  );
-  
   return (
     <div className="mt-4">
       <div className="flex items-center gap-2 mb-4">
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={step === "request" ? onBack : () => setStep("request")}
+          onClick={onBack}
           className="p-0 h-8"
         >
           <ArrowLeftCircle className="h-4 w-4 mr-1" />
-          {step === "request" ? "Back to login" : "Back to request"}
+          Back to login
         </Button>
       </div>
       
-      {step === "request" ? renderRequestStep() : renderResetStep()}
+      <div className="text-center">
+        <Lock className="h-10 w-10 mx-auto mb-2 text-muted-foreground" />
+        <h3 className="text-lg font-medium">Forgot your password?</h3>
+        
+        <div className="mt-6 bg-blue-50 p-4 rounded-md text-center">
+          <p className="text-blue-800 font-medium">Password Reset</p>
+          <p className="text-sm text-blue-700 mt-2">
+            Please contact the administrator (phuaky) on Discord to reset your password.
+          </p>
+          <p className="text-sm text-blue-700 mt-1">
+            Alternatively, you can create a new account with a different Discord username.
+          </p>
+        </div>
+        
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="mt-6"
+          onClick={onBack}
+        >
+          Return to login
+        </Button>
+      </div>
     </div>
   );
 }
