@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/use-auth";
 import { InsertUser } from "@shared/schema";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Lock, Loader2, ArrowLeftCircle } from "lucide-react";
 
 export default function AuthPage() {
   const [tab, setTab] = useState("login");
@@ -186,7 +186,20 @@ export default function AuthPage() {
                   <Button type="submit" className="w-full">
                     Login
                   </Button>
+                  <div className="mt-4 text-center">
+                    <Button
+                      variant="link"
+                      className="text-sm text-muted-foreground hover:text-foreground p-0"
+                      type="button"
+                      onClick={() => setTab("forgot-password")}
+                    >
+                      Forgot your password?
+                    </Button>
+                  </div>
                 </form>
+              </TabsContent>
+              <TabsContent value="forgot-password">
+                <ForgotPasswordForm onBack={() => setTab("login")} />
               </TabsContent>
               <TabsContent value="register">
                 <form onSubmit={handleRegister} className="space-y-4 mt-4">

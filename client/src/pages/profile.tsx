@@ -10,7 +10,135 @@ import { InsertUser } from "@shared/schema";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, UserCog } from "lucide-react";
+import { Loader2, UserCog, Lock, KeyRound } from "lucide-react";
+
+function PasswordResetCard() {
+  const { resetPasswordMutation } = useAuth();
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [resetError, setResetError] = useState("");
+  
+  const handlePasswordChange = (field: string, value: string) => {
+    setPasswordData(prev => ({ ...prev, [field]: value }));
+  };
+  
+  const handleResetSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetError("");
+    
+    // Validation
+    if (!passwordData.currentPassword) {
+      setResetError("Please enter your current password");
+      return;
+    }
+    
+    if (!passwordData.newPassword) {
+      setResetError("Please enter a new password");
+      return;
+    }
+    
+    if (passwordData.newPassword.length < 8) {
+      setResetError("New password must be at least 8 characters long");
+      return;
+    }
+    
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setResetError("New passwords do not match");
+      return;
+    }
+    
+    // Submit password reset
+    resetPasswordMutation.mutate({
+      currentPassword: passwordData.currentPassword,
+      newPassword: passwordData.newPassword
+    }, {
+      onSuccess: () => {
+        // Clear form fields after successful password reset
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: ""
+        });
+      }
+    });
+  };
+  
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Lock className="h-5 w-5" />
+          Password Settings
+        </CardTitle>
+        <CardDescription>
+          Change your account password
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {resetError && (
+          <div className="bg-red-100 text-red-600 p-2 rounded mb-4 text-sm">
+            {resetError}
+          </div>
+        )}
+        
+        <form onSubmit={handleResetSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="current-password">Current Password</Label>
+            <Input
+              id="current-password"
+              type="password"
+              value={passwordData.currentPassword}
+              onChange={(e) => handlePasswordChange("currentPassword", e.target.value)}
+              required
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="new-password">New Password</Label>
+            <Input
+              id="new-password"
+              type="password"
+              value={passwordData.newPassword}
+              onChange={(e) => handlePasswordChange("newPassword", e.target.value)}
+              required
+              minLength={8}
+            />
+            <p className="text-xs text-muted-foreground">
+              Minimum 8 characters
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="confirm-password">Confirm New Password</Label>
+            <Input
+              id="confirm-password"
+              type="password"
+              value={passwordData.confirmPassword}
+              onChange={(e) => handlePasswordChange("confirmPassword", e.target.value)}
+              required
+            />
+          </div>
+          
+          <Button 
+            type="submit" 
+            className="w-full mt-6"
+            disabled={resetPasswordMutation.isPending}
+          >
+            {resetPasswordMutation.isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Updating Password...
+              </>
+            ) : "Change Password"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -110,7 +238,7 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen">
       <NavBar />
-      <main className="max-w-3xl mx-auto px-4 py-8 pt-20">
+      <main className="max-w-3xl mx-auto px-4 py-8 pt-20 space-y-6">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -205,6 +333,8 @@ export default function ProfilePage() {
             </form>
           </CardContent>
         </Card>
+        
+        <PasswordResetCard />
       </main>
     </div>
   );
