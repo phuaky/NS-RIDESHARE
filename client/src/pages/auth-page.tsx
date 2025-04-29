@@ -10,6 +10,115 @@ import { useAuth } from "@/hooks/use-auth";
 import { InsertUser } from "@shared/schema";
 import { ArrowLeft, Lock, Loader2, ArrowLeftCircle } from "lucide-react";
 
+interface ForgotPasswordFormProps {
+  onBack: () => void;
+}
+
+function ForgotPasswordForm({ onBack }: ForgotPasswordFormProps) {
+  const [resetUsername, setResetUsername] = useState("");
+  const [resetError, setResetError] = useState("");
+  const [resetSuccess, setResetSuccess] = useState(false);
+  const { requestPasswordResetMutation } = useAuth();
+  
+  const handleResetRequest = (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetError("");
+    setResetSuccess(false);
+    
+    if (!resetUsername) {
+      setResetError("Please enter your Discord username");
+      return;
+    }
+    
+    requestPasswordResetMutation.mutate(
+      { discordUsername: resetUsername },
+      {
+        onSuccess: () => {
+          setResetSuccess(true);
+          // Clear the form
+          setResetUsername("");
+        },
+        onError: (error) => {
+          setResetError(error.message);
+        }
+      }
+    );
+  };
+  
+  return (
+    <div className="mt-4">
+      <div className="flex items-center gap-2 mb-4">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={onBack}
+          className="p-0 h-8"
+        >
+          <ArrowLeftCircle className="h-4 w-4 mr-1" />
+          Back to login
+        </Button>
+      </div>
+      
+      <div className="text-center mb-6">
+        <Lock className="h-10 w-10 mx-auto mb-2 text-muted-foreground" />
+        <h3 className="text-lg font-medium">Forgot your password?</h3>
+        <p className="text-sm text-muted-foreground mt-1">
+          Enter your Discord username and we'll help you reset your password.
+        </p>
+      </div>
+      
+      {resetSuccess ? (
+        <div className="bg-green-100 text-green-700 p-4 rounded-md text-center">
+          <p className="font-medium">Request submitted!</p>
+          <p className="text-sm mt-1">
+            Please contact an administrator to complete your password reset.
+          </p>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="mt-3"
+            onClick={onBack}
+          >
+            Return to login
+          </Button>
+        </div>
+      ) : (
+        <form onSubmit={handleResetRequest} className="space-y-4">
+          {resetError && (
+            <div className="bg-red-100 text-red-600 p-2 rounded text-sm">
+              {resetError}
+            </div>
+          )}
+          
+          <div className="space-y-2">
+            <Label htmlFor="discord-username-reset">Discord Username</Label>
+            <Input
+              id="discord-username-reset"
+              type="text"
+              value={resetUsername}
+              onChange={(e) => setResetUsername(e.target.value)}
+              required
+            />
+          </div>
+          
+          <Button 
+            type="submit" 
+            className="w-full"
+            disabled={requestPasswordResetMutation.isPending}
+          >
+            {requestPasswordResetMutation.isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Submitting...
+              </>
+            ) : "Request Password Reset"}
+          </Button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 export default function AuthPage() {
   const [tab, setTab] = useState("login");
   // Login form state
@@ -34,7 +143,7 @@ export default function AuthPage() {
     }
   });
 
-  const { loginMutation, registerMutation, user } = useAuth();
+  const { loginMutation, registerMutation, requestPasswordResetMutation, user } = useAuth();
   const [, setLocation] = useLocation();
 
   // Handle authentication state changes
