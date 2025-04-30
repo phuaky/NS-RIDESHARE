@@ -7,15 +7,7 @@ export function Footer() {
       <div className="container flex flex-col items-center justify-center text-center mx-auto">
         <div className="text-sm text-muted-foreground">
           <span>
-            vibe coded with <span className="text-red-500">♥</span> by{" "}
-            <a
-              href="https://x.com/phuakuanyu"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors underline"
-            >
-              Kuan
-            </a>
+            vibe coded with <span className="text-red-500">♥</span> by Kuan
           </span>
         </div>
       </div>

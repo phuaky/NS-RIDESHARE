@@ -204,13 +204,13 @@ export default function GuidePage() {
                 <CardHeader>
                   <CardTitle>Chartered Car Services</CardTitle>
                   <CardDescription>
-                    Trusted driver contacts for direct transportation
+                    Community-Recommended Cross-Border Drivers
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    These trusted drivers are frequently used by our community
-                    for transportation between Singapore and Forest City:
+                    Need a ride between Singapore ⇄ Forest City? These drivers
+                    are popular with our members:
                   </p>
 
                   <div className="space-y-4 mt-4">
@@ -274,7 +274,7 @@ export default function GuidePage() {
 
                   <Alert className="mt-4">
                     <AlertDescription>
-                      Have a trusted driver contact to share?{" "}
+                      Know another reliable driver?{" "}
                       <a
                         href="https://discordapp.com/users/474860619217108992"
                         target="_blank"
