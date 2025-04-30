@@ -3,7 +3,7 @@ import { NavBar } from "@/components/nav-bar";
 import { RideCard } from "@/components/ride-card";
 import { useAuth } from "@/hooks/use-auth";
 import { Ride } from "@shared/schema";
-import { Loader2, Map, Share2, Info, Edit, UserPlus, ArrowUpDown, Filter, Plus } from "lucide-react";
+import { Loader2, Map, Share2, Info, Edit, UserPlus, ArrowUpDown, Filter, Plus, Calendar } from "lucide-react";
 import { useLocation } from "wouter";
 import { SequenceManager } from "@/components/sequence-manager";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { isPastDate } from "@/lib/utils";
+import { isPastDate, isDateInCurrentWeek } from "@/lib/utils";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -21,6 +21,7 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [sortOption, setSortOption] = useState<string>("dateAsc");
   const [directionFilter, setDirectionFilter] = useState<string>("all");
+  const [timeFilter, setTimeFilter] = useState<string>("upcoming"); // "upcoming", "thisWeek", "all"
 
   // Fetch all rides
   const { data: rides, isLoading: isLoadingRides } = useQuery<Ride[]>({
@@ -34,7 +35,7 @@ export default function HomePage() {
   });
 
   // Fetch statistics
-  const { data: stats, isLoading: isLoadingStats } = useQuery({
+  const { data: stats, isLoading: isLoadingStats } = useQuery<{totalRides: number, totalUsers: number, sgToFcRides: number, fcToSgRides: number}>({
     queryKey: ['/api/stats'],
   });
 
@@ -114,6 +115,11 @@ export default function HomePage() {
     return isPastDate(new Date(ride.date));
   };
 
+  // Helper to check if a ride is within current week
+  const isRideInCurrentWeek = (ride: Ride) => {
+    return isDateInCurrentWeek(new Date(ride.date));
+  };
+
   // Filter rides based on active tab and direction
   let filteredRides = activeTab === 'all'
     ? rides
@@ -122,6 +128,15 @@ export default function HomePage() {
   // Apply direction filter
   if (directionFilter !== 'all') {
     filteredRides = filteredRides?.filter(ride => ride.direction === directionFilter) || [];
+  }
+  
+  // Apply time filter
+  if (timeFilter === 'upcoming') {
+    // Only show upcoming (non-past) rides
+    filteredRides = filteredRides?.filter(ride => !isRidePast(ride)) || [];
+  } else if (timeFilter === 'thisWeek') {
+    // Show only rides in the current week (both past and future)
+    filteredRides = filteredRides?.filter(ride => isRideInCurrentWeek(ride)) || [];
   }
 
   // Sort rides
@@ -253,6 +268,22 @@ export default function HomePage() {
                   <SelectItem value="all">All Directions</SelectItem>
                   <SelectItem value="SG->FC">Singapore to Forest City</SelectItem>
                   <SelectItem value="FC->SG">Forest City to Singapore</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex-1">
+              <Select value={timeFilter} onValueChange={setTimeFilter}>
+                <SelectTrigger className="w-full">
+                  <div className="flex items-center">
+                    <Calendar className="mr-2 h-4 w-4" />
+                    <SelectValue placeholder="Filter by time" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="upcoming">Upcoming Rides</SelectItem>
+                  <SelectItem value="thisWeek">This Week</SelectItem>
+                  <SelectItem value="all">All Rides</SelectItem>
                 </SelectContent>
               </Select>
             </div>

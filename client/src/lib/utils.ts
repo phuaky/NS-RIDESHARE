@@ -46,3 +46,32 @@ export function formatDate(date: Date): string {
 export function isPastDate(date: Date): boolean {
   return date < new Date();
 }
+
+/**
+ * Check if a date is within the current week (from Sunday to Saturday)
+ * @param date The date to check
+ * @returns true if the date is within the current week
+ */
+export function isDateInCurrentWeek(date: Date): boolean {
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay()); // Set to Sunday of this week
+  startOfWeek.setHours(0, 0, 0, 0);
+  
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 7); // Set to next Sunday
+  
+  return date >= startOfWeek && date < endOfWeek;
+}
+
+/**
+ * Get the start date of current week (Sunday)
+ * @returns Date object representing start of the current week
+ */
+export function getStartOfWeek(): Date {
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay()); // Set to Sunday of this week
+  startOfWeek.setHours(0, 0, 0, 0);
+  return startOfWeek;
+}
