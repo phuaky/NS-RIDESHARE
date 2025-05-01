@@ -1027,68 +1027,6 @@ export default function RideDetails() {
                 </Card>
               )}
             </TabsContent>
-
-            {/* Map Tab */}
-            <TabsContent value="map" className="space-y-6 pt-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    {ride.direction === "SG->FC" ? "Pickup & Dropoff Locations" : "Dropoff Locations"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-md flex items-center text-amber-800">
-                    <AlertTriangle className="h-5 w-5 mr-2 flex-shrink-0" />
-                    <p>Maps functionality is not working yet. Coming soon!</p>
-                  </div>
-                  <LocationMap
-                    selectedLocations={dropoffLocations}
-                    height="400px"
-                  />
-                  <div className="mt-4">
-                    <h4 className="font-medium">Locations</h4>
-                    <div className="grid gap-2 mt-2">
-                      {ride.direction === "SG->FC" && (
-                        <div className="p-2 border rounded-md">
-                          <Badge className="bg-blue-500">Pickup</Badge>
-                          <p className="mt-1">{ride.pickupLocation}</p>
-                        </div>
-                      )}
-
-                      {ride.dropoffLocations.map((location, index) => (
-                        <div key={index} className="p-2 border rounded-md">
-                          <Badge variant="outline">Dropoff {index + 1}</Badge>
-                          <p className="mt-1">
-                            {typeof location === 'string' 
-                              ? location 
-                              : (location.location || 'Unknown location')}
-                          </p>
-                          {typeof location !== 'string' && location.passengerCount > 0 && (
-                            <p className="text-xs text-muted-foreground">
-                              Passengers: {location.passengerCount}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-
-                      {passengers?.map((passenger, index) => (
-                        <div key={`passenger-${passenger.id}`} className="p-2 border rounded-md">
-                          <Badge variant="outline" className="bg-green-50">
-                            Passenger Dropoff
-                          </Badge>
-                          <p className="mt-1">
-                            {passenger.dropoffLocation}
-                            <span className="text-sm text-muted-foreground ml-2">
-                              ({passenger.user?.name || passenger.user?.discordUsername || "Unknown"})
-                            </span>
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
           </Tabs>
         </div>
       </main>
