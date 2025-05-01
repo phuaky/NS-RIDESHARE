@@ -611,13 +611,12 @@ export default function RideDetails() {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="details" value={activeTab} onValueChange={setActiveTab} className="mt-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="details">Details</TabsTrigger>
               <TabsTrigger value="passengers">
                 Passengers
                 {!user && <span className="ml-1 opacity-60">(Login required)</span>}
               </TabsTrigger>
-              <TabsTrigger value="map">Map</TabsTrigger>
             </TabsList>
 
             {/* Details Tab */}
