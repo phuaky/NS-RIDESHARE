@@ -501,7 +501,7 @@ export default function RideDetails() {
       `${locationSection}\n` +
       `Passengers: ${totalPassengersCount}/${ride.maxPassengers}\n` +
       `Total Cost: ${costDetails}\n\n` +
-      `📱 Join through RideShare: https://ns-rideshare.replit.app/rides/${ride.id}`;
+      `📱 Join through RideShare: https://ns-rideshare.com/rides/${ride.id}`;
 
     try {
       navigator.clipboard.writeText(summary);

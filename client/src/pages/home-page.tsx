@@ -69,7 +69,7 @@ export default function HomePage() {
       `${locationSection}\n` +
       `Passengers: ${ride.currentPassengers}/${ride.maxPassengers}\n` +
       `Total Cost: $${totalCost} SGD\n\n` +
-      `📱 Join through RideShare: https://ns-rideshare.replit.app/rides/${ride.id}`;
+      `📱 Join through RideShare: https://ns-rideshare.com/rides/${ride.id}`;
 
     try {
       navigator.clipboard.writeText(summary);
