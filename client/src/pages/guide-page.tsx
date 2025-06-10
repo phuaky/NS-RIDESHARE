@@ -303,7 +303,7 @@ export default function GuidePage() {
                   <h4 className="font-medium text-sm mb-2">Payment Options</h4>
                   <ul className="space-y-2 text-sm">
                     <li>
-                      <strong>BNPL:</strong> Awaiting Shawn's implementation.
+                      <strong>Rozo:</strong> Carol accepts Rozo (<a href="https://ns.rozo.ai/ns/ride" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">https://ns.rozo.ai/ns/ride</a>). USDC Solana or Base are accepted. Message <a href="https://discord.com/users/889423182031900672" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">@shawnmuggle</a> for payment issues.
                     </li>
                     <li>
                       <strong>Revolut:</strong> Preferred method - fee-free
