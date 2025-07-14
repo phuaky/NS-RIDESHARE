@@ -37,6 +37,15 @@ export default function BusGuidePage() {
           <h2 className="text-xl font-semibold mb-3">Official Resources</h2>
           <div className="space-y-2">
             <a 
+              href="https://www.causewaylink.com.my/CBS_Bus_Timing_Final.pdf" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center text-blue-600 hover:underline font-medium"
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Official Bus Timing Guide (PDF) - Complete Schedule
+            </a>
+            <a 
               href="https://www.causewaylink.com.my/important-announcement-for-cw3-cw4-passengers-relocating-to-jurong-town-hall-bus-interchange/" 
               target="_blank" 
               rel="noopener noreferrer"
@@ -156,6 +165,15 @@ export default function BusGuidePage() {
                     <p className="mb-4">Buses run from 6:00 AM to 8:30 PM with hourly departures. Check the official schedule for the most up-to-date information.</p>
                     <div className="space-y-2">
                       <a 
+                        href="https://www.causewaylink.com.my/CBS_Bus_Timing_Final.pdf" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center text-blue-600 hover:underline font-medium"
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Complete Bus Timing Guide (PDF)
+                      </a>
+                      <a 
                         href="https://www.causewaylink.com.my/forest-city-fc1/" 
                         target="_blank" 
                         rel="noopener noreferrer"
@@ -253,6 +271,15 @@ export default function BusGuidePage() {
                     </div>
                     <p className="mb-4">Buses run from 5:30 AM to 7:30 PM with hourly departures. Check the official schedule for the most up-to-date information.</p>
                     <div className="space-y-2">
+                      <a 
+                        href="https://www.causewaylink.com.my/CBS_Bus_Timing_Final.pdf" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center text-blue-600 hover:underline font-medium"
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Complete Bus Timing Guide (PDF)
+                      </a>
                       <a 
                         href="https://www.causewaylink.com.my/forest-city-fc1/" 
                         target="_blank" 
